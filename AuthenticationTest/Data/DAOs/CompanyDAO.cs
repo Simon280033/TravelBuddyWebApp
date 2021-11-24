@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Data;
 using Npgsql;
 
@@ -12,31 +13,71 @@ namespace AuthenticationTest.Data
         {
             this.conn = conn;
         }
+
+        public bool userTiedToCompany(string userName)
+        {
+            using (NpgsqlCommand command = new NpgsqlCommand())
+            {
+                command.CommandText = "SELECT COUNT(*) AS AMOUNT FROM travelbuddy.aspnet_user_company_relations WHERE AspNetUser_name = @userName;";
+                command.Parameters.AddWithValue("userName", userName);
+                command.Connection = conn;
+                conn.Open();
+                
+                using (NpgsqlDataReader sdr = command.ExecuteReader())
+                {
+                    while (sdr.Read())
+                    {
+                        int amount = int.Parse(sdr["amount"].ToString());
+                        if (amount > 0)
+                        {
+                            return true;
+                        }
+                    }
+                }
+                conn.Close();
+            }
+
+            return false;
+        }
+
+        public List<string> getCustomers()
+        {
+            using (NpgsqlCommand command = new NpgsqlCommand())
+            {
+                command.CommandText = "SELECT * FROM travelbuddy.Companies;";
+                command.Connection = conn;
+                conn.Open();
+                List<string> customers = new List<string>();
+                using (NpgsqlDataReader sdr = command.ExecuteReader())
+                {
+                    while (sdr.Read())
+                    {
+                        customers.Add(sdr["company_name"].ToString());
+                    }
+                }
+                conn.Close();
+                return customers;
+            }
+        }
         
         public void getCompanyById(int id)
         {
-        DataSet ds = new DataSet();
-        DataTable dt = new DataTable();
-        
-            conn.Open();
-            // quite complex sql statement
-            string sql = "SELECT * FROM travelbuddy.companies WHERE company_id = " +  id + ";";
-            // data adapter making request from our connection
-            NpgsqlDataAdapter da = new NpgsqlDataAdapter(sql, conn);
-            // i always reset DataSet before i do
-            // something with it.... i don't know why :-)
-            ds.Reset();
-            // filling DataSet with result from NpgsqlDataAdapter
-            da.Fill(ds);
-            // since it C# DataSet can handle multiple tables, we will select first
-            dt = ds.Tables[0];
-            // connect grid to DataTable
-            //dataGridView1.DataSource = dt;
-            DataRow dr = dt.Rows[0];
-        
-            Console.Write(dr["company_name"]);
-            // since we only showing the result we don't need connection anymore
-            conn.Close();
+            using (NpgsqlCommand command = new NpgsqlCommand())
+            {
+                command.CommandText = "SELECT * FROM travelbuddy.Companies WHERE company_id = @companyId;";
+                command.Parameters.AddWithValue("companyId", id);
+                command.Connection = conn;
+                conn.Open();
+                List<string> customers = new List<string>();
+                using (NpgsqlDataReader sdr = command.ExecuteReader())
+                {
+                    while (sdr.Read())
+                    {
+                        Console.WriteLine(sdr["company_name"].ToString());
+                    }
+                }
+                conn.Close();
+            }
         }
     }
 }

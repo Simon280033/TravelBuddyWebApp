@@ -98,13 +98,34 @@ using System.Data;
 #nullable disable
 #nullable restore
 #line 4 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\Pages\Index.razor"
-using AuthenticationTest.Data;
+using AuthenticationTest.Areas.Identity;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
 #line 5 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\Pages\Index.razor"
+using AuthenticationTest.Data;
+
+#line default
+#line hidden
+#nullable disable
+#nullable restore
+#line 6 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\Pages\Index.razor"
+using Microsoft.AspNetCore.Http;
+
+#line default
+#line hidden
+#nullable disable
+#nullable restore
+#line 7 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\Pages\Index.razor"
+using Microsoft.AspNetCore.Identity;
+
+#line default
+#line hidden
+#nullable disable
+#nullable restore
+#line 8 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\Pages\Index.razor"
 using Microsoft.EntityFrameworkCore;
 
 #line default
@@ -119,25 +140,40 @@ using Microsoft.EntityFrameworkCore;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 15 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\Pages\Index.razor"
+#line 19 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\Pages\Index.razor"
  
-    private DataSet ds = new DataSet();
-    private DataTable dt = new DataTable();
-    
     protected override async Task OnInitializedAsync()
     {
+        ifAuthenticated();
         test();
+    }
+
+    private void ifAuthenticated()
+    {
+        // We check if the user is logged in
+        bool isAuthenticated = auth.GetAuthenticationStateAsync().Result.User.Identity.IsAuthenticated;
+
+        if (isAuthenticated)
+        {
+            // We check if company details are tied to user
+            bool isTied = _daoFetcher.CompanyDao().userTiedToCompany(auth.GetAuthenticationStateAsync().Result.User.Identity.Name);
+        
+            Console.WriteLine("Is tied to company: " + isTied);
+        }
     }
 
     public void test()
     {
         _daoFetcher.CompanyDao().getCompanyById(1);
+        
+        Console.WriteLine(_daoFetcher.CompanyDao().getCustomers().Count);
     }
 
 
 #line default
 #line hidden
 #nullable disable
+        [global::Microsoft.AspNetCore.Components.InjectAttribute] private AuthenticationStateProvider auth { get; set; }
         [global::Microsoft.AspNetCore.Components.InjectAttribute] private IDAOFetcher _daoFetcher { get; set; }
     }
 }
