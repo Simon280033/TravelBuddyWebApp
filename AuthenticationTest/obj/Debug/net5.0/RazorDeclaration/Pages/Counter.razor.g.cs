@@ -119,7 +119,7 @@ using AuthenticationTest.Data.Entities;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 106 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\Pages\Counter.razor"
+#line 107 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\Pages\Counter.razor"
            
         // Layout
         private string headerMessage = "Select Tour to edit";
@@ -127,7 +127,8 @@ using AuthenticationTest.Data.Entities;
         private bool placeNewSightOnClick = false;
         private bool hideAddMarkerButton = true;
         private string interactionMessage = "Click on a marker to edit its properties";
-        private string buttonText = "Place new sight";
+        private string mapButtonText = "Place new sight";
+        private string markerButtonText = "Update sight";
         
         private List<RadzenGoogleMapMarker> Markers = new List<RadzenGoogleMapMarker>();
         
@@ -164,12 +165,13 @@ using AuthenticationTest.Data.Entities;
             if (placeNewSightOnClick)
             {
                 interactionMessage = "Click on map to create new sight";
-                buttonText = "Cancel placing new sight";
+                mapButtonText = "Cancel placing new sight";
+                hideMarkerProperties = true;
             } 
             else 
             {
                 interactionMessage = "Click on a marker to edit its properties";
-                buttonText = "Place new sight";
+                mapButtonText = "Place new sight";
             }
         }
 
@@ -267,9 +269,12 @@ using AuthenticationTest.Data.Entities;
         {
             if (!placeNewSightOnClick)
             {
-              hideMarkerProperties = true;
-              return;
+                selectedSight = new Sight();
+                mapButtonText = "Place new sight";
+                hideMarkerProperties = true;
+                return;
             }
+            RemoveEmptyMarkers();
             
             // We set the map properties
             zoom = 15;
@@ -279,11 +284,26 @@ using AuthenticationTest.Data.Entities;
             RadzenGoogleMapMarker newMarker = new RadzenGoogleMapMarker();
             newMarker.Position = args.Position;
             newMarker.Title = "test";
-            newMarker.Label = "test2";
+            newMarker.Label = "New sight marker";
             
             Markers.Add(newMarker);
-            
+
+            selectedSight = new Sight();
+            hideMarkerProperties = false;
+
             clickedPosition = $"Map clicked LAT : {args.Position.Lat}, LNG : {args.Position.Lng} Zoom: " + MyMap.Zoom;
+        }
+
+        private void RemoveEmptyMarkers()
+        {
+            for (int i = 0; i < Markers.Count; i++) 
+            {
+                if (Markers[i].Label.Equals("New sight marker"))
+                {
+                    Markers.Remove(Markers[i]);
+                    break;
+                }
+            }
         }
         
         private void onMarkerClick(RadzenGoogleMapMarker args)
@@ -292,25 +312,15 @@ using AuthenticationTest.Data.Entities;
                 {
                   return;
                 }
-                
+            
+            markerButtonText = "Create new sight";
+
             hideMarkerProperties = false;
             Console.WriteLine("Label: " + args.Label + ", Title: " + args.Title);
             clickedPosition = $"Map {args.Title} clicked LAT : {args.Position.Lat}, LNG : {args.Position.Lng}";
             
             // We set its info
-            Tour selectedTour = Tours[SelectedTourIndex];
-            for (int i = 0; i < selectedTour.Sights.Count; i++)
-            {
-                for (int j = 0; j < selectedTour.Sights[i].Count; j++)
-                {
-                    Console.WriteLine("Name: " + selectedTour.Sights[i][j].Name + ", args name: " + args.Label);
-                    if (selectedTour.Sights[i][j].Name.Equals(args.Label))
-                    {
-                        selectedSight = Tours[SelectedTourIndex].Sights[i][j];
-                        break;
-                    }
-                }
-            }
+            SetSelectedMarkerAttributes(args.Label);
             
         // remove the marker (now)
         /*
@@ -325,9 +335,20 @@ using AuthenticationTest.Data.Entities;
             */
         }
 
-        private void SetSelectedMarkerAttributes()
+        private void SetSelectedMarkerAttributes(string clickedMarkerLabel)
         {
-            
+            Tour selectedTour = Tours[SelectedTourIndex];
+            for (int i = 0; i < selectedTour.Sights.Count; i++)
+            {
+                for (int j = 0; j < selectedTour.Sights[i].Count; j++)
+                {
+                    if (selectedTour.Sights[i][j].Name.Equals(clickedMarkerLabel))
+                    {
+                        selectedSight = Tours[SelectedTourIndex].Sights[i][j];
+                        break;
+                    }
+                }
+            }
         }
     
 
