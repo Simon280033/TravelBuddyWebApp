@@ -10,6 +10,8 @@ namespace AuthenticationTest.Data.Entities
         public double Latitude { get; set; }
         public double Longitude { get; set; }
         public int RadiusInMeters { get; set; }
-        public string image { get; set; }
+        public string Image { get; set; }
+        public string Audio { get; set; }
+        public Language Language { get; set; }
     }
 }
