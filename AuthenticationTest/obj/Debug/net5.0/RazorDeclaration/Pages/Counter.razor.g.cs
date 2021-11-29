@@ -119,11 +119,13 @@ using AuthenticationTest.Data.Entities;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 105 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\Pages\Counter.razor"
+#line 106 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\Pages\Counter.razor"
            
         // Layout
+        private string headerMessage = "Select Tour to edit";
         private bool hideMarkerProperties = true;
         private bool placeNewSightOnClick = false;
+        private bool hideAddMarkerButton = true;
         private string interactionMessage = "Click on a marker to edit its properties";
         private string buttonText = "Place new sight";
         
@@ -140,6 +142,7 @@ using AuthenticationTest.Data.Entities;
         
         // Company Tours and content
         private List<Tour> Tours = new List<Tour>();
+        private int SelectedTourIndex;
         
         // Selected marker attributes
         Sight selectedSight = new Sight();
@@ -223,6 +226,9 @@ using AuthenticationTest.Data.Entities;
             // We clear the current tour
             Markers.Clear();
             
+            // We show the button
+            hideAddMarkerButton = false;
+            
             List<Sight> tourContent = new List<Sight>();
             
             for (int i = 0; i < Tours.Count; i++)
@@ -230,6 +236,10 @@ using AuthenticationTest.Data.Entities;
                 if (Tours[i].Id == tourId)
                 {
                     tourContent = Tours[i].Sights[0];
+                    // We set the tour name in header
+                    headerMessage = "Editing Tour '" + Tours[i].Name + "'";
+                    // And the index
+                    SelectedTourIndex = i;
                     break;
                 }
             }
@@ -248,8 +258,7 @@ using AuthenticationTest.Data.Entities;
                     Position = newPos,
                     Label = tourContent[i].Name
                 };
-            
-                //MyMap.AddMarker(newMarker);
+
                 Markers.Add(newMarker);
             }
         }
@@ -288,8 +297,23 @@ using AuthenticationTest.Data.Entities;
             Console.WriteLine("Label: " + args.Label + ", Title: " + args.Title);
             clickedPosition = $"Map {args.Title} clicked LAT : {args.Position.Lat}, LNG : {args.Position.Lng}";
             
-            // remove the marker (now)
-            /*
+            // We set its info
+            Tour selectedTour = Tours[SelectedTourIndex];
+            for (int i = 0; i < selectedTour.Sights.Count; i++)
+            {
+                for (int j = 0; j < selectedTour.Sights[i].Count; j++)
+                {
+                    Console.WriteLine("Name: " + selectedTour.Sights[i][j].Name + ", args name: " + args.Label);
+                    if (selectedTour.Sights[i][j].Name.Equals(args.Label))
+                    {
+                        selectedSight = Tours[SelectedTourIndex].Sights[i][j];
+                        break;
+                    }
+                }
+            }
+            
+        // remove the marker (now)
+        /*
             for (int i = 0; i < Markers.Count; i++) 
             {
                 if (Markers[i].Label.Equals(args.Label))

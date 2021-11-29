@@ -14,6 +14,8 @@
             </li>
         }
     </ul>
+    
+    <div>@headerMessage</div>
 
     <div class="row">
         <div class="col-xl-6">
@@ -24,7 +26,6 @@
             <div class="languageChoice">
                 <b><label for="languageCodes">Language:</label></b>
                 <select id="languageCodes" name="languageCodes" @bind="languageCode">
-                    <option>EN</option>
                     @foreach (string language in languageCodes)
                     {
                         <option>@language</option>
@@ -36,35 +37,35 @@
                 <div>
                     <label>Sight name: </label>
                 </div>
-                <input placeholder="Sight name...">
+                <input placeholder="Sight name..." @bind-value="selectedSight.Name">
             </div>
 
             <div class="sightDescriptionField">
                 <div>
                     <label >Sight description: </label>
                 </div>
-                <input placeholder="Sight description...">
+                <input placeholder="Sight description..." @bind-value="selectedSight.Description">
             </div>
 
             <div class="latitudeField">
                 <div>
                     <label >Latitude: </label>
                 </div>
-                <input type="number" placeholder="Latitude...">
+                <input type="number" placeholder="Latitude..." @bind-value="selectedSight.Latitude">
             </div>
 
             <div class="longitudeField">
                 <div>
                     <label >Longitude: </label>
                 </div>
-                <input type="number" placeholder="Longitude...">
+                <input type="number" placeholder="Longitude..." @bind-value="selectedSight.Longitude">
             </div>
 
             <div class="radiusField">
                 <div>
                     <label >Active radius (meters): </label>
                 </div>
-                <input type="number" placeholder="Radius...">
+                <input type="number" placeholder="Radius..." @bind-value="selectedSight.RadiusInMeters">
             </div>
 
             <div class="imageDisplayField">
@@ -99,13 +100,15 @@
         </div>
     </div>
 
-    <button @onclick="TogglePlaceNewSightOnClick">@buttonText</button>
+    <button @onclick="TogglePlaceNewSightOnClick" hidden="@hideAddMarkerButton">@buttonText</button>
     <div>@interactionMessage</div>
 
     @code {
         // Layout
+        private string headerMessage = "Select Tour to edit";
         private bool hideMarkerProperties = true;
         private bool placeNewSightOnClick = false;
+        private bool hideAddMarkerButton = true;
         private string interactionMessage = "Click on a marker to edit its properties";
         private string buttonText = "Place new sight";
         
@@ -122,6 +125,7 @@
         
         // Company Tours and content
         private List<Tour> Tours = new List<Tour>();
+        private int SelectedTourIndex;
         
         // Selected marker attributes
         Sight selectedSight = new Sight();
@@ -205,6 +209,9 @@
             // We clear the current tour
             Markers.Clear();
             
+            // We show the button
+            hideAddMarkerButton = false;
+            
             List<Sight> tourContent = new List<Sight>();
             
             for (int i = 0; i < Tours.Count; i++)
@@ -212,6 +219,10 @@
                 if (Tours[i].Id == tourId)
                 {
                     tourContent = Tours[i].Sights[0];
+                    // We set the tour name in header
+                    headerMessage = "Editing Tour '" + Tours[i].Name + "'";
+                    // And the index
+                    SelectedTourIndex = i;
                     break;
                 }
             }
@@ -230,8 +241,7 @@
                     Position = newPos,
                     Label = tourContent[i].Name
                 };
-            
-                //MyMap.AddMarker(newMarker);
+
                 Markers.Add(newMarker);
             }
         }
@@ -270,8 +280,23 @@
             Console.WriteLine("Label: " + args.Label + ", Title: " + args.Title);
             clickedPosition = $"Map {args.Title} clicked LAT : {args.Position.Lat}, LNG : {args.Position.Lng}";
             
-            // remove the marker (now)
-            /*
+            // We set its info
+            Tour selectedTour = Tours[SelectedTourIndex];
+            for (int i = 0; i < selectedTour.Sights.Count; i++)
+            {
+                for (int j = 0; j < selectedTour.Sights[i].Count; j++)
+                {
+                    Console.WriteLine("Name: " + selectedTour.Sights[i][j].Name + ", args name: " + args.Label);
+                    if (selectedTour.Sights[i][j].Name.Equals(args.Label))
+                    {
+                        selectedSight = Tours[SelectedTourIndex].Sights[i][j];
+                        break;
+                    }
+                }
+            }
+            
+        // remove the marker (now)
+        /*
             for (int i = 0; i < Markers.Count; i++) 
             {
                 if (Markers[i].Label.Equals(args.Label))
