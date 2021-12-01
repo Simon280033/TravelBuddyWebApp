@@ -2,7 +2,12 @@
     @using Radzen
     @using Radzen.Blazor.Rendering
     @using AuthenticationTest.Data.Entities
-
+@using AuthenticationTest.Data
+    @using System.Drawing
+@using System.IO
+@using Microsoft.EntityFrameworkCore.Diagnostics
+    @using ImageConverter = AuthenticationTest.Data.Converters.Concrete.ImageConverter
+    
     <ul>
         @foreach (Tour tour in Tours)
         {
@@ -72,14 +77,14 @@
                 <div>
                     <label >Sight image: </label>
                 </div>
-                <img src=""/>
+                <img width="300" height="300" src="@ImageDisplay"/>
             </div>
 
             <div class="imageUploadField">
                 <div>
                     <label >Upload image: </label>
                 </div>
-                <InputFile multiple/>
+                <InputFile id="image-picker" OnChange="@UploadImage" accept="image/*"/>
             </div>
 
             <div class="audioPlayField">
@@ -95,7 +100,7 @@
                 <div>
                     <label >Upload audio: </label>
                 </div>
-                <InputFile multiple/>
+                <InputFile id="audio-picker"/>
             </div>
             <button @onclick="TogglePlaceNewSightOnClick" >@markerButtonText</button>
         </div>
@@ -105,6 +110,7 @@
     <div>@interactionMessage</div>
 
     @code {
+        private string ImageDisplay;
         // Layout
         private string headerMessage = "Select Tour to edit";
         private bool hideMarkerProperties = true;
@@ -333,5 +339,11 @@
                     }
                 }
             }
+        }
+        
+        private async Task UploadImage(InputFileChangeEventArgs e)
+        {
+            IImageConverter converter = new ImageConverter();
+            ImageDisplay = await converter.UploadedFileToDisplayableString(e.File);
         }
     }
