@@ -25,7 +25,7 @@ namespace AuthenticationTest.Data.Converters.Concrete
         public async Task<string> UploadedFileToDisplayableString(IBrowserFile file)
         {
             var imageFile = file;
-            var format = "image/png";
+            var format = imageFile.ContentType;
 
             var resizedImageFile = await imageFile.RequestImageFileAsync(format, 300, 300);
             var buffer = new byte[resizedImageFile.Size];
