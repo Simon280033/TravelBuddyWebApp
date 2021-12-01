@@ -67,4 +67,12 @@
         padding-left: 2rem !important;
         padding-right: 1.5rem !important;
     }
+
+    .grid-container[b-vk78ltgcl1] {
+        display: grid;
+    }
+
+    .grid-container[b-vk78ltgcl1] {
+        display: inline-grid;
+    }
 }

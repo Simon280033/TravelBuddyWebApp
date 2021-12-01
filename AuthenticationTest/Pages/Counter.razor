@@ -1,238 +1,337 @@
-@page "/counter"
-@using Radzen
-@using Radzen.Blazor.Rendering
-@using AuthenticationTest.Data.Entities
+    @page "/counter"
+    @using Radzen
+    @using Radzen.Blazor.Rendering
+    @using AuthenticationTest.Data.Entities
 
-<ul>
-    @foreach (var tour in Tours)
-    {
-        <li>
-            <input readonly @bind="tour.Name"/>
-            <input type="number" readonly value="tour.Sights.Count"/>
-        
-            <button type="button" @onclick="() => SetTourOnMap(tour.Id)">Edit tour</button>
-        </li>
-    }
-</ul>
-
-<div class="row">
-    <div class="col-xl-6">
-        <RadzenGoogleMap @ref="MyMap" style="height: 600px;" Zoom="@zoom" ZoomControl="false" Data="@Markers" Center="@(new GoogleMapPosition() { Lat = @lat, Lng = @lng })" MapClick="@onMapClick" MarkerClick="@onMarkerClick"/>
-        </div>
-    
-    <div class="col-xl-6" hidden="@hideMarkerProperties">
-    <div class="signNameField">
-        <label >Sight name: </label>
-        <input placeholder="Sight name...">
-    </div>
-    
-    <div class="sightDescriptionField">
-        <label >Sight description: </label>
-        <input placeholder="Sight description...">
-    </div>
-    
-    <div class="latitudeField">
-            <label >Latitude: </label>
-        <input type="number" placeholder="Latitude...">
-    </div>
-    
-    <div class="longitudeField">
-        <label >Longitude: </label>
-        <input type="number" placeholder="Longitude...">
-    </div>
-    
-    <div class="radiusField">
-        <label >Active radius (meters): </label>
-        <input type="number" placeholder="Radius...">
-    </div>
-    
-        <div class="imageDisplayField">
-            <label >Sight image: </label>
-            <img src="" />
-        </div>
-    
-    <div class="imageUploadField">
-        <label >Upload image: </label>
-        <InputFile multiple />
-    </div>
-    
-    <div class="audioPlayField">
-        <label >Sight audio: </label>
-        <audio controls="controls">
-            <source src="" />
-        </audio>
-    </div>
-    
-        <div class="audioUploadField">
-            <label >Upload audio: </label>
-            <InputFile multiple />
-        </div>
-    </div>
-</div>
-
-<button @onclick="TogglePlaceNewSightOnClick">@buttonText</button>
-<div>@interactionMessage</div>
-
-@code {
-    // Layout
-    private bool hideMarkerProperties = true;
-    private bool placeNewSightOnClick = false;
-    private string interactionMessage = "Click on a marker to edit its properties";
-    private string buttonText = "Place new sight";
-    
-    private List<RadzenGoogleMapMarker> Markers = new List<RadzenGoogleMapMarker>();
-    
-    // Map properties
-    private RadzenGoogleMap MyMap = new RadzenGoogleMap();
-    private int zoom = 3; // Zoom to start out with
-    
-    // Map interaction results
-    private string clickedPosition = "";
-    private double lat = 42.6977;
-    private double lng = 23.3219;
-    
-    // Company Tours and content
-    private List<Tour> Tours = new List<Tour>();
-    
-    protected override async Task OnInitializedAsync()
-    {
-        GetToursForCompany(0);
-    }
-    
-    private void TogglePlaceNewSightOnClick()
-    {
-        placeNewSightOnClick = !placeNewSightOnClick;
-        if (placeNewSightOnClick)
+    <ul>
+        @foreach (Tour tour in Tours)
         {
-            interactionMessage = "Click on map to create new sight";
-            buttonText = "Cancel placing new sight";
-        } 
-        else 
-        {
-            interactionMessage = "Click on a marker to edit its properties";
-            buttonText = "Place new sight";
-        }
-    }
-
-    private void GetToursForCompany(int tourId)
-    {
-        List<Sight> Sights = new List<Sight>();
-        List<Sight> Sights2 = new List<Sight>();
-
-        Tour tour1 = new Tour();
-        tour1.Id = 1;
-        Tour tour2 = new Tour();
-        tour2.Id = 2;
-
-        Sight sight1 = new Sight();
-        sight1.Name = "Sight 1";
-        sight1.Latitude = 56.158799668496535;
-        sight1.Longitude = 10.186587577308952;
-        
-        Sight sight2 = new Sight();
-        sight2.Name = "Sight 2";
-        sight2.Latitude = 56.14918878549672;
-        sight2.Longitude = 10.185278848567933;
-        
-        Sight sight3 = new Sight();
-        sight3.Name = "Sight 3";
-        sight3.Latitude = 58.14918878549672;
-        sight3.Longitude = 12.185278848567933;
-        
-        Sights.Add(sight1);
-        Sights.Add(sight2);
-
-        tour1.Name = "Tour 1";
-        tour2.Name = "Tour 2";
-        tour1.Sights = Sights;
-        
-        Sights2.Add(sight3);
-        tour2.Sights = Sights2;
-        
-        Tours.Add(tour1);
-        Tours.Add(tour2);
-    }
-
-    private async Task SetTourOnMap(int tourId)
-    {
-        // We clear the current tour
-        Markers.Clear();
-        
-        List<Sight> tourContent = new List<Sight>();
-        
-        for (int i = 0; i < Tours.Count; i++)
-        {
-            if (Tours[i].Id == tourId)
-            {
-                tourContent = Tours[i].Sights;
-                break;
-            }
-        }
-        
-        for (int i = 0; i < tourContent.Count; i++)
-        {
-            Console.WriteLine("Setting sight: " + tourContent[i].Name);
-            GoogleMapPosition newPos = new GoogleMapPosition
-            {
-                Lat = tourContent[i].Latitude,
-                Lng = tourContent[i].Longitude
-            };
+            <li>
+                <input readonly @bind="tour.Name"/>
+                <input type="number" readonly value="tour.Sights.Count"/>
             
-            RadzenGoogleMapMarker newMarker = new RadzenGoogleMapMarker()
-            {
-                Position = newPos,
-                Label = tourContent[i].Name
-            };
-        
-            //MyMap.AddMarker(newMarker);
-            Markers.Add(newMarker);
+                <button type="button" @onclick="() => SetTourOnMap(tour.Id)">Edit tour</button>
+            </li>
         }
-    }
-
-    private void onMapClick(GoogleMapClickEventArgs args)
-    {
-        if (!placeNewSightOnClick)
-        {
-          hideMarkerProperties = true;
-          return;
-        }
-        
-        // We set the map properties
-        zoom = 15;
-        lat = args.Position.Lat;
-        lng = args.Position.Lng;
-
-        RadzenGoogleMapMarker newMarker = new RadzenGoogleMapMarker();
-        newMarker.Position = args.Position;
-        newMarker.Title = "test";
-        newMarker.Label = "test2";
-        
-        Markers.Add(newMarker);
-        
-        clickedPosition = $"Map clicked LAT : {args.Position.Lat}, LNG : {args.Position.Lng} Zoom: " + MyMap.Zoom;
-    }
+    </ul>
     
-    private void onMarkerClick(RadzenGoogleMapMarker args)
-    {
+    <div>@headerMessage</div>
+
+    <div class="row">
+        <div class="col-xl-6">
+            <RadzenGoogleMap @ref="MyMap" style="height: 600px;" Zoom="@zoom" ZoomControl="false" Data="@Markers" Center="@(new GoogleMapPosition() { Lat = @lat, Lng = @lng })" MapClick="@onMapClick" MarkerClick="@onMarkerClick"/>
+            </div>
+        
+        <div class="col-xl-6" hidden="@hideMarkerProperties">
+            <div class="languageChoice">
+                <b><label for="languageCodes">Language:</label></b>
+                <select id="languageCodes" name="languageCodes" @bind="languageCode">
+                    @foreach (string language in languageCodes)
+                    {
+                        <option>@language</option>
+                    }
+                </select>
+            </div>
+            
+            <div class="signNameField">
+                <div>
+                    <label>Sight name: </label>
+                </div>
+                <input placeholder="Sight name..." @bind-value="selectedSight.Name">
+            </div>
+
+            <div class="sightDescriptionField">
+                <div>
+                    <label >Sight description: </label>
+                </div>
+                <input placeholder="Sight description..." @bind-value="selectedSight.Description">
+            </div>
+
+            <div class="latitudeField">
+                <div>
+                    <label >Latitude: </label>
+                </div>
+                <input type="number" placeholder="Latitude..." @bind-value="selectedSight.Latitude">
+            </div>
+
+            <div class="longitudeField">
+                <div>
+                    <label >Longitude: </label>
+                </div>
+                <input type="number" placeholder="Longitude..." @bind-value="selectedSight.Longitude">
+            </div>
+
+            <div class="radiusField">
+                <div>
+                    <label >Active radius (meters): </label>
+                </div>
+                <input type="number" placeholder="Radius..." @bind-value="selectedSight.RadiusInMeters">
+            </div>
+
+            <div class="imageDisplayField">
+                <div>
+                    <label >Sight image: </label>
+                </div>
+                <img src=""/>
+            </div>
+
+            <div class="imageUploadField">
+                <div>
+                    <label >Upload image: </label>
+                </div>
+                <InputFile multiple/>
+            </div>
+
+            <div class="audioPlayField">
+                <div>
+                    <label >Sight audio: </label>
+                </div>
+                <audio controls="controls">
+                    <source src=""/>
+                </audio>
+            </div>
+
+            <div class="audioUploadField">
+                <div>
+                    <label >Upload audio: </label>
+                </div>
+                <InputFile multiple/>
+            </div>
+            <button @onclick="TogglePlaceNewSightOnClick" >@markerButtonText</button>
+        </div>
+    </div>
+
+    <button @onclick="TogglePlaceNewSightOnClick" hidden="@hideAddMarkerButton">@mapButtonText</button>
+    <div>@interactionMessage</div>
+
+    @code {
+        // Layout
+        private string headerMessage = "Select Tour to edit";
+        private bool hideMarkerProperties = true;
+        private bool placeNewSightOnClick = false;
+        private bool hideAddMarkerButton = true;
+        private string interactionMessage = "Click on a marker to edit its properties";
+        private string mapButtonText = "Place new sight";
+        private string markerButtonText = "Update sight";
+        
+        private List<RadzenGoogleMapMarker> Markers = new List<RadzenGoogleMapMarker>();
+        
+        // Map properties
+        private RadzenGoogleMap MyMap = new RadzenGoogleMap();
+        private int zoom = 3; // Zoom to start out with
+        
+        // Map interaction results
+        private string clickedPosition = "";
+        private double lat = 42.6977;
+        private double lng = 23.3219;
+        
+        // Company Tours and content
+        private List<Tour> Tours = new List<Tour>();
+        private int SelectedTourIndex;
+        
+        // Selected marker attributes
+        Sight selectedSight = new Sight();
+        List<Sight> sightLanguageVariants = new List<Sight>();
+        private string languageCode = "EN";
+        private List<string> languageCodes = new List<string>();
+
+        protected override async Task OnInitializedAsync()
+        {
+            languageCodes.Add("EN");
+            languageCodes.Add("DA");
+            languageCodes.Add("DE");
+            GetToursForCompany(0);
+        }
+        
+        private void TogglePlaceNewSightOnClick()
+        {
+            placeNewSightOnClick = !placeNewSightOnClick;
             if (placeNewSightOnClick)
             {
-              return;
-            }
-            
-        hideMarkerProperties = false;
-        Console.WriteLine("Label: " + args.Label + ", Title: " + args.Title);
-        clickedPosition = $"Map {args.Title} clicked LAT : {args.Position.Lat}, LNG : {args.Position.Lng}";
-        
-        // remove the marker (now)
-        /*
-        for (int i = 0; i < Markers.Count; i++) 
-        {
-            if (Markers[i].Label.Equals(args.Label))
+                interactionMessage = "Click on map to create new sight";
+                mapButtonText = "Cancel placing new sight";
+                hideMarkerProperties = true;
+            } 
+            else 
             {
-                Markers.Remove(Markers[i]);
-                break;
+                interactionMessage = "Click on a marker to edit its properties";
+                mapButtonText = "Place new sight";
             }
         }
-        */
+
+        private void GetToursForCompany(int tourId)
+        {
+            MockSeedTours();
+        }
+
+        private void MockSeedTours()
+        {
+            List<Sight> Sights = new List<Sight>();
+            List<Sight> Sights2 = new List<Sight>();
+
+            Tour tour1 = new Tour();
+            tour1.Id = 1;
+            Tour tour2 = new Tour();
+            tour2.Id = 2;
+
+            Sight sight1 = new Sight();
+            sight1.Name = "Sight 1";
+            sight1.Latitude = 56.158799668496535;
+            sight1.Longitude = 10.186587577308952;
+            
+            Sight sight2 = new Sight();
+            sight2.Name = "Sight 2";
+            sight2.Latitude = 56.14918878549672;
+            sight2.Longitude = 10.185278848567933;
+            
+            Sight sight3 = new Sight();
+            sight3.Name = "Sight 3";
+            sight3.Latitude = 58.14918878549672;
+            sight3.Longitude = 12.185278848567933;
+            
+            Sights.Add(sight1);
+            Sights.Add(sight2);
+
+            tour1.Name = "Tour 1";
+            tour2.Name = "Tour 2";
+            List<List<Sight>> sightWrapper = new List<List<Sight>>();
+            sightWrapper.Add(Sights);
+            tour1.Sights = sightWrapper;
+            
+            Sights2.Add(sight3);
+            List<List<Sight>> sightWrapper2 = new List<List<Sight>>();
+            sightWrapper2.Add(Sights2);
+            tour2.Sights = sightWrapper2;
+            
+            Tours.Add(tour1);
+            Tours.Add(tour2);
+        }
+
+        private async Task SetTourOnMap(int tourId)
+        {
+            // We clear the current tour
+            Markers.Clear();
+            
+            // We show the button
+            hideAddMarkerButton = false;
+            
+            List<Sight> tourContent = new List<Sight>();
+            
+            for (int i = 0; i < Tours.Count; i++)
+            {
+                if (Tours[i].Id == tourId)
+                {
+                    tourContent = Tours[i].Sights[0];
+                    // We set the tour name in header
+                    headerMessage = "Editing Tour '" + Tours[i].Name + "'";
+                    // And the index
+                    SelectedTourIndex = i;
+                    break;
+                }
+            }
+            
+            for (int i = 0; i < tourContent.Count; i++)
+            {
+                Console.WriteLine("Setting sight: " + tourContent[i].Name);
+                GoogleMapPosition newPos = new GoogleMapPosition
+                {
+                    Lat = tourContent[i].Latitude,
+                    Lng = tourContent[i].Longitude
+                };
+                
+                RadzenGoogleMapMarker newMarker = new RadzenGoogleMapMarker()
+                {
+                    Position = newPos,
+                    Label = tourContent[i].Name
+                };
+
+                Markers.Add(newMarker);
+            }
+        }
+
+        private void onMapClick(GoogleMapClickEventArgs args)
+        {
+            if (!placeNewSightOnClick)
+            {
+                selectedSight = new Sight();
+                mapButtonText = "Place new sight";
+                hideMarkerProperties = true;
+                return;
+            }
+            RemoveEmptyMarkers();
+            
+            // We set the map properties
+            zoom = 15;
+            lat = args.Position.Lat;
+            lng = args.Position.Lng;
+
+            RadzenGoogleMapMarker newMarker = new RadzenGoogleMapMarker();
+            newMarker.Position = args.Position;
+            newMarker.Title = "test";
+            newMarker.Label = "New sight marker";
+            
+            Markers.Add(newMarker);
+
+            selectedSight = new Sight();
+            hideMarkerProperties = false;
+
+            clickedPosition = $"Map clicked LAT : {args.Position.Lat}, LNG : {args.Position.Lng} Zoom: " + MyMap.Zoom;
+        }
+
+        private void RemoveEmptyMarkers()
+        {
+            for (int i = 0; i < Markers.Count; i++) 
+            {
+                if (Markers[i].Label.Equals("New sight marker"))
+                {
+                    Markers.Remove(Markers[i]);
+                    break;
+                }
+            }
+        }
+        
+        private void onMarkerClick(RadzenGoogleMapMarker args)
+        {
+                if (placeNewSightOnClick)
+                {
+                  return;
+                }
+            
+            markerButtonText = "Create new sight";
+
+            hideMarkerProperties = false;
+            Console.WriteLine("Label: " + args.Label + ", Title: " + args.Title);
+            clickedPosition = $"Map {args.Title} clicked LAT : {args.Position.Lat}, LNG : {args.Position.Lng}";
+            
+            // We set its info
+            SetSelectedMarkerAttributes(args.Label);
+            
+        // remove the marker (now)
+        /*
+            for (int i = 0; i < Markers.Count; i++) 
+            {
+                if (Markers[i].Label.Equals(args.Label))
+                {
+                    Markers.Remove(Markers[i]);
+                    break;
+                }
+            }
+            */
+        }
+
+        private void SetSelectedMarkerAttributes(string clickedMarkerLabel)
+        {
+            Tour selectedTour = Tours[SelectedTourIndex];
+            for (int i = 0; i < selectedTour.Sights.Count; i++)
+            {
+                for (int j = 0; j < selectedTour.Sights[i].Count; j++)
+                {
+                    if (selectedTour.Sights[i][j].Name.Equals(clickedMarkerLabel))
+                    {
+                        selectedSight = Tours[SelectedTourIndex].Sights[i][j];
+                        break;
+                    }
+                }
+            }
+        }
     }
-}

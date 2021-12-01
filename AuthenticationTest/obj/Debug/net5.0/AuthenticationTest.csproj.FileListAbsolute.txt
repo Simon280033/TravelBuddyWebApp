@@ -208,3 +208,5 @@ C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\obj\Debug\net5
 C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\obj\Debug\net5.0\AuthenticationTest.genruntimeconfig.cache
 C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\bin\Debug\net5.0\Radzen.Blazor.dll
 C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\bin\Debug\net5.0\System.Linq.Dynamic.Core.dll
+C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\bin\Debug\net5.0\Radzen.Blazor.dll
+C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\bin\Debug\net5.0\System.Linq.Dynamic.Core.dll

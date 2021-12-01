@@ -13,98 +13,98 @@ namespace AuthenticationTest.Pages
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Components;
 #nullable restore
-#line 1 "C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\_Imports.razor"
+#line 1 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\_Imports.razor"
 using System.Net.Http;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 2 "C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\_Imports.razor"
+#line 2 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\_Imports.razor"
 using Microsoft.AspNetCore.Authorization;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 3 "C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\_Imports.razor"
+#line 3 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\_Imports.razor"
 using Microsoft.AspNetCore.Components.Authorization;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 4 "C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\_Imports.razor"
+#line 4 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\_Imports.razor"
 using Microsoft.AspNetCore.Components.Forms;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 5 "C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\_Imports.razor"
+#line 5 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\_Imports.razor"
 using Microsoft.AspNetCore.Components.Routing;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 6 "C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\_Imports.razor"
+#line 6 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\_Imports.razor"
 using Microsoft.AspNetCore.Components.Web;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 7 "C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\_Imports.razor"
+#line 7 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\_Imports.razor"
 using Microsoft.AspNetCore.Components.Web.Virtualization;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 8 "C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\_Imports.razor"
+#line 8 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\_Imports.razor"
 using Microsoft.JSInterop;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 9 "C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\_Imports.razor"
+#line 9 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\_Imports.razor"
 using AuthenticationTest;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 10 "C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\_Imports.razor"
+#line 10 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\_Imports.razor"
 using AuthenticationTest.Shared;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 11 "C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\_Imports.razor"
+#line 11 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\_Imports.razor"
 using Radzen.Blazor;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 2 "C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\Pages\Counter.razor"
+#line 2 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\Pages\Counter.razor"
 using Radzen;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 3 "C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\Pages\Counter.razor"
+#line 3 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\Pages\Counter.razor"
 using Radzen.Blazor.Rendering;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 4 "C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\Pages\Counter.razor"
+#line 4 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\Pages\Counter.razor"
 using AuthenticationTest.Data.Entities;
 
 #line default
@@ -119,169 +119,238 @@ using AuthenticationTest.Data.Entities;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 76 "C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\Pages\Counter.razor"
-       
-    // Layout
-    private bool hideMarkerProperties = true;
-    private bool placeNewSightOnClick = false;
-    private string interactionMessage = "Click on a marker to edit its properties";
-    private string buttonText = "Place new sight";
-    
-    private List<RadzenGoogleMapMarker> Markers = new List<RadzenGoogleMapMarker>();
-    
-    // Map properties
-    private RadzenGoogleMap MyMap = new RadzenGoogleMap();
-    private int zoom = 3; // Zoom to start out with
-    
-    // Map interaction results
-    private string clickedPosition = "";
-    private double lat = 42.6977;
-    private double lng = 23.3219;
-    
-    // Company Tours and content
-    private List<Tour> Tours = new List<Tour>();
-    
-    protected override async Task OnInitializedAsync()
-    {
-        GetToursForCompany(0);
-    }
-    
-    private void TogglePlaceNewSightOnClick()
-    {
-        placeNewSightOnClick = !placeNewSightOnClick;
-        if (placeNewSightOnClick)
+#line 107 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\Pages\Counter.razor"
+           
+        // Layout
+        private string headerMessage = "Select Tour to edit";
+        private bool hideMarkerProperties = true;
+        private bool placeNewSightOnClick = false;
+        private bool hideAddMarkerButton = true;
+        private string interactionMessage = "Click on a marker to edit its properties";
+        private string mapButtonText = "Place new sight";
+        private string markerButtonText = "Update sight";
+        
+        private List<RadzenGoogleMapMarker> Markers = new List<RadzenGoogleMapMarker>();
+        
+        // Map properties
+        private RadzenGoogleMap MyMap = new RadzenGoogleMap();
+        private int zoom = 3; // Zoom to start out with
+        
+        // Map interaction results
+        private string clickedPosition = "";
+        private double lat = 42.6977;
+        private double lng = 23.3219;
+        
+        // Company Tours and content
+        private List<Tour> Tours = new List<Tour>();
+        private int SelectedTourIndex;
+        
+        // Selected marker attributes
+        Sight selectedSight = new Sight();
+        List<Sight> sightLanguageVariants = new List<Sight>();
+        private string languageCode = "EN";
+        private List<string> languageCodes = new List<string>();
+
+        protected override async Task OnInitializedAsync()
         {
-            interactionMessage = "Click on map to create new sight";
-            buttonText = "Cancel placing new sight";
-        } 
-        else 
-        {
-            interactionMessage = "Click on a marker to edit its properties";
-            buttonText = "Place new sight";
-        }
-    }
-
-    private void GetToursForCompany(int tourId)
-    {
-        List<Sight> Sights = new List<Sight>();
-        List<Sight> Sights2 = new List<Sight>();
-
-        Tour tour1 = new Tour();
-        tour1.Id = 1;
-        Tour tour2 = new Tour();
-        tour2.Id = 2;
-
-        Sight sight1 = new Sight();
-        sight1.Name = "Sight 1";
-        sight1.Latitude = 56.158799668496535;
-        sight1.Longitude = 10.186587577308952;
-        
-        Sight sight2 = new Sight();
-        sight2.Name = "Sight 2";
-        sight2.Latitude = 56.14918878549672;
-        sight2.Longitude = 10.185278848567933;
-        
-        Sight sight3 = new Sight();
-        sight3.Name = "Sight 3";
-        sight3.Latitude = 58.14918878549672;
-        sight3.Longitude = 12.185278848567933;
-        
-        Sights.Add(sight1);
-        Sights.Add(sight2);
-
-        tour1.Name = "Tour 1";
-        tour2.Name = "Tour 2";
-        tour1.Sights = Sights;
-        
-        Sights2.Add(sight3);
-        tour2.Sights = Sights2;
-        
-        Tours.Add(tour1);
-        Tours.Add(tour2);
-    }
-
-    private async Task SetTourOnMap(int tourId)
-    {
-        // We clear the current tour
-        Markers.Clear();
-        
-        List<Sight> tourContent = new List<Sight>();
-        
-        for (int i = 0; i < Tours.Count; i++)
-        {
-            if (Tours[i].Id == tourId)
-            {
-                tourContent = Tours[i].Sights;
-                break;
-            }
+            languageCodes.Add("EN");
+            languageCodes.Add("DA");
+            languageCodes.Add("DE");
+            GetToursForCompany(0);
         }
         
-        for (int i = 0; i < tourContent.Count; i++)
+        private void TogglePlaceNewSightOnClick()
         {
-            Console.WriteLine("Setting sight: " + tourContent[i].Name);
-            GoogleMapPosition newPos = new GoogleMapPosition
-            {
-                Lat = tourContent[i].Latitude,
-                Lng = tourContent[i].Longitude
-            };
-            
-            RadzenGoogleMapMarker newMarker = new RadzenGoogleMapMarker()
-            {
-                Position = newPos,
-                Label = tourContent[i].Name
-            };
-        
-            //MyMap.AddMarker(newMarker);
-            Markers.Add(newMarker);
-        }
-    }
-
-    private void onMapClick(GoogleMapClickEventArgs args)
-    {
-        if (!placeNewSightOnClick)
-        {
-          hideMarkerProperties = true;
-          return;
-        }
-        
-        // We set the map properties
-        zoom = 15;
-        lat = args.Position.Lat;
-        lng = args.Position.Lng;
-
-        RadzenGoogleMapMarker newMarker = new RadzenGoogleMapMarker();
-        newMarker.Position = args.Position;
-        newMarker.Title = "test";
-        newMarker.Label = "test2";
-        
-        Markers.Add(newMarker);
-        
-        clickedPosition = $"Map clicked LAT : {args.Position.Lat}, LNG : {args.Position.Lng} Zoom: " + MyMap.Zoom;
-    }
-    
-    private void onMarkerClick(RadzenGoogleMapMarker args)
-    {
+            placeNewSightOnClick = !placeNewSightOnClick;
             if (placeNewSightOnClick)
             {
-              return;
-            }
-            
-        hideMarkerProperties = false;
-        Console.WriteLine("Label: " + args.Label + ", Title: " + args.Title);
-        clickedPosition = $"Map {args.Title} clicked LAT : {args.Position.Lat}, LNG : {args.Position.Lng}";
-        
-        // remove the marker (now)
-        /*
-        for (int i = 0; i < Markers.Count; i++) 
-        {
-            if (Markers[i].Label.Equals(args.Label))
+                interactionMessage = "Click on map to create new sight";
+                mapButtonText = "Cancel placing new sight";
+                hideMarkerProperties = true;
+            } 
+            else 
             {
-                Markers.Remove(Markers[i]);
-                break;
+                interactionMessage = "Click on a marker to edit its properties";
+                mapButtonText = "Place new sight";
             }
         }
-        */
-    }
+
+        private void GetToursForCompany(int tourId)
+        {
+            MockSeedTours();
+        }
+
+        private void MockSeedTours()
+        {
+            List<Sight> Sights = new List<Sight>();
+            List<Sight> Sights2 = new List<Sight>();
+
+            Tour tour1 = new Tour();
+            tour1.Id = 1;
+            Tour tour2 = new Tour();
+            tour2.Id = 2;
+
+            Sight sight1 = new Sight();
+            sight1.Name = "Sight 1";
+            sight1.Latitude = 56.158799668496535;
+            sight1.Longitude = 10.186587577308952;
+            
+            Sight sight2 = new Sight();
+            sight2.Name = "Sight 2";
+            sight2.Latitude = 56.14918878549672;
+            sight2.Longitude = 10.185278848567933;
+            
+            Sight sight3 = new Sight();
+            sight3.Name = "Sight 3";
+            sight3.Latitude = 58.14918878549672;
+            sight3.Longitude = 12.185278848567933;
+            
+            Sights.Add(sight1);
+            Sights.Add(sight2);
+
+            tour1.Name = "Tour 1";
+            tour2.Name = "Tour 2";
+            List<List<Sight>> sightWrapper = new List<List<Sight>>();
+            sightWrapper.Add(Sights);
+            tour1.Sights = sightWrapper;
+            
+            Sights2.Add(sight3);
+            List<List<Sight>> sightWrapper2 = new List<List<Sight>>();
+            sightWrapper2.Add(Sights2);
+            tour2.Sights = sightWrapper2;
+            
+            Tours.Add(tour1);
+            Tours.Add(tour2);
+        }
+
+        private async Task SetTourOnMap(int tourId)
+        {
+            // We clear the current tour
+            Markers.Clear();
+            
+            // We show the button
+            hideAddMarkerButton = false;
+            
+            List<Sight> tourContent = new List<Sight>();
+            
+            for (int i = 0; i < Tours.Count; i++)
+            {
+                if (Tours[i].Id == tourId)
+                {
+                    tourContent = Tours[i].Sights[0];
+                    // We set the tour name in header
+                    headerMessage = "Editing Tour '" + Tours[i].Name + "'";
+                    // And the index
+                    SelectedTourIndex = i;
+                    break;
+                }
+            }
+            
+            for (int i = 0; i < tourContent.Count; i++)
+            {
+                Console.WriteLine("Setting sight: " + tourContent[i].Name);
+                GoogleMapPosition newPos = new GoogleMapPosition
+                {
+                    Lat = tourContent[i].Latitude,
+                    Lng = tourContent[i].Longitude
+                };
+                
+                RadzenGoogleMapMarker newMarker = new RadzenGoogleMapMarker()
+                {
+                    Position = newPos,
+                    Label = tourContent[i].Name
+                };
+
+                Markers.Add(newMarker);
+            }
+        }
+
+        private void onMapClick(GoogleMapClickEventArgs args)
+        {
+            if (!placeNewSightOnClick)
+            {
+                selectedSight = new Sight();
+                mapButtonText = "Place new sight";
+                hideMarkerProperties = true;
+                return;
+            }
+            RemoveEmptyMarkers();
+            
+            // We set the map properties
+            zoom = 15;
+            lat = args.Position.Lat;
+            lng = args.Position.Lng;
+
+            RadzenGoogleMapMarker newMarker = new RadzenGoogleMapMarker();
+            newMarker.Position = args.Position;
+            newMarker.Title = "test";
+            newMarker.Label = "New sight marker";
+            
+            Markers.Add(newMarker);
+
+            selectedSight = new Sight();
+            hideMarkerProperties = false;
+
+            clickedPosition = $"Map clicked LAT : {args.Position.Lat}, LNG : {args.Position.Lng} Zoom: " + MyMap.Zoom;
+        }
+
+        private void RemoveEmptyMarkers()
+        {
+            for (int i = 0; i < Markers.Count; i++) 
+            {
+                if (Markers[i].Label.Equals("New sight marker"))
+                {
+                    Markers.Remove(Markers[i]);
+                    break;
+                }
+            }
+        }
+        
+        private void onMarkerClick(RadzenGoogleMapMarker args)
+        {
+                if (placeNewSightOnClick)
+                {
+                  return;
+                }
+            
+            markerButtonText = "Create new sight";
+
+            hideMarkerProperties = false;
+            Console.WriteLine("Label: " + args.Label + ", Title: " + args.Title);
+            clickedPosition = $"Map {args.Title} clicked LAT : {args.Position.Lat}, LNG : {args.Position.Lng}";
+            
+            // We set its info
+            SetSelectedMarkerAttributes(args.Label);
+            
+        // remove the marker (now)
+        /*
+            for (int i = 0; i < Markers.Count; i++) 
+            {
+                if (Markers[i].Label.Equals(args.Label))
+                {
+                    Markers.Remove(Markers[i]);
+                    break;
+                }
+            }
+            */
+        }
+
+        private void SetSelectedMarkerAttributes(string clickedMarkerLabel)
+        {
+            Tour selectedTour = Tours[SelectedTourIndex];
+            for (int i = 0; i < selectedTour.Sights.Count; i++)
+            {
+                for (int j = 0; j < selectedTour.Sights[i].Count; j++)
+                {
+                    if (selectedTour.Sights[i][j].Name.Equals(clickedMarkerLabel))
+                    {
+                        selectedSight = Tours[SelectedTourIndex].Sights[i][j];
+                        break;
+                    }
+                }
+            }
+        }
+    
 
 #line default
 #line hidden
