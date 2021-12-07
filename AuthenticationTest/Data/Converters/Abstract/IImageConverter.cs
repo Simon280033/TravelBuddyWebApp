@@ -11,5 +11,7 @@ namespace AuthenticationTest.Data
         public Task<Image> ByteArrayToImage(byte[] byteArrayIn);
 
         public Task<string> UploadedFileToDisplayableString(IBrowserFile file);
+        
+        public string Base64ToDisplayableString(string base64);
     }
 }

@@ -33,5 +33,10 @@ namespace AuthenticationTest.Data.Converters.Concrete
 
             return $"data:{format};base64,{Convert.ToBase64String(buffer)}";
         }
+
+        public string Base64ToDisplayableString(string base64)
+        {
+            return "data:image/*;base64," + base64;
+        }
     }
 }
