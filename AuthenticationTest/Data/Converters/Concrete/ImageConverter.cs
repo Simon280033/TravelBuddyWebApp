@@ -34,6 +34,18 @@ namespace AuthenticationTest.Data.Converters.Concrete
             return $"data:{format};base64,{Convert.ToBase64String(buffer)}";
         }
 
+        public async Task<string> UploadedFileToBase64(IBrowserFile file)
+        {
+            var imageFile = file;
+            var format = imageFile.ContentType;
+
+            var resizedImageFile = await imageFile.RequestImageFileAsync(format, 300, 300);
+            var buffer = new byte[resizedImageFile.Size];
+            await resizedImageFile.OpenReadStream().ReadAsync(buffer);
+
+            return Convert.ToBase64String(buffer);        
+        }
+
         public string Base64ToDisplayableString(string base64)
         {
             return "data:image/*;base64," + base64;

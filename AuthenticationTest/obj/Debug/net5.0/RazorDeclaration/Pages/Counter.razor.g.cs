@@ -182,7 +182,7 @@ using Path = System.IO.Path;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 118 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\Pages\Counter.razor"
+#line 120 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\Pages\Counter.razor"
            
         // Converters
         private IImageConverter imageConverter = new ImageConverter();
@@ -202,6 +202,8 @@ using Path = System.IO.Path;
         private string mapButtonText = "Place new sight";
         private string markerButtonText = "Update sight";
         private List<bool> isTheTourOnTheIndexNotSelected = new List<bool>();
+        private string SightEditSuccessMessage = "";
+        private string SightEditErrorMessage = "";
         
         private List<RadzenGoogleMapMarker> Markers = new List<RadzenGoogleMapMarker>();
         
@@ -245,6 +247,9 @@ using Path = System.IO.Path;
         
         private void TourLanguageChanged(ChangeEventArgs e)
         {
+            selectedTourLanguageCode = (string) e.Value;
+            selectedSightLanguageCode = (string) e.Value;
+            SetTourOnMap(SelectedTourIndex, true);
             Console.WriteLine("Tour language changed: " + e.Value);
         }
 
@@ -272,6 +277,103 @@ using Path = System.IO.Path;
             // And set it for the selected, so that it knows we are updating
             // if the button is pressed again
             Console.WriteLine("Creating sight...");
+            if (AllFilled())
+            {
+                SetSightCreatedResultLayout(true);
+            }
+            else
+            {
+                SightEditSuccessMessage = "";
+                SightEditErrorMessage = "Please fill out all the required information!";
+            }
+        }
+
+        private void SetSightCreatedResultLayout(bool succeeded)
+        {
+            if (succeeded)
+            {
+                SightEditSuccessMessage = "New sight succesfully created!";
+                SightEditErrorMessage = "";
+            }
+            else
+            {
+                SightEditSuccessMessage = "";
+                SightEditErrorMessage = "Failed to create new sight!";
+            }
+        }
+
+        private bool AllFilled()
+        {
+            Console.WriteLine("Checking if all the neccessary information is filled...");
+            bool allFilled = true;
+
+            if (!(selectedSight.Latitude > 0))
+            {
+                Console.WriteLine("Latitude information not filled!");
+                return false;
+            }
+            
+            if (!(selectedSight.Longitude > 0))
+            {
+                Console.WriteLine("Longitude information not filled!");
+                return false;
+            }
+
+            if (selectedSight.ImageBase64 == null)
+            {
+                Console.WriteLine("ImageBase64 information not filled!");
+                return false;
+            }
+
+            if (!(selectedSight.RadiusInMeters > 0))
+            {
+                Console.WriteLine("RadiusInMeters information not filled!");
+                return false;
+            }
+            
+            // We figure out which variant we are working on
+            int selectedSightVariantIndex = 0;
+            if (selectedSightLanguageCode == null)
+            {
+                selectedSightLanguageCode = "EN";
+            }
+            selectedSight.Variants[0].Language = new Language
+            {
+                LanguageCode = "EN",
+                LanguageName = "English"
+            };
+            Console.WriteLine("Is null: Variants: " + (selectedSight.Variants == null) + " SelectedSightLanguageCode: " + (selectedSightLanguageCode == null));
+            for (int i = 0; i < selectedSight.Variants.Count; i++)
+            {
+                Console.WriteLine("Language at " + i + " is null: " + (selectedSight.Variants[i].Language == null));
+                if (selectedSight.Variants[i].Language.LanguageCode.Equals(selectedSightLanguageCode))
+                {
+                    selectedSightVariantIndex = i;
+                    break;
+                }
+            }
+            if (selectedSight.Variants[selectedSightVariantIndex].AudioBase64 == null)
+            {
+                Console.WriteLine("AudioBase64 information not filled!");
+                return false;
+            }
+            if (selectedSight.Variants[selectedSightVariantIndex].SightDescription == null)
+            {
+                Console.WriteLine("SightDescription information not filled!");
+                return false;
+            }
+            if (selectedSight.Variants[selectedSightVariantIndex].SightName == null)
+            {
+                Console.WriteLine("SightName information not filled!");
+                return false;
+            }
+            if (selectedSight.Variants[selectedSightVariantIndex].AudioFileName == null)
+            {
+                Console.WriteLine("AudioFileName information not filled!");
+                return false;
+            }
+
+            return allFilled;
         }
         
         private void TogglePlaceNewSightOnClick()
@@ -535,6 +637,7 @@ using Path = System.IO.Path;
         private async Task UploadImage(InputFileChangeEventArgs e)
         {
             ImageDisplay = await imageConverter.UploadedFileToDisplayableString(e.File);
+            selectedSight.ImageBase64 = await imageConverter.UploadedFileToBase64(e.File);
         }
         
         private async Task UploadAudio(InputFileChangeEventArgs e)
