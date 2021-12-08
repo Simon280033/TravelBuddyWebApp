@@ -15,6 +15,7 @@ namespace AuthenticationTest.Data.Entities
         public Sight()
         {
             this.Variants = new List<SightVariant>();
+            this.Variants.Add(new SightVariant());
         }
     }
 }

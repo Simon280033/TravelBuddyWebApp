@@ -24,7 +24,7 @@
                         <option>@language</option>
                     }
                     </select>
-                <button type="button" @onclick="() => SetTourOnMap(tour.Id)">Edit tour</button>
+                <button type="button" @onclick="() => SetTourOnMap(tour.Id, true)">Edit tour</button>
             </li>
         }
     </ul>
@@ -43,9 +43,9 @@
                 <b><label for="languageCodes">Language:</label></b>
                 <select id="languageCodes" name="languageCodes" @bind="selectedSightLanguageCode">
                     @foreach (string language in selectedSightLanguageCodes)
-                    {
-                        <option>@language</option>
-                    }
+                        {
+                            <option>@language</option>
+                        }
                 </select>
             </div>
             
@@ -53,14 +53,14 @@
                 <div>
                     <label>Sight name: </label>
                 </div>
-                <input placeholder="Sight name..." @bind-value="selectedSightVariant.SightName">
+                <input placeholder="Sight name..." @bind-value="selectedSight.Variants[selectedSightVariantIndex].SightName">
             </div>
 
             <div class="sightDescriptionField">
                 <div>
                     <label >Sight description: </label>
                 </div>
-                <input placeholder="Sight description..." @bind-value="selectedSightVariant.SightDescription">
+                <input placeholder="Sight description..." @bind-value="selectedSight.Variants[selectedSightVariantIndex].SightDescription">
             </div>
 
             <div class="latitudeField">
@@ -102,7 +102,7 @@
                 <div>
                     <label >Sight audio: </label>
                 </div>
-                <label >@selectedSightVariant.AudioFileName</label>
+                <label >@selectedSight.Variants[selectedSightVariantIndex].AudioFileName</label>
             </div>
 
             <div class="audioUploadField">
@@ -154,7 +154,7 @@
         
         // Selected marker attributes
         private Sight selectedSight = new Sight();
-        private SightVariant selectedSightVariant = new SightVariant();
+        private int selectedSightVariantIndex;
         List<Sight> sightLanguageVariants = new List<Sight>();
         private string selectedSightLanguageCode;
         private List<string> selectedSightLanguageCodes = new List<string>();
@@ -208,21 +208,35 @@
         
         private void TogglePlaceNewSightOnClick()
         {
+            Console.WriteLine("Toggling whether or not to set new sight on click...");
             placeNewSightOnClick = !placeNewSightOnClick;
             if (placeNewSightOnClick)
             {
-                interactionMessage = "Click on map to create new sight";
-                mapButtonText = "Cancel placing new sight";
+                SetPlaceNewSightOnClickMode();
             } 
-            else 
+            else
             {
-                interactionMessage = "Click on a marker to edit its properties";
-                mapButtonText = "Place new sight";
+                SetDoNothingOnClickMode();
             }
-            hideMarkerProperties = true;
+            Console.WriteLine("Set new marker on click mode: " + placeNewSightOnClick);
         // We reset the image
             ResetImage();
-            RemoveNonTourMarkers();
+            RemoveNonTourMarkers(false);
+        }
+
+        private void SetPlaceNewSightOnClickMode()
+        {
+            interactionMessage = "Click on map to create new sight";
+            mapButtonText = "Cancel placing new sight";
+            hideMarkerProperties = true;
+        }
+        
+        private void SetDoNothingOnClickMode()
+        {
+            interactionMessage = "Click on a marker to edit its properties";
+            mapButtonText = "Place new sight";           
+            hideMarkerProperties = true;
+            placeNewSightOnClick = false;
         }
 
         private void ResetImage()
@@ -230,10 +244,10 @@
             ImageDisplay = imageConverter.Base64ToDisplayableString("iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAAAJ1BMVEXt7e3V1dXW1tbm5ubs7Ozg4ODc3NzS0tLw8PDo6OjZ2dnj4+Pe3t5T9WAhAAAEmklEQVR4nO2ciXKsIBBFsQUB9f+/9+EuKjPEpe2X3FOVSTJlAmdaWRpUKQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP8Pbnh9mr4Uza+nnSpbChTTy0M/hNfKeNeXyIshW/BReaVZ4+h8zSY3lESG008rz+a30LIqFpbYDa1huxC1qovQDHAbUuG5DF3Tl8cmORdTs/Ua9VxuzUHXaA+WnsnQD90EUa1ZPlRtChoMuRobs5w0PLiGphJ5YlgNxVnGHrgeTlOuIkdD4imtx/B+qKNhzThOLF8xJE5D+4ohT2k9MLwZGD4ADG8Ghg8Aw5uB4QPINRxqdH14J9awmyG7summ5tfqJthQO1NY21wtUrKh7zJW9mqWTLLhcPDV9INYQ6XHqhXGXaqcXEM1L2/4S2k5qYbaNfP61LXEnFRDpWhJize/MIbrEAau1E6qoV75FfZKwlqmoVYmWiWmUp1ex5VpqKIQdhdkOG9/l2EcwuDYnu4UZRrq7frihSVOgYahKm2xUzw9eBNoqJy3O8Pi9CRDoqGqhv0+UQzpbKco0bAs9iEMVOeKlGeoVWpH0bnBmzxD5VMbbuhUJQUapkJI9tR5Ks+w+bBnqnRxXqr7razMx30d8gzTu4nI1nE1O8HWfkl0SDN0TXq7lKUwyYgqqrvDw9uftq1JM9RftoP57eF09PYaYYbOpNRG6vUIXLtqrH6bPk+FGX4LYdcpLripVSJbupSjMMNvISyiwZsu5sFdOlsly1Afa8Xn6Xzw9N96geTAXJShazMMi3I4WOsmejtlIMowbws4jRmbOOA2tV1dkGFoGbMMu9O0q24VZzpSSziCDKfttV8iSGOSv9wODRKjVkGGrs7Z/G0b1w/XdDy6Cz/b8rBIQYal3U7sj6j70WhoR+12AEt02CVKMdTpWVNk0TeZ4as5SgM0R8NTIYZDnTMYL7bjjpOO8uJCDFVeCKebX1Kt7tEcQ4xhXgjH/dPJgw96DCmGuyz3MdQ1pc4nj632QRRi+HXWNNJNghvz4cPwO0Uhht9nTeMfhqp+PGCf0BBimBnC8a8/fRzNdpFKhmFuCDOoZcYwa9aUyXZFXIThrTfO0qbHeN1QL+/exKbHeN1QZc6a8tnMMV431GHWdPM9s3W07/Z1Q+XKgxXfS8RZqfcN84bcP4LW6zfvG2YOuX9EGwavk9HrhvqBEEYbNt82/LTWdIFVVuptwweuwp6l23/bUD/zHJfVbsa3Df3nmcJpltP0bcPwziNR9GJaGqUbU91LG1g9BeN9w2v3GiSR0x8+9AAQSWOap4Hhzfx6Q1eNzxdiKU1F6yFshn0ILdPjcPoUCU2GLGVOeVG2p4u5aZWK68Lw/Vkavswdt/jmFDiN7A9WNB5hSf3WhoPpFKXrd9tmCi63irA8sI3mb+f2F58xvDF/n6VIwytXCFW/2Y7zyZ6TJVv3pPpnxPGzW655Ere9a+tpqLAVp2D/BNOa1TG54+1JfMXW4JDhDeCM9r5kwL+k92d4/vNFBAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD4Y/wDpoY2HBKwqLIAAAAASUVORK5CYII=");
         }
 
-        private void RemoveNonTourMarkers()
+        private void RemoveNonTourMarkers(bool reset)
         {
             Markers.Clear();
-            SetTourOnMap(SelectedTourIndex);
+            SetTourOnMap(SelectedTourIndex, reset);
         }
 
         private void GetToursForCompany(int tourId)
@@ -251,10 +265,25 @@
             Tours = TourSeeder.GetSeededToursTList(3, 3);
         }
 
-        private async Task SetTourOnMap(int tourId)
+        private void ClearSelectedSight()
+        {
+            selectedSight = new Sight();
+            selectedSightVariantIndex = 0;
+            selectedSightLanguageCode = null;
+            selectedSightLanguageCodes = tourLanguageCodes[SelectedTourIndex];
+        }
+
+        private async Task SetTourOnMap(int tourId, bool reset)
         {
             // We clear the current tour
             Markers.Clear();
+            
+            // We clear the current sight
+            ClearSelectedSight();
+            if (reset)
+            {
+                SetDoNothingOnClickMode();
+            }
             
             // We show the button
             hideAddMarkerButton = false;
@@ -305,10 +334,10 @@
                 hideMarkerProperties = true;
                 return;
             }
-            selectedSightLanguageCode = "EN";
+            selectedSightLanguageCode = selectedTourLanguageCode;
             selectedSightLanguageCodes.Add(selectedSightLanguageCode);
             selectedSight = new Sight();
-            selectedSightVariant = new SightVariant();
+            selectedSightVariantIndex = 0;
             markerButtonText = "Create new sight";
 
             RemoveEmptyMarkers();
@@ -328,7 +357,41 @@
             selectedSight = new Sight();
             hideMarkerProperties = false;
 
+            SetNewMarkerProperties(newMarker);
+
             clickedPosition = $"Map clicked LAT : {args.Position.Lat}, LNG : {args.Position.Lng} Zoom: " + MyMap.Zoom;
+        }
+
+        private void SetNewMarkerProperties(RadzenGoogleMapMarker newMarker)
+        {
+            // We set it as the selected marker
+            selectedSight = new Sight
+            {
+                Id = 0,
+                Latitude = newMarker.Position.Lat,
+                Longitude = newMarker.Position.Lng,
+                ImageBase64 = null, // Insert default here
+                RadiusInMeters = 10,
+                TourId = Tours[SelectedTourIndex].Id
+            };
+            // And this variant
+            SightVariant selectedSightVariant = new SightVariant
+            {
+                AudioFileName = "No file uploaded",
+                AudioBase64 = null, // Insert default here
+                Language = new Language
+                {
+                    LanguageCode = selectedTourLanguageCode
+                },
+                SightDescription = null,
+                SightName = null
+            };
+            // We add this variant to the Sight
+            selectedSight.Variants.Add(selectedSightVariant);
+            // We set the selected sight languages
+            selectedSightLanguageCodes = tourLanguageCodes[SelectedTourIndex];
+            selectedSightLanguageCode = selectedTourLanguageCode;
+            selectedSightVariantIndex = 0;
         }
 
         private void RemoveEmptyMarkers()
@@ -385,7 +448,7 @@
                         }
                         // We set the variant as well
                         // GET THE LANGUAGE CHOSEN
-                        selectedSightVariant = selectedSight.Variants[0]; // For now we just get the first
+                        selectedSightVariantIndex = 0; // For now we just get the first
                         break;
                     }
                 }
@@ -408,8 +471,8 @@
         
         private async Task UploadAudio(InputFileChangeEventArgs e)
         {
-            selectedSightVariant.AudioBase64 = await audioConverter.UploadedFileToBase64String(e.File);
-            selectedSightVariant.AudioFileName = e.File.Name;
+            selectedSight.Variants[selectedSightVariantIndex].AudioBase64 = await audioConverter.UploadedFileToBase64String(e.File);
+            selectedSight.Variants[selectedSightVariantIndex].AudioFileName = e.File.Name;
         }
 
         private void UpdateAudio()
