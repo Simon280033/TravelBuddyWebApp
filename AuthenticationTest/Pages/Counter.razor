@@ -10,8 +10,10 @@
 @using AuthenticationTest.Data.Seeders
 @using Microsoft.EntityFrameworkCore.Diagnostics
     @using ImageConverter = AuthenticationTest.Data.Converters.Concrete.ImageConverter
-@using Path = System.IO.Path
+    @using Path = System.IO.Path
     
+    @inject IJSRuntime JsRuntime
+
     <ul>
         @foreach (Tour tour in Tours)
         {
@@ -24,7 +26,7 @@
                         <option>@language</option>
                     }
                     </select>
-                <button type="button" @onclick="() => SetTourOnMap(tour.Id, true)">Edit tour</button>
+                <button type="button" @onclick="() => SetTourOnMap(tour.Id, true, true)">Edit tour</button>
             </li>
         }
     </ul>
@@ -183,7 +185,7 @@
         {
             selectedTourLanguageCode = (string) e.Value;
             selectedSightLanguageCode = (string) e.Value;
-            SetTourOnMap(SelectedTourIndex, true);
+            SetTourOnMap(SelectedTourIndex, true, false);
             Console.WriteLine("Tour language changed: " + e.Value);
         }
 
@@ -205,21 +207,34 @@
             Console.WriteLine("Updating sight " + selectedSight.Id + "...");
         }
         
-        private void CreateSelectedSight()
+        private async void CreateSelectedSight()
         {
             // IMPORTANT! Remember to retrieve the new ID after creating
             // And set it for the selected, so that it knows we are updating
             // if the button is pressed again
             Console.WriteLine("Creating sight...");
+            if (selectedSight.Variants[0].Language == null)
+            {
+                selectedSight.Variants[0].Language = new Language
+                {
+                    LanguageCode = selectedTourLanguageCode
+                };
+            }
             if (AllFilled())
             {
                 SetSightCreatedResultLayout(true);
+                AddNewSightToSelectedTour();
+                StateHasChanged();
+                await JsRuntime.InvokeVoidAsync("alert", "New sight successfully added!");
+                SetTourOnMap(SelectedTourIndex, true, false);
+                Console.WriteLine("New marker mode on: " + placeNewSightOnClick);
+                StateHasChanged();
             }
-            else
-            {
-                SightEditSuccessMessage = "";
-                SightEditErrorMessage = "Please fill out all the required information!";
-            }
+        }
+
+        private void AddNewSightToSelectedTour()
+        {
+            Tours[SelectedTourIndex].Sights.Add(selectedSight);
         }
 
         private void SetSightCreatedResultLayout(bool succeeded)
@@ -244,43 +259,40 @@
             if (!(selectedSight.Latitude > 0))
             {
                 Console.WriteLine("Latitude information not filled!");
+                SightEditErrorMessage = "Latitude information not filled!";
                 return false;
             }
             
             if (!(selectedSight.Longitude > 0))
             {
                 Console.WriteLine("Longitude information not filled!");
+                SightEditErrorMessage = "Longitude information not filled!";
                 return false;
             }
 
             if (selectedSight.ImageBase64 == null)
             {
                 Console.WriteLine("ImageBase64 information not filled!");
+                SightEditErrorMessage = "ImageBase64 information not filled!";
                 return false;
             }
 
             if (!(selectedSight.RadiusInMeters > 0))
             {
                 Console.WriteLine("RadiusInMeters information not filled!");
+                SightEditErrorMessage = "RadiusInMeters information not filled!";
                 return false;
             }
             
             // We figure out which variant we are working on
             int selectedSightVariantIndex = 0;
-            if (selectedSightLanguageCode == null)
-            {
-                selectedSightLanguageCode = "EN";
-            }
-            selectedSight.Variants[0].Language = new Language
-            {
-                LanguageCode = "EN",
-                LanguageName = "English"
-            };
-            Console.WriteLine("Is null: Variants: " + (selectedSight.Variants == null) + " SelectedSightLanguageCode: " + (selectedSightLanguageCode == null));
             for (int i = 0; i < selectedSight.Variants.Count; i++)
             {
-                Console.WriteLine("Language at " + i + " is null: " + (selectedSight.Variants[i].Language == null));
-                if (selectedSight.Variants[i].Language.LanguageCode.Equals(selectedSightLanguageCode))
+                Console.WriteLine("Variants null: " + (selectedSight.Variants == null));
+                Console.WriteLine("Language null: " + (selectedSight.Variants[i].Language == null));
+                Console.WriteLine("selectedTourLanguageCode null: " + (selectedTourLanguageCode == null));
+
+                if (selectedSight.Variants[i].Language.LanguageCode.Equals(selectedTourLanguageCode))
                 {
                     selectedSightVariantIndex = i;
                     break;
@@ -289,21 +301,25 @@
             if (selectedSight.Variants[selectedSightVariantIndex].AudioBase64 == null)
             {
                 Console.WriteLine("AudioBase64 information not filled!");
+                SightEditErrorMessage = "AudioBase64 information not filled!";
                 return false;
             }
             if (selectedSight.Variants[selectedSightVariantIndex].SightDescription == null)
             {
                 Console.WriteLine("SightDescription information not filled!");
+                SightEditErrorMessage = "SightDescription information not filled!";
                 return false;
             }
             if (selectedSight.Variants[selectedSightVariantIndex].SightName == null)
             {
                 Console.WriteLine("SightName information not filled!");
+                SightEditErrorMessage = "SightName information not filled!";
                 return false;
             }
             if (selectedSight.Variants[selectedSightVariantIndex].AudioFileName == null)
             {
                 Console.WriteLine("AudioFileName information not filled!");
+                SightEditErrorMessage = "AudioFileName information not filled!";
                 return false;
             }
 
@@ -323,6 +339,8 @@
                 SetDoNothingOnClickMode();
             }
             Console.WriteLine("Set new marker on click mode: " + placeNewSightOnClick);
+            SightEditSuccessMessage = "";
+            SightEditErrorMessage = "";
         // We reset the image
             ResetImage();
             RemoveNonTourMarkers(false);
@@ -351,7 +369,7 @@
         private void RemoveNonTourMarkers(bool reset)
         {
             Markers.Clear();
-            SetTourOnMap(SelectedTourIndex, reset);
+            SetTourOnMap(SelectedTourIndex, reset, false);
         }
 
         private void GetToursForCompany(int tourId)
@@ -373,11 +391,9 @@
         {
             selectedSight = new Sight();
             selectedSightVariantIndex = 0;
-            selectedSightLanguageCode = null;
-            selectedSightLanguageCodes = tourLanguageCodes[SelectedTourIndex];
         }
 
-        private async Task SetTourOnMap(int tourId, bool reset)
+        private async Task SetTourOnMap(int tourId, bool reset, bool initial)
         {
             // We clear the current tour
             Markers.Clear();
@@ -387,6 +403,12 @@
             if (reset)
             {
                 SetDoNothingOnClickMode();
+            }
+            
+            // If it is the first time
+            if (initial)
+            {
+                selectedTourLanguageCode = Tours[SelectedTourIndex].Variants[0].Language.LanguageCode;
             }
             
             // We show the button
@@ -439,8 +461,11 @@
                 return;
             }
             selectedSightLanguageCode = selectedTourLanguageCode;
-            selectedSightLanguageCodes.Add(selectedSightLanguageCode);
             selectedSight = new Sight();
+            selectedSight.Variants[0].Language = new Language
+            {
+                LanguageCode = selectedTourLanguageCode
+            };
             selectedSightVariantIndex = 0;
             markerButtonText = "Create new sight";
 
