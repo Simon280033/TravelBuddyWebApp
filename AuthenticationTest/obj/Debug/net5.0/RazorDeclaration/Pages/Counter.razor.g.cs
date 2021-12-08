@@ -266,9 +266,19 @@ using Path = System.IO.Path;
             }
         }
 
-        private void UpdateSelectedSight()
+        private async void UpdateSelectedSight()
         {
             Console.WriteLine("Updating sight " + selectedSight.Id + "...");
+            if (AllFilled())
+            {
+                SetSightUpdatedResultLayout(true);
+                AddNewSightToSelectedTour();
+                StateHasChanged();
+                await JsRuntime.InvokeVoidAsync("alert", "New sight successfully added!");
+                SetTourOnMap(SelectedTourIndex, true, false);
+                Console.WriteLine("New marker mode on: " + placeNewSightOnClick);
+                StateHasChanged();
+            }
         }
         
         private async void CreateSelectedSight()
@@ -299,6 +309,26 @@ using Path = System.IO.Path;
         private void AddNewSightToSelectedTour()
         {
             Tours[SelectedTourIndex].Sights.Add(selectedSight);
+        }
+
+        private void UpdateSightOnSelectedTour()
+        {
+            // We find the sight in questions
+            
+        }
+        
+        private void SetSightUpdatedResultLayout(bool succeeded)
+        {
+            if (succeeded)
+            {
+                SightEditSuccessMessage = "Sight succesfully updated!";
+                SightEditErrorMessage = "";
+            }
+            else
+            {
+                SightEditSuccessMessage = "";
+                SightEditErrorMessage = "Failed to update sight!";
+            }
         }
 
         private void SetSightCreatedResultLayout(bool succeeded)
