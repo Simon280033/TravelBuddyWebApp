@@ -16,6 +16,7 @@ using Microsoft.Extensions.Hosting;
 using AuthenticationTest.Areas.Identity;
 using AuthenticationTest.Data;
 using Npgsql;
+using Radzen;
 
 namespace AuthenticationTest
 {
@@ -39,6 +40,7 @@ namespace AuthenticationTest
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddRazorPages();
             services.AddServerSideBlazor();
+            services.AddScoped<DialogService>();
             services
                 .AddScoped<AuthenticationStateProvider,
                     RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
