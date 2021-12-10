@@ -103,6 +103,20 @@ using AuthenticationTest.Data.Entities;
 #line default
 #line hidden
 #nullable disable
+#nullable restore
+#line 4 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\Pages\TourManager.razor"
+using ImageConverter = AuthenticationTest.Data.Converters.Concrete.ImageConverter;
+
+#line default
+#line hidden
+#nullable disable
+#nullable restore
+#line 5 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\Pages\TourManager.razor"
+using AuthenticationTest.Data;
+
+#line default
+#line hidden
+#nullable disable
     [Microsoft.AspNetCore.Components.RouteAttribute("/TourManager")]
     public partial class TourManager : Microsoft.AspNetCore.Components.ComponentBase
     {
@@ -112,8 +126,11 @@ using AuthenticationTest.Data.Entities;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 51 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\Pages\TourManager.razor"
+#line 68 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\Pages\TourManager.razor"
        
+    // Converters
+    private IImageConverter imageConverter = new ImageConverter();
+    
     // Bools for showing/hiding
     private bool hideLanguageChoice = true;
     private bool hideVariantOverview = false;
@@ -326,6 +343,11 @@ using AuthenticationTest.Data.Entities;
         {
             DisableCreatingOrUpdatingTour = true;
         }
+    }
+    
+    private async Task UploadImage(InputFileChangeEventArgs e)
+    {
+        TheTour.ImageBase64 = await imageConverter.UploadedFileToBase64(e.File);
     }
 
 

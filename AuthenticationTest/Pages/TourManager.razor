@@ -1,10 +1,27 @@
 @page "/TourManager"
 @using Radzen
 @using AuthenticationTest.Data.Entities
+@using ImageConverter = AuthenticationTest.Data.Converters.Concrete.ImageConverter
+@using AuthenticationTest.Data
 @inject NavigationManager NavManager
 @inject IJSRuntime JsRuntime
 
 <h3>@HeaderText</h3>
+
+<div class="imageDisplayField">
+    <div>
+        <label >Sight image: </label>
+    </div>
+    <img width="300" height="300" src="data:image/*;base64,@TheTour.ImageBase64"/>
+</div>
+
+<div class="imageUploadField">
+    <div>
+        <label >Upload image: </label>
+    </div>
+    <InputFile id="image-picker" OnChange="@UploadImage" accept="image/*"/>
+</div>
+
 
 <div style="color:red">@MissingInfoErrorMessage</div>
 <div style="color:red">@VariantAddingMessage</div>
@@ -49,6 +66,9 @@
 <button type="button" disabled="@DisableCreatingOrUpdatingTour" @onclick="() => CreateOrUpdateTour()">@CreateOrUpdateButtonText</button>
 
 @code {
+    // Converters
+    private IImageConverter imageConverter = new ImageConverter();
+    
     // Bools for showing/hiding
     private bool hideLanguageChoice = true;
     private bool hideVariantOverview = false;
@@ -261,6 +281,11 @@
         {
             DisableCreatingOrUpdatingTour = true;
         }
+    }
+    
+    private async Task UploadImage(InputFileChangeEventArgs e)
+    {
+        TheTour.ImageBase64 = await imageConverter.UploadedFileToBase64(e.File);
     }
 
 }
