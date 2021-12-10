@@ -35,7 +35,7 @@ namespace AuthenticationTest.Data.Seeders
                     Language = new Language
                     {
                         LanguageCode = "DA",
-                        LanguageName = "Dansk"
+                        LanguageName = "Danish"
                     },
                     TourName = "Tur " + i,
                     TourDescription = "Beskrivelse " + i

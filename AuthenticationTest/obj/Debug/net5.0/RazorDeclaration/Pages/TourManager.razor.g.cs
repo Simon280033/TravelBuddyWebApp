@@ -13,105 +13,105 @@ namespace AuthenticationTest.Pages
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Components;
 #nullable restore
-#line 1 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\_Imports.razor"
+#line 1 "C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\_Imports.razor"
 using System.Net.Http;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 2 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\_Imports.razor"
+#line 2 "C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\_Imports.razor"
 using Microsoft.AspNetCore.Authorization;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 3 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\_Imports.razor"
+#line 3 "C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\_Imports.razor"
 using Microsoft.AspNetCore.Components.Authorization;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 4 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\_Imports.razor"
+#line 4 "C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\_Imports.razor"
 using Microsoft.AspNetCore.Components.Forms;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 5 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\_Imports.razor"
+#line 5 "C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\_Imports.razor"
 using Microsoft.AspNetCore.Components.Routing;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 6 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\_Imports.razor"
+#line 6 "C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\_Imports.razor"
 using Microsoft.AspNetCore.Components.Web;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 7 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\_Imports.razor"
+#line 7 "C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\_Imports.razor"
 using Microsoft.AspNetCore.Components.Web.Virtualization;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 8 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\_Imports.razor"
+#line 8 "C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\_Imports.razor"
 using Microsoft.JSInterop;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 9 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\_Imports.razor"
+#line 9 "C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\_Imports.razor"
 using AuthenticationTest;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 10 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\_Imports.razor"
+#line 10 "C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\_Imports.razor"
 using AuthenticationTest.Shared;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 11 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\_Imports.razor"
+#line 11 "C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\_Imports.razor"
 using Radzen.Blazor;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 2 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\Pages\TourManager.razor"
+#line 2 "C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\Pages\TourManager.razor"
 using Radzen;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 3 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\Pages\TourManager.razor"
+#line 3 "C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\Pages\TourManager.razor"
 using AuthenticationTest.Data.Entities;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 4 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\Pages\TourManager.razor"
+#line 4 "C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\Pages\TourManager.razor"
 using ImageConverter = AuthenticationTest.Data.Converters.Concrete.ImageConverter;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 5 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\Pages\TourManager.razor"
+#line 5 "C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\Pages\TourManager.razor"
 using AuthenticationTest.Data;
 
 #line default
@@ -126,12 +126,13 @@ using AuthenticationTest.Data;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 69 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\Pages\TourManager.razor"
+#line 70 "C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\Pages\TourManager.razor"
        
     // Converters
     private IImageConverter imageConverter = new ImageConverter();
     
     // Bools for showing/hiding
+    private bool Creating = true;
     private bool hideLanguageChoice = true;
     private bool hideVariantOverview = false;
     private bool disableAddingNewVariants = false;
@@ -152,6 +153,21 @@ using AuthenticationTest.Data;
     {
         Languages = _daoFetcher.LanguageDao().GetLanguages();
         
+        // We set the layout depending on whether we are creating a new Tour or editing one
+        Creating = TourToEdit.Id == 0;
+
+        if (Creating)
+        {
+            SetLayoutForCreating();
+        }
+        else
+        {
+            setLayoutForEditing();
+        }
+    }
+
+    private void SetLayoutForCreating()
+    {
         selectedTourLanguageCode = Languages[0].LanguageCode;
         
         TheTour = new Tour
@@ -162,17 +178,49 @@ using AuthenticationTest.Data;
             CompanyId = 0,
             Sights = null
         };
+        
+        CreateOrUpdateButtonText = "Create Tour with language variants";
+        HeaderText = "Create new tour";
+    }
 
-        if (TheTour.Id == 0)
+    private void setLayoutForEditing()
+    {
+        TheTour = new Tour
         {
-            CreateOrUpdateButtonText = "Create Tour with language variants";
-            HeaderText = "Create new tour";
-        }
-        else
+            Variants = TourToEdit.Variants,
+            Id = TourToEdit.Id,
+            ImageBase64 = TourToEdit.ImageBase64,
+            CompanyId = TourToEdit.CompanyId,
+            Sights = TourToEdit.Sights
+        };
+        
+        // We remove the languages already added
+        int removed = 0;
+        List<int> indexesToRemove = new List<int>();
+        foreach (TourVariant variant in TheTour.Variants)
         {
-            CreateOrUpdateButtonText = "Update Tour and language variants";
-            HeaderText = "Update tour";
+            for (int i = 0; i < Languages.Count; i++)
+            {
+                if (Languages[i].LanguageCode.Equals(variant.Language.LanguageCode))
+                {
+                    indexesToRemove.Add(i);
+                }
+            }
         }
+
+        for (int i = 0; i < indexesToRemove.Count; i++)
+        {
+            Languages.Remove(Languages[indexesToRemove[i]-removed]);
+            removed++;
+        }
+
+        // We set the default language
+        selectedTourLanguageCode = TheTour.Variants[0].Language.LanguageCode;
+        
+        CreateOrUpdateButtonText = "Update Tour and language variants";
+        HeaderText = "Update tour '" + TheTour.Variants[0].TourName + "'";
+
+        DisableCreatingOrUpdatingTour = false;
     }
 
     private Language GetLanguageByCode(string code)
@@ -236,9 +284,16 @@ using AuthenticationTest.Data;
 
     private void TourLanguageChanged(ChangeEventArgs e)
     {
-        // We set it as the selected
-        Language languageChosen = (Language) e.Value;
-        selectedTourLanguageCode = languageChosen.LanguageCode;
+        string languageName = (string) e.Value;
+        foreach (Language language in Languages)
+        {
+            if (language.LanguageName.Equals(languageName))
+            {
+                // We set it as the selected
+                selectedTourLanguageCode = language.LanguageCode;
+                break;
+            }
+        }
     }
 
     private void CreateOrUpdateTour()
@@ -340,6 +395,7 @@ using AuthenticationTest.Data;
 #line default
 #line hidden
 #nullable disable
+        [global::Microsoft.AspNetCore.Components.InjectAttribute] private Tour TourToEdit { get; set; }
         [global::Microsoft.AspNetCore.Components.InjectAttribute] private IJSRuntime JsRuntime { get; set; }
         [global::Microsoft.AspNetCore.Components.InjectAttribute] private NavigationManager NavManager { get; set; }
         [global::Microsoft.AspNetCore.Components.InjectAttribute] private IDAOFetcher _daoFetcher { get; set; }

@@ -224,3 +224,5 @@ C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\bin\Debug\net
 C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\bin\Debug\net5.0\runtimes\win\lib\netcoreapp3.1\System.Drawing.Common.dll
 C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\obj\Debug\net5.0\RazorDeclaration\Pages\TourManager.razor.g.cs
 C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\obj\Debug\net5.0\Razor\Pages\TourManager.razor.g.cs
+C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\obj\Debug\net5.0\RazorDeclaration\Pages\TourManager.razor.g.cs
+C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\obj\Debug\net5.0\Razor\Pages\TourManager.razor.g.cs

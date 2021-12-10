@@ -6,6 +6,7 @@
 @inject IDAOFetcher _daoFetcher
 @inject NavigationManager NavManager
 @inject IJSRuntime JsRuntime
+@inject Tour TourToEdit
 
 <h3>@HeaderText</h3>
 
@@ -71,6 +72,7 @@
     private IImageConverter imageConverter = new ImageConverter();
     
     // Bools for showing/hiding
+    private bool Creating = true;
     private bool hideLanguageChoice = true;
     private bool hideVariantOverview = false;
     private bool disableAddingNewVariants = false;
@@ -91,6 +93,21 @@
     {
         Languages = _daoFetcher.LanguageDao().GetLanguages();
         
+        // We set the layout depending on whether we are creating a new Tour or editing one
+        Creating = TourToEdit.Id == 0;
+
+        if (Creating)
+        {
+            SetLayoutForCreating();
+        }
+        else
+        {
+            setLayoutForEditing();
+        }
+    }
+
+    private void SetLayoutForCreating()
+    {
         selectedTourLanguageCode = Languages[0].LanguageCode;
         
         TheTour = new Tour
@@ -101,17 +118,49 @@
             CompanyId = 0,
             Sights = null
         };
+        
+        CreateOrUpdateButtonText = "Create Tour with language variants";
+        HeaderText = "Create new tour";
+    }
 
-        if (TheTour.Id == 0)
+    private void setLayoutForEditing()
+    {
+        TheTour = new Tour
         {
-            CreateOrUpdateButtonText = "Create Tour with language variants";
-            HeaderText = "Create new tour";
-        }
-        else
+            Variants = TourToEdit.Variants,
+            Id = TourToEdit.Id,
+            ImageBase64 = TourToEdit.ImageBase64,
+            CompanyId = TourToEdit.CompanyId,
+            Sights = TourToEdit.Sights
+        };
+        
+        // We remove the languages already added
+        int removed = 0;
+        List<int> indexesToRemove = new List<int>();
+        foreach (TourVariant variant in TheTour.Variants)
         {
-            CreateOrUpdateButtonText = "Update Tour and language variants";
-            HeaderText = "Update tour";
+            for (int i = 0; i < Languages.Count; i++)
+            {
+                if (Languages[i].LanguageCode.Equals(variant.Language.LanguageCode))
+                {
+                    indexesToRemove.Add(i);
+                }
+            }
         }
+
+        for (int i = 0; i < indexesToRemove.Count; i++)
+        {
+            Languages.Remove(Languages[indexesToRemove[i]-removed]);
+            removed++;
+        }
+
+        // We set the default language
+        selectedTourLanguageCode = TheTour.Variants[0].Language.LanguageCode;
+        
+        CreateOrUpdateButtonText = "Update Tour and language variants";
+        HeaderText = "Update tour '" + TheTour.Variants[0].TourName + "'";
+
+        DisableCreatingOrUpdatingTour = false;
     }
 
     private Language GetLanguageByCode(string code)
@@ -175,9 +224,16 @@
 
     private void TourLanguageChanged(ChangeEventArgs e)
     {
-        // We set it as the selected
-        Language languageChosen = (Language) e.Value;
-        selectedTourLanguageCode = languageChosen.LanguageCode;
+        string languageName = (string) e.Value;
+        foreach (Language language in Languages)
+        {
+            if (language.LanguageName.Equals(languageName))
+            {
+                // We set it as the selected
+                selectedTourLanguageCode = language.LanguageCode;
+                break;
+            }
+        }
     }
 
     private void CreateOrUpdateTour()
@@ -191,8 +247,8 @@
         {
             MissingInfoErrorMessage = "";
         }
-        // If the Tour ID is 0, we are creating
-        if (TheTour.Id == 0)
+        
+        if (Creating)
         {
             CreateTour();
         }
@@ -204,13 +260,14 @@
 
     private async void CreateTour()
     {
-        await JsRuntime.InvokeVoidAsync("alert", "Tour succesfully created! Navigating to Sight Manager...");
+        await JsRuntime.InvokeVoidAsync("alert", "Tour '" + TheTour.Variants[0].TourName + "' succesfully created! Navigating to Sight Manager...");
         NavManager.NavigateTo("Counter");
     }
 
-    private void UpdateTour()
+    private async void UpdateTour()
     {
-        
+        await JsRuntime.InvokeVoidAsync("alert", "Tour '" + TheTour.Variants[0].TourName + "' succesfully updated! Navigating to Sight Manager...");
+        NavManager.NavigateTo("Counter");
     }
 
     private bool AllFilled()

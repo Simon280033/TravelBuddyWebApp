@@ -15,6 +15,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using AuthenticationTest.Areas.Identity;
 using AuthenticationTest.Data;
+using AuthenticationTest.Data.Entities;
 using Npgsql;
 using Radzen;
 
@@ -49,6 +50,7 @@ namespace AuthenticationTest
             // We create a universal Connection
             NpgsqlConnection conn = new NpgsqlConnection(Configuration.GetConnectionString("DefaultConnection"));
             services.AddSingleton<IDAOFetcher>(new DAOFetcher(conn));
+            services.AddSingleton<Tour>(new Tour());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

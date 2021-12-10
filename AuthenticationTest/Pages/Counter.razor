@@ -8,11 +8,14 @@
 @using System.Media
 @using AuthenticationTest.Data.Converters.Concrete
 @using AuthenticationTest.Data.Seeders
+@using Humanizer
 @using Microsoft.EntityFrameworkCore.Diagnostics
     @using ImageConverter = AuthenticationTest.Data.Converters.Concrete.ImageConverter
     @using Path = System.IO.Path
     
+    @inject NavigationManager NavManager
     @inject IJSRuntime JsRuntime
+    @inject Tour TourToEdit
 
     <ul>
         @foreach (Tour tour in Tours)
@@ -26,7 +29,7 @@
                         <option>@language</option>
                     }
                 </select>
-                <button type="button" disabled="@isTheTourOnTheIndexNotSelected[Tours.IndexOf(tour)]">Edit tour</button>
+                <button type="button" @onclick="() => EditTour()" disabled="@isTheTourOnTheIndexNotSelected[Tours.IndexOf(tour)]">Edit tour</button>
                 <button type="button" @onclick="() => SetTourOnMap(tour.Id, true, true)">Manage sights</button>
             </li>
         }
@@ -685,6 +688,14 @@
             Console.WriteLine("Updated");
         }
 
-
-        
+        private void EditTour()
+        {
+            TourToEdit.Id = Tours[SelectedTourIndex].Id;
+            TourToEdit.CompanyId = Tours[SelectedTourIndex].CompanyId;
+            TourToEdit.ImageBase64 = Tours[SelectedTourIndex].ImageBase64;
+            TourToEdit.Variants = Tours[SelectedTourIndex].Variants;
+            TourToEdit.Sights = Tours[SelectedTourIndex].Sights;
+            
+            NavManager.NavigateTo("TourManager");
+        }
     }
