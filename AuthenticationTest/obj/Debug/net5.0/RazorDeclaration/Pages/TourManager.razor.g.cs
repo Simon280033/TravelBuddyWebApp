@@ -126,7 +126,7 @@ using AuthenticationTest.Data;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 68 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\Pages\TourManager.razor"
+#line 69 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\Pages\TourManager.razor"
        
     // Converters
     private IImageConverter imageConverter = new ImageConverter();
@@ -150,23 +150,9 @@ using AuthenticationTest.Data;
 
     protected override async Task OnInitializedAsync()
     {
-        Languages.Add(new Language
-        {
-            LanguageCode = "EN",
-            LanguageName = "English"
-        });
-        Languages.Add(new Language
-        {
-            LanguageCode = "DA",
-            LanguageName = "Danish"
-        });
-        Languages.Add(new Language
-        {
-            LanguageCode = "DE",
-            LanguageName = "Deutsch"
-        });
-
-        selectedTourLanguageCode = "EN";
+        Languages = _daoFetcher.LanguageDao().GetLanguages();
+        
+        selectedTourLanguageCode = Languages[0].LanguageCode;
         
         TheTour = new Tour
         {
@@ -356,6 +342,7 @@ using AuthenticationTest.Data;
 #nullable disable
         [global::Microsoft.AspNetCore.Components.InjectAttribute] private IJSRuntime JsRuntime { get; set; }
         [global::Microsoft.AspNetCore.Components.InjectAttribute] private NavigationManager NavManager { get; set; }
+        [global::Microsoft.AspNetCore.Components.InjectAttribute] private IDAOFetcher _daoFetcher { get; set; }
     }
 }
 #pragma warning restore 1591

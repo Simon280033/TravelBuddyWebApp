@@ -3,6 +3,7 @@
 @using AuthenticationTest.Data.Entities
 @using ImageConverter = AuthenticationTest.Data.Converters.Concrete.ImageConverter
 @using AuthenticationTest.Data
+@inject IDAOFetcher _daoFetcher
 @inject NavigationManager NavManager
 @inject IJSRuntime JsRuntime
 
@@ -88,23 +89,9 @@
 
     protected override async Task OnInitializedAsync()
     {
-        Languages.Add(new Language
-        {
-            LanguageCode = "EN",
-            LanguageName = "English"
-        });
-        Languages.Add(new Language
-        {
-            LanguageCode = "DA",
-            LanguageName = "Danish"
-        });
-        Languages.Add(new Language
-        {
-            LanguageCode = "DE",
-            LanguageName = "Deutsch"
-        });
-
-        selectedTourLanguageCode = "EN";
+        Languages = _daoFetcher.LanguageDao().GetLanguages();
+        
+        selectedTourLanguageCode = Languages[0].LanguageCode;
         
         TheTour = new Tour
         {
