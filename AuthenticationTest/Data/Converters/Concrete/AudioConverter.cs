@@ -11,10 +11,10 @@ namespace AuthenticationTest.Data.Converters.Concrete
 
         public async Task<string> UploadedFileToBase64String(IBrowserFile file)
         {
-            IBrowserFile imgFile = file;
-            var buffers = new byte[imgFile.Size];
-            await imgFile.OpenReadStream().ReadAsync(buffers);
-            string imageType = imgFile.ContentType;
+            IBrowserFile audioFile = file;
+            var buffers = new byte[audioFile.Size];
+            await audioFile.OpenReadStream().ReadAsync(buffers);
+            string fileType = audioFile.ContentType;
 
             return Convert.ToBase64String(buffers);
             // Below includes info for playing (doesn't work dynamically)

@@ -271,12 +271,11 @@ using Path = System.IO.Path;
             Console.WriteLine("Updating sight " + selectedSight.Id + "...");
             if (AllFilled())
             {
+                UpdateSightOnSelectedTour();
                 SetSightUpdatedResultLayout(true);
-                AddNewSightToSelectedTour();
-                StateHasChanged();
-                await JsRuntime.InvokeVoidAsync("alert", "New sight successfully added!");
-                SetTourOnMap(SelectedTourIndex, true, false);
+                await JsRuntime.InvokeVoidAsync("alert", "Sight succesfully updated!");
                 Console.WriteLine("New marker mode on: " + placeNewSightOnClick);
+                SetTourOnMap(SelectedTourIndex, true, false);
                 StateHasChanged();
             }
         }
@@ -314,7 +313,36 @@ using Path = System.IO.Path;
         private void UpdateSightOnSelectedTour()
         {
             // We find the sight in questions
-            
+            int indexOfSightVariant = 0;
+            int indexOfSight = 0;
+            for (int i = 0; i < Tours[SelectedTourIndex].Sights.Count; i++)
+            {
+                if (Tours[SelectedTourIndex].Sights[i].Id == selectedSight.Id)
+                {
+                    indexOfSight = i;
+                    // We find the right variant
+                    for (int j = 0; j < Tours[SelectedTourIndex].Sights[i].Variants.Count; j++)
+                    {
+                        if (Tours[SelectedTourIndex].Sights[i].Variants[j].Language.LanguageCode.Equals(selectedTourLanguageCode))
+                        {
+                            indexOfSightVariant = j;
+                            break;
+                        }
+                    }
+                }
+            }
+            // We find the variant index in the selected sight
+            int selectedSightVariantIndex = 0;
+            for (int i = 0; i < selectedSight.Variants.Count; i++)
+            {
+                if (selectedSight.Variants[i].Language.LanguageCode.Equals(selectedTourLanguageCode))
+                {
+                    selectedSightVariantIndex = i;
+                    break;
+                }
+            }
+            // We set that one to the new values
+            Tours[SelectedTourIndex].Sights[indexOfSight].Variants[indexOfSightVariant] = selectedSight.Variants[selectedSightVariantIndex];
         }
         
         private void SetSightUpdatedResultLayout(bool succeeded)
@@ -350,14 +378,14 @@ using Path = System.IO.Path;
             Console.WriteLine("Checking if all the neccessary information is filled...");
             bool allFilled = true;
 
-            if (!(selectedSight.Latitude > 0))
+            if (!(selectedSight.Latitude is >= -90 and <= 90))
             {
                 Console.WriteLine("Latitude information not filled!");
                 SightEditErrorMessage = "Latitude information not filled!";
                 return false;
             }
             
-            if (!(selectedSight.Longitude > 0))
+            if (!(selectedSight.Longitude is >= -180 and <= 180))
             {
                 Console.WriteLine("Longitude information not filled!");
                 SightEditErrorMessage = "Longitude information not filled!";
