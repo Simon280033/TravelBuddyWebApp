@@ -159,7 +159,6 @@ using Microsoft.EntityFrameworkCore;
     protected override async Task OnInitializedAsync()
     {
         ifAuthenticated();
-        test();
         testTourFetcher();
     }
 
@@ -173,17 +172,11 @@ using Microsoft.EntityFrameworkCore;
             // We check if company details are tied to user
             bool isTied = _daoFetcher.CompanyDao().userTiedToCompany(auth.GetAuthenticationStateAsync().Result.User.Identity.Name);
         
-            Console.WriteLine("Is tied to company: " + isTied);
+            Console.WriteLine("Name: " + auth.GetAuthenticationStateAsync().Result.User.Identity.Name);
+            
             
             // If not tied, redirect to page where they can create company and tie it to user
         }
-    }
-
-    public void test()
-    {
-        _daoFetcher.CompanyDao().getCompanyById(1);
-        
-        Console.WriteLine(_daoFetcher.CompanyDao().getCustomers().Count);
     }
 
     public void testTourFetcher()

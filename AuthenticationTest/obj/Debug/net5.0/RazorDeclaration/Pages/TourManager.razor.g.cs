@@ -126,7 +126,7 @@ using AuthenticationTest.Data;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 70 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\Pages\TourManager.razor"
+#line 71 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\Pages\TourManager.razor"
        
     // Converters
     private IImageConverter imageConverter = new ImageConverter();
@@ -320,6 +320,10 @@ using AuthenticationTest.Data;
 
     private async void CreateTour()
     {
+        // We set the company id for the tour
+        TheTour.CompanyId = _daoFetcher.CompanyDao().getCompanyForUserById(auth.GetAuthenticationStateAsync().Result.User.Identity.Name).id;
+        Console.WriteLine("Company ID: " + TheTour.CompanyId);
+        _daoFetcher.TourDao().createTour(TheTour);
         await JsRuntime.InvokeVoidAsync("alert", "Tour '" + TheTour.Variants[0].TourName + "' succesfully created! Navigating to Sight Manager...");
         NavManager.NavigateTo("Counter");
     }
@@ -396,6 +400,7 @@ using AuthenticationTest.Data;
 #line default
 #line hidden
 #nullable disable
+        [global::Microsoft.AspNetCore.Components.InjectAttribute] private AuthenticationStateProvider auth { get; set; }
         [global::Microsoft.AspNetCore.Components.InjectAttribute] private Tour TourToEdit { get; set; }
         [global::Microsoft.AspNetCore.Components.InjectAttribute] private IJSRuntime JsRuntime { get; set; }
         [global::Microsoft.AspNetCore.Components.InjectAttribute] private NavigationManager NavManager { get; set; }

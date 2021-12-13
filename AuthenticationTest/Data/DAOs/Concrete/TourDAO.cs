@@ -163,32 +163,46 @@ namespace AuthenticationTest.Data
                 // We add the tour itself
                 command.CommandText = "INSERT INTO travelbuddy.Tours VALUES(DEFAULT, @companyId, @imageBase64);";
                 command.Connection = conn;
-                conn.Open();
                 command.Parameters.AddWithValue("companyId", tour.CompanyId);
                 command.Parameters.AddWithValue("imageBase64", tour.ImageBase64);
                 command.Prepare();
                 command.ExecuteNonQuery();
                 command.Cancel();
+                command.Dispose();
+                conn.Close();
                 Console.WriteLine("Created tour! Attempting to create " + tour.Variants.Count + " variants...");
-                // We then add any variants
+            }
+            // We then add any variants
                 for (int i = 0; i < tour.Variants.Count; i++)
                 {
-                    // We get the highest ID for the customer, as this will be the newliest created
-                    command.CommandText = "INSERT INTO travelbuddy.Tour_variants VALUES((SELECT tour_id FROM travelbuddy.tours WHERE company_id = @companyId ORDER BY tour_id DESC LIMIT 1)), @languageCode, @tourName, @tourDescription);";
-                    command.Connection = conn;
+                    CreateVariant(tour.CompanyId, tour.Variants[i]);
+                }
+                conn.Close();
+                Console.WriteLine("Successfully created tour!");
+        }
+
+        private void CreateVariant(int companyId, TourVariant variant)
+        {
+                using (NpgsqlCommand command = new NpgsqlCommand())
+                {
                     conn.Open();
-                    command.Parameters.AddWithValue("companyId", tour.CompanyId);
-                    command.Parameters.AddWithValue("languageCode", tour.Variants[i].Language.LanguageCode);
-                    command.Parameters.AddWithValue("tourName", tour.Variants[i].TourName);
-                    command.Parameters.AddWithValue("tourDescription", tour.Variants[i].TourDescription);
+                    // We get the highest ID for the customer, as this will be the newliest created
+                    command.CommandText =
+                        "INSERT INTO travelbuddy.Tour_variants VALUES((SELECT tour_id FROM travelbuddy.tours WHERE company_id = @companyId ORDER BY tour_id DESC LIMIT 1), @languageCode, @tourName, @tourDescription);";
+                    command.Connection = conn;
+                    command.Parameters.AddWithValue("companyId", companyId);
+                    command.Parameters.AddWithValue("languageCode", variant.Language.LanguageCode);
+                    command.Parameters.AddWithValue("tourName", variant.TourName);
+                    command.Parameters.AddWithValue("tourDescription", variant.TourDescription);
                     command.Prepare();
                     command.ExecuteNonQuery();
                     command.Cancel();
-                    Console.WriteLine("Created variant for language '" + tour.Variants[i].Language.LanguageName + "'!");
+                    command.Dispose();
+                    conn.Close();
+                    Console.WriteLine("Created variant for language '" + variant.Language.LanguageName +
+                                      "'!");
                 }
                 conn.Close();
-            }
-            Console.WriteLine("Successfully created tour!");
         }
 
         public void updateTour(Tour tour)
@@ -264,7 +278,6 @@ namespace AuthenticationTest.Data
                     if (!newVariants.Contains(code))
                     {
                         Console.WriteLine("Attempting to delete variant for language '" + code + "'...");
-                        // WE NEED TO ADD ON DELETE CASCADE
                         command.CommandText = "DELETE travelbuddy.Tour_variants WHERE tour_id = @tourId AND language_code = @languageCode;";
                         command.Connection = conn;
                         command.Parameters.AddWithValue("tourId", tour.Id);

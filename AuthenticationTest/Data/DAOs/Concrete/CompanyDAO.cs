@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using AuthenticationTest.Data.Entities;
 using Npgsql;
 
 namespace AuthenticationTest.Data
@@ -60,24 +61,39 @@ namespace AuthenticationTest.Data
             }
         }
         
-        public void getCompanyById(int id)
+        public Company getCompanyForUserById(string id)
         {
             using (NpgsqlCommand command = new NpgsqlCommand())
             {
-                command.CommandText = "SELECT * FROM travelbuddy.Companies WHERE company_id = @companyId;";
-                command.Parameters.AddWithValue("companyId", id);
+                command.CommandText = "SELECT * FROM " + 
+                "travelbuddy.companies " +
+                    "LEFT JOIN " +
+                "travelbuddy.aspnet_user_company_relations " +
+                    "ON " +
+                "travelbuddy.aspnet_user_company_relations.company_id = travelbuddy.companies.company_id " +
+                "WHERE " +
+                "travelbuddy.aspnet_user_company_relations.AspNetUser_name = (SELECT \"Id\" FROM public.\"AspNetUsers\" WHERE \"Email\" = @email);";
+                command.Parameters.AddWithValue("email", id);
                 command.Connection = conn;
                 conn.Open();
-                List<string> customers = new List<string>();
                 using (NpgsqlDataReader sdr = command.ExecuteReader())
                 {
                     while (sdr.Read())
                     {
-                        Console.WriteLine(sdr["company_name"].ToString());
+                        Company company = new Company
+                        {
+                            id = (int) Int32.Parse(sdr["company_id"].ToString()),
+                            address = sdr["address"].ToString(),
+                            email = sdr["email"].ToString(),
+                            name = sdr["company_name"].ToString(),
+                            phone = sdr["phone"].ToString()
+                        };
+                        return company;
                     }
                 }
                 conn.Close();
             }
+            return null;
         }
     }
 }

@@ -7,6 +7,7 @@
 @inject NavigationManager NavManager
 @inject IJSRuntime JsRuntime
 @inject Tour TourToEdit
+@inject AuthenticationStateProvider auth
 
 <h3>@HeaderText</h3>
 
@@ -260,6 +261,10 @@
 
     private async void CreateTour()
     {
+        // We set the company id for the tour
+        TheTour.CompanyId = _daoFetcher.CompanyDao().getCompanyForUserById(auth.GetAuthenticationStateAsync().Result.User.Identity.Name).id;
+        Console.WriteLine("Company ID: " + TheTour.CompanyId);
+        _daoFetcher.TourDao().createTour(TheTour);
         await JsRuntime.InvokeVoidAsync("alert", "Tour '" + TheTour.Variants[0].TourName + "' succesfully created! Navigating to Sight Manager...");
         NavManager.NavigateTo("Counter");
     }
