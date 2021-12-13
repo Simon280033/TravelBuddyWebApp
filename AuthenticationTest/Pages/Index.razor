@@ -22,7 +22,6 @@ Welcome to your new app.
     protected override async Task OnInitializedAsync()
     {
         ifAuthenticated();
-        testTourFetcher();
     }
 
     private void ifAuthenticated()
@@ -40,6 +39,8 @@ Welcome to your new app.
             TheCompany.id = _daoFetcher.CompanyDao().getCompanyForUserById(auth.GetAuthenticationStateAsync().Result.User.Identity.Name).id;
             
             Console.WriteLine("Company id: " + TheCompany.id);
+
+            testTourFetcher();
 
     // If not tied, redirect to page where they can create company and tie it to user
         }
