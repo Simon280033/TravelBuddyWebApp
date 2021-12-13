@@ -157,7 +157,38 @@ namespace AuthenticationTest.Data
 
         public void createTour(Tour tour)
         {
-            throw new System.NotImplementedException();
+            Console.WriteLine("Attempting to create tour...");
+            using (NpgsqlCommand command = new NpgsqlCommand())
+            {
+                // We add the tour itself
+                command.CommandText = "INSERT INTO travelbuddy.Tours VALUES(DEFAULT, @companyId, @imageBase64);";
+                command.Connection = conn;
+                conn.Open();
+                command.Parameters.AddWithValue("companyId", tour.CompanyId);
+                command.Parameters.AddWithValue("imageBase64", tour.ImageBase64);
+                command.Prepare();
+                command.ExecuteNonQuery();
+                command.Cancel();
+                Console.WriteLine("Created tour! Attempting to create " + tour.Variants.Count + " variants...");
+                // We then add any variants
+                for (int i = 0; i < tour.Variants.Count; i++)
+                {
+                    // We get the highest ID for the customer, as this will be the newliest created
+                    command.CommandText = "INSERT INTO travelbuddy.Tour_variants VALUES((SELECT tour_id FROM travelbuddy.tours WHERE company_id = @companyId ORDER BY tour_id DESC LIMIT 1)), @languageCode, @tourName, @tourDescription);";
+                    command.Connection = conn;
+                    conn.Open();
+                    command.Parameters.AddWithValue("companyId", tour.CompanyId);
+                    command.Parameters.AddWithValue("languageCode", tour.Variants[i].Language.LanguageCode);
+                    command.Parameters.AddWithValue("tourName", tour.Variants[i].TourName);
+                    command.Parameters.AddWithValue("tourDescription", tour.Variants[i].TourDescription);
+                    command.Prepare();
+                    command.ExecuteNonQuery();
+                    command.Cancel();
+                    Console.WriteLine("Created variant for language '" + tour.Variants[i].Language.LanguageName + "'!");
+                }
+                conn.Close();
+            }
+            Console.WriteLine("Successfully created tour!");
         }
 
         public void updateTour(Tour tour)
