@@ -41,7 +41,6 @@ namespace AuthenticationTest.Data
                                       "travelbuddy.Tour_variants.language_code = travelbuddy.Sight_variants.language_code;";
                 
                 command.Connection = conn;
-                conn.Open();
                 List<Tour> tours = new List<Tour>();
                 List<int> tourIdsAdded = new List<int>();
                 using (NpgsqlDataReader sdr = command.ExecuteReader())
@@ -291,6 +290,154 @@ namespace AuthenticationTest.Data
                 conn.Close();
             }
             Console.WriteLine("Successfully updated tour!");        
+        }
+
+        public List<Tour> getToursForCompany(int companyId)
+        {
+            using (NpgsqlCommand command = new NpgsqlCommand())
+            {
+                conn.Open();
+                command.CommandText = "SELECT * FROM " +
+                                      "travelbuddy.Tours " +
+                                      "LEFT JOIN " +
+                                      "travelbuddy.Tour_variants " +
+                                      "ON " +
+                                      "travelbuddy.Tours.tour_id = travelbuddy.Tour_variants.tour_id " +
+                                      "LEFT JOIN " +
+                                      "travelbuddy.Sights " +
+                                      "ON " +
+                                      "travelbuddy.Sights.tour_id = travelbuddy.Tours.tour_id " +
+                                      "LEFT JOIN " +
+                                      "travelbuddy.Sight_variants " +
+                                      "ON " +
+                                      "travelbuddy.Sight_variants.sight_id = travelbuddy.Sights.sight_id " +
+                                      "LEFT JOIN " +
+                                      "travelbuddy.Languages " +
+                                      "ON " +
+                                      "travelbuddy.Languages.language_code = travelbuddy.Tour_variants.language_code " +
+                                      "WHERE " +
+                                      "travelbuddy.Tours.company_id = @companyId;";
+                
+                command.Connection = conn;
+                command.Parameters.AddWithValue("companyId", companyId);
+                command.Prepare();
+                List<Tour> tours = new List<Tour>();
+                List<int> tourIdsAdded = new List<int>();
+                using (NpgsqlDataReader sdr = command.ExecuteReader())
+                {
+                    while (sdr.Read())
+                    {
+                        int tourId = (int) Int32.Parse(sdr["tour_id"].ToString());
+                        
+                        // If we haven't already created this tour, we add it
+                        if (!tourIdsAdded.Contains(tourId))
+                        {
+                            Tour tour = new Tour
+                            {
+                                Id = tourId,
+                                CompanyId = (int) Int32.Parse(sdr["company_id"].ToString()),
+                                ImageBase64 = sdr["tour_image"].ToString()
+                            };
+                            // And add it to the lists
+                            tourIdsAdded.Add(tourId);
+                            tours.Add(tour);
+                            Console.WriteLine("Tour " + tourId + " added");
+                        }
+                        
+                        // We get the tour for the row
+                        Tour tourToWork = tours[tourIdsAdded.IndexOf(tourId)];
+                        
+                        // We work from the top
+                        // Language
+                        Language language = new Language
+                        {
+                            LanguageCode = sdr["language_code"].ToString(),
+                            LanguageName = sdr["language_name"].ToString()
+                        };
+                        // Tour variant
+                        // If we haven't already created this tour, we add it
+                        bool tourVariantCreated = false;
+                        foreach (TourVariant variant in tourToWork.Variants)
+                        {
+                            if (variant.Language.LanguageCode.Equals(language.LanguageCode))
+                            {
+                                tourVariantCreated = true;
+                                break;
+                            }
+                        }
+                        
+                        // If the tour variant is not created, we create it
+                        if (!tourVariantCreated)
+                        {
+                            TourVariant variant = new TourVariant
+                            {
+                                Language = language,
+                                TourName = sdr["tour_name"].ToString(),
+                                TourDescription = sdr["tour_description"].ToString()
+                            };
+                            // And add it to the tour
+                            tourToWork.Variants.Add(variant);
+                        }
+                        
+                        // We create the sight variant
+                        SightVariant sightVariant = new SightVariant
+                        {
+                            Language = language,
+                            AudioBase64 = sdr["sight_audio"].ToString(),
+                            AudioFileName = sdr["audio_file_name"].ToString(),
+                            SightDescription = sdr["sight_description"].ToString(),
+                            SightName = sdr["sight_name"].ToString()
+                        };
+                        
+                        // Sight
+                        // If there is no sight, we skip the rest
+                        Console.WriteLine("ID result count: " + sdr["sight_id"].ToString().Length);
+                        if (sdr["sight_id"].ToString().Length > 0)
+                        {
+                        int sightId = (int) Int32.Parse(sdr["sight_id"].ToString());
+                        // If the sight is not already created, we create it
+                        bool sightIsCreated = false;
+                        foreach (Sight sight in tourToWork.Sights)
+                        {
+                            if (sight.Id == sightId)
+                            {
+                                sightIsCreated = true;
+                                break;
+                            }
+                        }
+                        
+                        // If the sight is not created, we do it
+                        if (!sightIsCreated)
+                        {
+                            Sight sight = new Sight
+                            {
+                                Id = sightId,
+                                ImageBase64 = sdr["sight_image"].ToString(),
+                                Latitude = (double) Double.Parse(sdr["latitude"].ToString()),
+                                Longitude = (double) Double.Parse(sdr["longitude"].ToString()),
+                                RadiusInMeters = (int) Int32.Parse(sdr["radius_in_meters"].ToString()),
+                                TourId = tourToWork.Id,
+                                Variants = new List<SightVariant>()
+                            };
+                            // We add the sight to the tour
+                            tourToWork.Sights.Add(sight);
+                        } 
+                        
+                        // We add the sight variant to the right sight
+                        foreach (Sight sight in tourToWork.Sights)
+                        {
+                            if (sight.Id == sightId)
+                            {
+                                sight.Variants.Add(sightVariant);
+                                break;
+                            }
+                        }
+                        }
+                    }
+                }
+                conn.Close();
+                return tours;
+            }
         }
     }
 }

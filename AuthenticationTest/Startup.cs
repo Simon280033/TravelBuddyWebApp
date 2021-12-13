@@ -51,6 +51,7 @@ namespace AuthenticationTest
             NpgsqlConnection conn = new NpgsqlConnection(Configuration.GetConnectionString("DefaultConnection"));
             services.AddSingleton<IDAOFetcher>(new DAOFetcher(conn));
             services.AddSingleton<Tour>(new Tour());
+            services.AddSingleton<Company>(new Company());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

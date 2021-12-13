@@ -10,5 +10,7 @@ namespace AuthenticationTest.Data
         public void createTour(Tour tour);
 
         public void updateTour(Tour tour);
+        
+        public List<Tour> getToursForCompany(int companyId);
     }
 }

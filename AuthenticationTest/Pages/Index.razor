@@ -9,6 +9,7 @@
 @using Microsoft.EntityFrameworkCore
 @inject IDAOFetcher _daoFetcher
 @inject AuthenticationStateProvider auth
+@inject Company TheCompany
 
 <h1>Hello, world!</h1>
 
@@ -35,9 +36,12 @@ Welcome to your new app.
             bool isTied = _daoFetcher.CompanyDao().userTiedToCompany(auth.GetAuthenticationStateAsync().Result.User.Identity.Name);
         
             Console.WriteLine("Name: " + auth.GetAuthenticationStateAsync().Result.User.Identity.Name);
+
+            TheCompany.id = _daoFetcher.CompanyDao().getCompanyForUserById(auth.GetAuthenticationStateAsync().Result.User.Identity.Name).id;
             
-            
-            // If not tied, redirect to page where they can create company and tie it to user
+            Console.WriteLine("Company id: " + TheCompany.id);
+
+    // If not tied, redirect to page where they can create company and tie it to user
         }
     }
 

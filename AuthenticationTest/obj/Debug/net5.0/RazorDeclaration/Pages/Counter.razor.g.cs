@@ -189,7 +189,7 @@ using Path = System.IO.Path;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 126 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\Pages\Counter.razor"
+#line 128 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\Pages\Counter.razor"
            
         // Converters
         private IImageConverter imageConverter = new ImageConverter();
@@ -514,7 +514,13 @@ using Path = System.IO.Path;
 
         private void GetToursForCompany(int tourId)
         {
-            MockSeedTours();
+            // Fake tours
+            // MockSeedTours();
+            
+            // Get from DB for user
+            Tours = _daoFetcher.TourDao().getToursForCompany(TheCompany.id);
+            
+            Console.WriteLine("Tours found: " + Tours.Count);
             
             for (int j = 0; j < Tours.Count; j++)
             {
@@ -566,11 +572,26 @@ using Path = System.IO.Path;
                     // And the index
                     SelectedTourIndex = i;
                     // We set the list for bools
-                    for (int j = 0; j < Tours.Count; j++)
+                    if (Tours.Count == 1)
                     {
-                        isTheTourOnTheIndexNotSelected[j] = !(Tours[j].Id == SelectedTourIndex);
+                        isTheTourOnTheIndexNotSelected[0] = false;
+                        break;
                     }
-                    break;
+                    else
+                    {
+                        for (int j = 0; j < Tours.Count; j++)
+                        {
+                            if (SelectedTourIndex == j)
+                            {
+                                isTheTourOnTheIndexNotSelected[j] = false;
+                            }
+                            else
+                            {
+                                isTheTourOnTheIndexNotSelected[j] = true;
+                            }
+                        }
+                        break;
+                    }
                 }
             }
             
@@ -770,6 +791,8 @@ using Path = System.IO.Path;
 #line default
 #line hidden
 #nullable disable
+        [global::Microsoft.AspNetCore.Components.InjectAttribute] private Company TheCompany { get; set; }
+        [global::Microsoft.AspNetCore.Components.InjectAttribute] private IDAOFetcher _daoFetcher { get; set; }
         [global::Microsoft.AspNetCore.Components.InjectAttribute] private Tour TourToEdit { get; set; }
         [global::Microsoft.AspNetCore.Components.InjectAttribute] private IJSRuntime JsRuntime { get; set; }
         [global::Microsoft.AspNetCore.Components.InjectAttribute] private NavigationManager NavManager { get; set; }

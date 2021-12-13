@@ -16,6 +16,8 @@
     @inject NavigationManager NavManager
     @inject IJSRuntime JsRuntime
     @inject Tour TourToEdit
+    @inject IDAOFetcher _daoFetcher
+    @inject Company TheCompany
 
     <ul>
         @foreach (Tour tour in Tours)
@@ -447,7 +449,13 @@
 
         private void GetToursForCompany(int tourId)
         {
-            MockSeedTours();
+            // Fake tours
+            // MockSeedTours();
+            
+            // Get from DB for user
+            Tours = _daoFetcher.TourDao().getToursForCompany(TheCompany.id);
+            
+            Console.WriteLine("Tours found: " + Tours.Count);
             
             for (int j = 0; j < Tours.Count; j++)
             {
@@ -499,11 +507,26 @@
                     // And the index
                     SelectedTourIndex = i;
                     // We set the list for bools
-                    for (int j = 0; j < Tours.Count; j++)
+                    if (Tours.Count == 1)
                     {
-                        isTheTourOnTheIndexNotSelected[j] = !(Tours[j].Id == SelectedTourIndex);
+                        isTheTourOnTheIndexNotSelected[0] = false;
+                        break;
                     }
-                    break;
+                    else
+                    {
+                        for (int j = 0; j < Tours.Count; j++)
+                        {
+                            if (SelectedTourIndex == j)
+                            {
+                                isTheTourOnTheIndexNotSelected[j] = false;
+                            }
+                            else
+                            {
+                                isTheTourOnTheIndexNotSelected[j] = true;
+                            }
+                        }
+                        break;
+                    }
                 }
             }
             

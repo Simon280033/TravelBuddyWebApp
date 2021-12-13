@@ -154,7 +154,7 @@ using Microsoft.EntityFrameworkCore;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 20 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\Pages\Index.razor"
+#line 21 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\Pages\Index.razor"
  
     protected override async Task OnInitializedAsync()
     {
@@ -173,9 +173,12 @@ using Microsoft.EntityFrameworkCore;
             bool isTied = _daoFetcher.CompanyDao().userTiedToCompany(auth.GetAuthenticationStateAsync().Result.User.Identity.Name);
         
             Console.WriteLine("Name: " + auth.GetAuthenticationStateAsync().Result.User.Identity.Name);
+
+            TheCompany.id = _daoFetcher.CompanyDao().getCompanyForUserById(auth.GetAuthenticationStateAsync().Result.User.Identity.Name).id;
             
-            
-            // If not tied, redirect to page where they can create company and tie it to user
+            Console.WriteLine("Company id: " + TheCompany.id);
+
+    // If not tied, redirect to page where they can create company and tie it to user
         }
     }
 
@@ -197,6 +200,7 @@ using Microsoft.EntityFrameworkCore;
 #line default
 #line hidden
 #nullable disable
+        [global::Microsoft.AspNetCore.Components.InjectAttribute] private Company TheCompany { get; set; }
         [global::Microsoft.AspNetCore.Components.InjectAttribute] private AuthenticationStateProvider auth { get; set; }
         [global::Microsoft.AspNetCore.Components.InjectAttribute] private IDAOFetcher _daoFetcher { get; set; }
     }
