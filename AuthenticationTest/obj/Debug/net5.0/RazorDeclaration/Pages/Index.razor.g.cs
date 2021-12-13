@@ -119,20 +119,27 @@ using AuthenticationTest.Data;
 #nullable disable
 #nullable restore
 #line 6 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\Pages\Index.razor"
-using Microsoft.AspNetCore.Http;
+using AuthenticationTest.Data.Entities;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
 #line 7 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\Pages\Index.razor"
-using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Http;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
 #line 8 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\Pages\Index.razor"
+using Microsoft.AspNetCore.Identity;
+
+#line default
+#line hidden
+#nullable disable
+#nullable restore
+#line 9 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\Pages\Index.razor"
 using Microsoft.EntityFrameworkCore;
 
 #line default
@@ -147,12 +154,13 @@ using Microsoft.EntityFrameworkCore;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 19 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\Pages\Index.razor"
+#line 20 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\Pages\Index.razor"
  
     protected override async Task OnInitializedAsync()
     {
         ifAuthenticated();
         test();
+        testTourFetcher();
     }
 
     private void ifAuthenticated()
@@ -176,6 +184,20 @@ using Microsoft.EntityFrameworkCore;
         _daoFetcher.CompanyDao().getCompanyById(1);
         
         Console.WriteLine(_daoFetcher.CompanyDao().getCustomers().Count);
+    }
+
+    public void testTourFetcher()
+    {
+        List<Tour> tours = _daoFetcher.TourDao().getTours();
+        Console.WriteLine("Total tours: " + tours.Count);
+        foreach (Tour tour in tours)
+        {
+            Console.WriteLine("Tour ID: " + tour.Id);
+            Console.WriteLine("Tour variants: " + tour.Variants.Count);
+            Console.WriteLine("Sights: " + tour.Sights.Count);
+            Console.WriteLine("Sight 1 variants: " + tour.Sights[0].Variants.Count);
+        }
+        
     }
 
 

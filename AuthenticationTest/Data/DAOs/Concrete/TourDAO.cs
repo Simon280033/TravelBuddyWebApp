@@ -44,30 +44,28 @@ namespace AuthenticationTest.Data
                 conn.Open();
                 List<Tour> tours = new List<Tour>();
                 List<int> tourIdsAdded = new List<int>();
-                List<Tuple<int, int>> tourIdsAndIndexes = new List<Tuple<int, int>>();
                 using (NpgsqlDataReader sdr = command.ExecuteReader())
                 {
                     while (sdr.Read())
                     {
-                        int tourId = (int) Int32.Parse(sdr["language_code"].ToString());
+                        int tourId = (int) Int32.Parse(sdr["tour_id"].ToString());
                         
                         // If we haven't already created this tour, we add it
                         if (!tourIdsAdded.Contains(tourId))
                         {
                             Tour tour = new Tour
                             {
-                                Id = (int) Int32.Parse(sdr["language_code"].ToString()),
-                                CompanyId = (int) Int32.Parse(sdr["language_code"].ToString()),
-                                ImageBase64 = sdr["language_code"].ToString()
+                                Id = tourId,
+                                CompanyId = (int) Int32.Parse(sdr["company_id"].ToString()),
+                                ImageBase64 = sdr["tour_image"].ToString()
                             };
                             // And add it to the lists
                             tourIdsAdded.Add(tourId);
-                            tourIdsAndIndexes.Add(new Tuple<int, int>(tourId, tourIdsAndIndexes.Count-1));
                             tours.Add(tour);
                         }
                         
                         // We get the tour for the row
-                        Tour tourToWork = tours[tourIdsAndIndexes[tourIdsAdded.IndexOf(tourId)].Item2];
+                        Tour tourToWork = tours[tourIdsAdded.IndexOf(tourId)];
                         
                         // We work from the top
                         // Language
@@ -94,8 +92,8 @@ namespace AuthenticationTest.Data
                             TourVariant variant = new TourVariant
                             {
                                 Language = language,
-                                TourName = sdr["language_code"].ToString(),
-                                TourDescription = sdr["language_code"].ToString()
+                                TourName = sdr["tour_name"].ToString(),
+                                TourDescription = sdr["tour_description"].ToString()
                             };
                             // And add it to the tour
                             tourToWork.Variants.Add(variant);
@@ -105,14 +103,14 @@ namespace AuthenticationTest.Data
                         SightVariant sightVariant = new SightVariant
                         {
                             Language = language,
-                            AudioBase64 = sdr["language_code"].ToString(),
-                            AudioFileName = sdr["language_code"].ToString(),
-                            SightDescription = sdr["language_code"].ToString(),
-                            SightName = sdr["language_code"].ToString()
+                            AudioBase64 = sdr["sight_audio"].ToString(),
+                            AudioFileName = sdr["audio_file_name"].ToString(),
+                            SightDescription = sdr["sight_description"].ToString(),
+                            SightName = sdr["sight_name"].ToString()
                         };
                         
                         // Sight
-                        int sightId = (int) Int32.Parse(sdr["language_code"].ToString());
+                        int sightId = (int) Int32.Parse(sdr["sight_id"].ToString());
                         // If the sight is not already created, we create it
                         bool sightIsCreated = false;
                         foreach (Sight sight in tourToWork.Sights)
@@ -129,14 +127,16 @@ namespace AuthenticationTest.Data
                         {
                             Sight sight = new Sight
                             {
-                                Id = (int) Int32.Parse(sdr["language_code"].ToString()),
-                                ImageBase64 = sdr["language_code"].ToString(),
-                                Latitude = (double) Double.Parse(sdr["language_code"].ToString()),
-                                Longitude = (double) Double.Parse(sdr["language_code"].ToString()),
-                                RadiusInMeters = (int) Int32.Parse(sdr["language_code"].ToString()),
+                                Id = sightId,
+                                ImageBase64 = sdr["sight_image"].ToString(),
+                                Latitude = (double) Double.Parse(sdr["latitude"].ToString()),
+                                Longitude = (double) Double.Parse(sdr["longitude"].ToString()),
+                                RadiusInMeters = (int) Int32.Parse(sdr["radius_in_meters"].ToString()),
                                 TourId = tourToWork.Id,
                                 Variants = new List<SightVariant>()
                             };
+                            // We add the sight to the tour
+                            tourToWork.Sights.Add(sight);
                         } 
                         
                         // We add the sight variant to the right sight

@@ -3,6 +3,7 @@
 @using System.Data
 @using AuthenticationTest.Areas.Identity
 @using AuthenticationTest.Data
+@using AuthenticationTest.Data.Entities
 @using Microsoft.AspNetCore.Http
 @using Microsoft.AspNetCore.Identity
 @using Microsoft.EntityFrameworkCore
@@ -21,6 +22,7 @@ Welcome to your new app.
     {
         ifAuthenticated();
         test();
+        testTourFetcher();
     }
 
     private void ifAuthenticated()
@@ -44,6 +46,20 @@ Welcome to your new app.
         _daoFetcher.CompanyDao().getCompanyById(1);
         
         Console.WriteLine(_daoFetcher.CompanyDao().getCustomers().Count);
+    }
+
+    public void testTourFetcher()
+    {
+        List<Tour> tours = _daoFetcher.TourDao().getTours();
+        Console.WriteLine("Total tours: " + tours.Count);
+        foreach (Tour tour in tours)
+        {
+            Console.WriteLine("Tour ID: " + tour.Id);
+            Console.WriteLine("Tour variants: " + tour.Variants.Count);
+            Console.WriteLine("Sights: " + tour.Sights.Count);
+            Console.WriteLine("Sight 1 variants: " + tour.Sights[0].Variants.Count);
+        }
+        
     }
 
 }
