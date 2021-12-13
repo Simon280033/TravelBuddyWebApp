@@ -41,7 +41,7 @@
 
     <div class="row">
         <div class="col-xl-6">
-            <RadzenGoogleMap @ref="MyMap" style="height: 600px;" Zoom="@zoom" ZoomControl="false" Data="@Markers" Center="@(new GoogleMapPosition() { Lat = @lat, Lng = @lng })" MapClick="@onMapClick" MarkerClick="@onMarkerClick"/>
+            <RadzenGoogleMap @ref="MyMap" style="height: 600px;" Zoom="@zoom" ZoomControl="true" Data="@Markers" Center="@(new GoogleMapPosition() { Lat = @lat, Lng = @lng })" MapClick="@onMapClick" MarkerClick="@onMarkerClick"/>
             <button @onclick="TogglePlaceNewSightOnClick" hidden="@hideAddMarkerButton">@mapButtonText</button>
             <div>@interactionMessage</div>
         </div>
@@ -565,6 +565,7 @@
 
         private void onMapClick(GoogleMapClickEventArgs args)
         {
+            Console.WriteLine("Zoom: " + MyMap.Zoom);
             if (!placeNewSightOnClick)
             {
                 mapButtonText = "Place new sight";

@@ -618,6 +618,7 @@ using Path = System.IO.Path;
 
         private void onMapClick(GoogleMapClickEventArgs args)
         {
+            Console.WriteLine("Zoom: " + MyMap.Zoom);
             if (!placeNewSightOnClick)
             {
                 mapButtonText = "Place new sight";
