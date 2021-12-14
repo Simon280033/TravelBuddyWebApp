@@ -228,3 +228,5 @@ C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\obj\Debug\net5
 C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\obj\Debug\net5.0\Razor\Pages\TourManager.razor.g.cs
 C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\obj\Debug\net5.0\RazorDeclaration\Pages\CompanyEditor.razor.g.cs
 C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\obj\Debug\net5.0\Razor\Pages\CompanyEditor.razor.g.cs
+C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\obj\Debug\net5.0\RazorDeclaration\Pages\CompanyEditor.razor.g.cs
+C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\obj\Debug\net5.0\Razor\Pages\CompanyEditor.razor.g.cs

@@ -13,168 +13,168 @@ namespace AuthenticationTest.Pages
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Components;
 #nullable restore
-#line 1 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\_Imports.razor"
+#line 1 "C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\_Imports.razor"
 using System.Net.Http;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 2 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\_Imports.razor"
+#line 2 "C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\_Imports.razor"
 using Microsoft.AspNetCore.Authorization;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 3 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\_Imports.razor"
+#line 3 "C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\_Imports.razor"
 using Microsoft.AspNetCore.Components.Authorization;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 4 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\_Imports.razor"
+#line 4 "C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\_Imports.razor"
 using Microsoft.AspNetCore.Components.Forms;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 5 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\_Imports.razor"
+#line 5 "C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\_Imports.razor"
 using Microsoft.AspNetCore.Components.Routing;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 6 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\_Imports.razor"
+#line 6 "C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\_Imports.razor"
 using Microsoft.AspNetCore.Components.Web;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 7 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\_Imports.razor"
+#line 7 "C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\_Imports.razor"
 using Microsoft.AspNetCore.Components.Web.Virtualization;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 8 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\_Imports.razor"
+#line 8 "C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\_Imports.razor"
 using Microsoft.JSInterop;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 9 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\_Imports.razor"
+#line 9 "C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\_Imports.razor"
 using AuthenticationTest;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 10 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\_Imports.razor"
+#line 10 "C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\_Imports.razor"
 using AuthenticationTest.Shared;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 11 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\_Imports.razor"
+#line 11 "C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\_Imports.razor"
 using Radzen.Blazor;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 2 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\Pages\Counter.razor"
+#line 2 "C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\Pages\Counter.razor"
 using Radzen;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 3 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\Pages\Counter.razor"
+#line 3 "C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\Pages\Counter.razor"
 using Radzen.Blazor.Rendering;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 4 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\Pages\Counter.razor"
+#line 4 "C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\Pages\Counter.razor"
 using AuthenticationTest.Data.Entities;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 5 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\Pages\Counter.razor"
+#line 5 "C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\Pages\Counter.razor"
 using AuthenticationTest.Data;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 6 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\Pages\Counter.razor"
+#line 6 "C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\Pages\Counter.razor"
 using System.Drawing;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 7 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\Pages\Counter.razor"
+#line 7 "C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\Pages\Counter.razor"
 using System.IO;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 8 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\Pages\Counter.razor"
+#line 8 "C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\Pages\Counter.razor"
 using System.Media;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 9 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\Pages\Counter.razor"
+#line 9 "C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\Pages\Counter.razor"
 using AuthenticationTest.Data.Converters.Concrete;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 10 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\Pages\Counter.razor"
+#line 10 "C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\Pages\Counter.razor"
 using AuthenticationTest.Data.Seeders;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 11 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\Pages\Counter.razor"
+#line 11 "C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\Pages\Counter.razor"
 using Humanizer;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 12 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\Pages\Counter.razor"
+#line 12 "C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\Pages\Counter.razor"
 using Microsoft.EntityFrameworkCore.Diagnostics;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 13 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\Pages\Counter.razor"
+#line 13 "C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\Pages\Counter.razor"
 using ImageConverter = AuthenticationTest.Data.Converters.Concrete.ImageConverter;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 14 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\Pages\Counter.razor"
+#line 14 "C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\Pages\Counter.razor"
 using Path = System.IO.Path;
 
 #line default
@@ -189,7 +189,7 @@ using Path = System.IO.Path;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 159 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\Pages\Counter.razor"
+#line 159 "C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\Pages\Counter.razor"
            
         // Converters
         private IImageConverter imageConverter = new ImageConverter();
@@ -230,6 +230,8 @@ using Path = System.IO.Path;
         private string selectedTourLanguageCode;
         private List<int> selectedVariantIndexForToursByIndex = new List<int>();
         private List<List<string>> tourLanguageCodes = new List<List<string>>();
+        private int SelectedSightIndex = 0;
+        private int SelectedTourVariantIndex = 0;
         
         // Selected marker attributes
         private Sight selectedSight = new Sight();
@@ -276,7 +278,16 @@ using Path = System.IO.Path;
             
         // Get from DB for user
             Tours = _daoFetcher.TourDao().getToursForCompany(TheCompany.id);
-            
+
+            foreach (Sight sight in Tours[SelectedTourIndex].Sights)
+            {
+                Console.WriteLine("Variants for " + sight.Id + ": ");
+                foreach (var variant in  sight.Variants)
+                {
+                    Console.WriteLine("-" + variant.SightName + ", Lang: " + variant.Language.LanguageCode);
+                }
+            }
+
             Console.WriteLine("Tours found: " + Tours.Count);
             
             for (int j = 0; j < Tours.Count; j++)
@@ -292,6 +303,7 @@ using Path = System.IO.Path;
             {
                 if (Tours[SelectedTourIndex].Variants[i].Language.LanguageCode.Equals(selectedTourLanguageCode))
                 {
+                    SelectedTourVariantIndex = i;
                     selectedVariantIndexForToursByIndex[SelectedTourIndex] = i;
                     break;
                 }
@@ -649,7 +661,7 @@ using Path = System.IO.Path;
                 {
                     tourContent = Tours[i].Sights;
                     // We set the tour name in header
-                    headerMessage = "Editing Tour '" + Tours[i].Variants[0].TourName + "'";
+                    headerMessage = "Editing Tour '" + Tours[i].Variants[selectedSightVariantIndex].TourName + "'";
                     // And the index
                     SelectedTourIndex = i;
                     // We set the list for bools

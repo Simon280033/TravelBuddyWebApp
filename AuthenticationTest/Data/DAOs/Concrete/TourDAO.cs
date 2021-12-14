@@ -378,7 +378,7 @@ namespace AuthenticationTest.Data
                             // And add it to the tour
                             tourToWork.Variants.Add(variant);
                         }
-                        
+
                         // We create the sight variant
                         SightVariant sightVariant = new SightVariant
                         {
@@ -391,7 +391,6 @@ namespace AuthenticationTest.Data
                         
                         // Sight
                         // If there is no sight, we skip the rest
-                        Console.WriteLine("ID result count: " + sdr["sight_id"].ToString().Length);
                         if (sdr["sight_id"].ToString().Length > 0)
                         {
                         int sightId = (int) Int32.Parse(sdr["sight_id"].ToString());
@@ -428,8 +427,21 @@ namespace AuthenticationTest.Data
                         {
                             if (sight.Id == sightId)
                             {
-                                sight.Variants.Add(sightVariant);
-                                break;
+                                // We check if the language has been added
+                                bool added = false;
+                                foreach (SightVariant variant in sight.Variants)
+                                {
+                                    if (variant.SightName.Equals(sightVariant.SightName) || variant.Language.LanguageCode.Equals(language.LanguageCode))
+                                    {
+                                        added = true;
+                                        break;
+                                    }
+                                }
+                                if (!added)
+                                {
+                                    sight.Variants.Add(sightVariant);
+                                    break;
+                                }
                             }
                         }
                         }

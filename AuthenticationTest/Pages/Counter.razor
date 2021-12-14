@@ -47,7 +47,7 @@
     
     <RadzenButton Click=@(args => CreateNewTour()) Icon="add_circle_outline" ButtonStyle="ButtonStyle.Primary" Text="Create new Tour"/>
     
-    <div>@headerMessage</div>
+    <div>Editing Tour '@Tours[SelectedTourIndex].Variants[SelectedTourVariantIndex].TourName'</div>
 
     <div class="row">
         <div class="col-xl-6">
@@ -196,6 +196,8 @@
         private string selectedTourLanguageCode;
         private List<int> selectedVariantIndexForToursByIndex = new List<int>();
         private List<List<string>> tourLanguageCodes = new List<List<string>>();
+        private int SelectedSightIndex = 0;
+        private int SelectedTourVariantIndex = 0;
         
         // Selected marker attributes
         private Sight selectedSight = new Sight();
@@ -242,7 +244,16 @@
             
         // Get from DB for user
             Tours = _daoFetcher.TourDao().getToursForCompany(TheCompany.id);
-            
+
+            foreach (Sight sight in Tours[SelectedTourIndex].Sights)
+            {
+                Console.WriteLine("Variants for " + sight.Id + ": ");
+                foreach (var variant in  sight.Variants)
+                {
+                    Console.WriteLine("-" + variant.SightName + ", Lang: " + variant.Language.LanguageCode);
+                }
+            }
+
             Console.WriteLine("Tours found: " + Tours.Count);
             
             for (int j = 0; j < Tours.Count; j++)
@@ -258,6 +269,7 @@
             {
                 if (Tours[SelectedTourIndex].Variants[i].Language.LanguageCode.Equals(selectedTourLanguageCode))
                 {
+                    SelectedTourVariantIndex = i;
                     selectedVariantIndexForToursByIndex[SelectedTourIndex] = i;
                     break;
                 }
@@ -615,7 +627,7 @@
                 {
                     tourContent = Tours[i].Sights;
                     // We set the tour name in header
-                    headerMessage = "Editing Tour '" + Tours[i].Variants[0].TourName + "'";
+                    headerMessage = "Editing Tour '" + Tours[i].Variants[selectedSightVariantIndex].TourName + "'";
                     // And the index
                     SelectedTourIndex = i;
                     // We set the list for bools
