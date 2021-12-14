@@ -151,6 +151,8 @@ using AuthenticationTest.Data;
 
     protected override async Task OnInitializedAsync()
     {
+        IfNotAuthorized();
+        
         Languages = _daoFetcher.LanguageDao().GetLanguages();
         
         // We set the layout depending on whether we are creating a new Tour or editing one
@@ -163,6 +165,19 @@ using AuthenticationTest.Data;
         else
         {
             setLayoutForEditing();
+        }
+    }
+    
+    private async void IfNotAuthorized()
+    {
+    // We check if the user is logged in
+        bool isAuthenticated = auth.GetAuthenticationStateAsync().Result.User.Identity.IsAuthenticated;
+
+        if (!isAuthenticated)
+        {
+    // If not authenticated, we redirect to main page
+            await JsRuntime.InvokeVoidAsync("alert", "NOTICE: This page is only for registered users! Please sign in or register.");
+            NavManager.NavigateTo("/");
         }
     }
 

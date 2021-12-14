@@ -10,6 +10,8 @@
 @inject IDAOFetcher _daoFetcher
 @inject AuthenticationStateProvider auth
 @inject Company TheCompany
+@inject NavigationManager NavManager
+@inject IJSRuntime JsRuntime
 
 <h1>Hello, world!</h1>
 
@@ -24,7 +26,7 @@ Welcome to your new app.
         ifAuthenticated();
     }
 
-    private void ifAuthenticated()
+    private async void ifAuthenticated()
     {
         // We check if the user is logged in
         bool isAuthenticated = auth.GetAuthenticationStateAsync().Result.User.Identity.IsAuthenticated;
@@ -33,31 +35,17 @@ Welcome to your new app.
         {
             // We check if company details are tied to user
             bool isTied = _daoFetcher.CompanyDao().userTiedToCompany(auth.GetAuthenticationStateAsync().Result.User.Identity.Name);
-        
-            Console.WriteLine("Name: " + auth.GetAuthenticationStateAsync().Result.User.Identity.Name);
 
-            TheCompany.id = _daoFetcher.CompanyDao().getCompanyForUserById(auth.GetAuthenticationStateAsync().Result.User.Identity.Name).id;
-            
-            Console.WriteLine("Company id: " + TheCompany.id);
-
-            testTourFetcher();
-
-    // If not tied, redirect to page where they can create company and tie it to user
+            if (isTied)
+            {
+                TheCompany.id = _daoFetcher.CompanyDao().getCompanyForUserById(auth.GetAuthenticationStateAsync().Result.User.Identity.Name).id;
+            }
+            else
+            {
+                await JsRuntime.InvokeVoidAsync("alert", "WELCOME! As this is the first time you are using this tool, please fill out company information.");
+                NavManager.NavigateTo("CompanyEditor");
+            }
         }
-    }
-
-    public void testTourFetcher()
-    {
-        List<Tour> tours = _daoFetcher.TourDao().getTours();
-        Console.WriteLine("Total tours: " + tours.Count);
-        foreach (Tour tour in tours)
-        {
-            Console.WriteLine("Tour ID: " + tour.Id);
-            Console.WriteLine("Tour variants: " + tour.Variants.Count);
-            Console.WriteLine("Sights: " + tour.Sights.Count);
-            Console.WriteLine("Sight 1 variants: " + tour.Sights[0].Variants.Count);
-        }
-        
     }
 
 }

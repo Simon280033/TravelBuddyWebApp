@@ -90,63 +90,21 @@ using Radzen.Blazor;
 #line hidden
 #nullable disable
 #nullable restore
-#line 2 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\Pages\Index.razor"
-using Npgsql;
-
-#line default
-#line hidden
-#nullable disable
-#nullable restore
-#line 3 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\Pages\Index.razor"
-using System.Data;
-
-#line default
-#line hidden
-#nullable disable
-#nullable restore
-#line 4 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\Pages\Index.razor"
-using AuthenticationTest.Areas.Identity;
-
-#line default
-#line hidden
-#nullable disable
-#nullable restore
-#line 5 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\Pages\Index.razor"
-using AuthenticationTest.Data;
-
-#line default
-#line hidden
-#nullable disable
-#nullable restore
-#line 6 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\Pages\Index.razor"
+#line 2 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\Pages\CompanyEditor.razor"
 using AuthenticationTest.Data.Entities;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 7 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\Pages\Index.razor"
-using Microsoft.AspNetCore.Http;
+#line 3 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\Pages\CompanyEditor.razor"
+using AuthenticationTest.Data;
 
 #line default
 #line hidden
 #nullable disable
-#nullable restore
-#line 8 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\Pages\Index.razor"
-using Microsoft.AspNetCore.Identity;
-
-#line default
-#line hidden
-#nullable disable
-#nullable restore
-#line 9 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\Pages\Index.razor"
-using Microsoft.EntityFrameworkCore;
-
-#line default
-#line hidden
-#nullable disable
-    [Microsoft.AspNetCore.Components.RouteAttribute("/")]
-    public partial class Index : Microsoft.AspNetCore.Components.ComponentBase
+    [Microsoft.AspNetCore.Components.RouteAttribute("/CompanyEditor")]
+    public partial class CompanyEditor : Microsoft.AspNetCore.Components.ComponentBase
     {
         #pragma warning disable 1998
         protected override void BuildRenderTree(Microsoft.AspNetCore.Components.Rendering.RenderTreeBuilder __builder)
@@ -154,44 +112,114 @@ using Microsoft.EntityFrameworkCore;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 23 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\Pages\Index.razor"
- 
+#line 47 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\Pages\CompanyEditor.razor"
+       
+    private string companyName = "";
+    private string companyAddress = "";
+    private string companyEmail = "";
+    private string companyPhone = "";
+
+    private string ErrorMessage = "";
+
     protected override async Task OnInitializedAsync()
     {
-        ifAuthenticated();
+        IfNotAuthorized();
+        
+        SetEmailFromUser();
     }
-
-    private async void ifAuthenticated()
+    
+    private async void IfNotAuthorized()
     {
-        // We check if the user is logged in
+    // We check if the user is logged in
         bool isAuthenticated = auth.GetAuthenticationStateAsync().Result.User.Identity.IsAuthenticated;
 
-        if (isAuthenticated)
+        if (!isAuthenticated)
         {
-            // We check if company details are tied to user
-            bool isTied = _daoFetcher.CompanyDao().userTiedToCompany(auth.GetAuthenticationStateAsync().Result.User.Identity.Name);
-
-            if (isTied)
-            {
-                TheCompany.id = _daoFetcher.CompanyDao().getCompanyForUserById(auth.GetAuthenticationStateAsync().Result.User.Identity.Name).id;
-            }
-            else
-            {
-                await JsRuntime.InvokeVoidAsync("alert", "WELCOME! As this is the first time you are using this tool, please fill out company information.");
-                NavManager.NavigateTo("CompanyEditor");
-            }
+    // If not authenticated, we redirect to main page
+            await JsRuntime.InvokeVoidAsync("alert", "NOTICE: This page is only for registered users! Please sign in or register.");
+            NavManager.NavigateTo("/");
         }
     }
 
+    private void SetEmailFromUser()
+    {
+        companyEmail = auth.GetAuthenticationStateAsync().Result.User.Identity.Name;
+    }
+
+    private bool AllFilled()
+    {
+        bool allFilled = true;
+
+        if (companyName.Length < 3)
+        {
+            return false;
+        }
+
+        if (companyAddress.Length < 5)
+        {
+            return false;
+        }
+
+        if (companyPhone.Length < 4) // Shortest possible phone number
+        {
+            return false;
+        }
+
+        return allFilled;
+    }
+
+    private async void SaveCompanyInfo()
+    {
+        if (AllFilled())
+        {
+            Console.WriteLine("All filled! Attempting to save in DB...");
+            // We attempt to save in DB
+            Company company = new Company
+            {
+                id = 0,
+                address = companyAddress,
+                email = companyEmail,
+                name = companyName,
+                phone = companyPhone
+            };
+
+            try
+            {
+                _daoFetcher.CompanyDao().CreateCompany(company);
+            }
+            catch (Exception)
+            {
+                ErrorMessage = "Failed to create company! Please try another name.";
+            }
+            
+            // We save into singleton
+            TheCompany.name = companyName;
+            TheCompany.email = companyEmail;
+            TheCompany.address = companyAddress;
+            TheCompany.phone = companyPhone;
+            
+            // We redirect to main page
+            await JsRuntime.InvokeVoidAsync("alert", "Company details successfully updated!");
+            NavManager.NavigateTo("TourManager");
+        }
+        else
+        {
+            Console.WriteLine("Lacking info!");
+            ErrorMessage = "Please fill out all of the required information!";
+            StateHasChanged();
+        }
+        ErrorMessage = "";
+    }
+    
 
 #line default
 #line hidden
 #nullable disable
         [global::Microsoft.AspNetCore.Components.InjectAttribute] private IJSRuntime JsRuntime { get; set; }
         [global::Microsoft.AspNetCore.Components.InjectAttribute] private NavigationManager NavManager { get; set; }
-        [global::Microsoft.AspNetCore.Components.InjectAttribute] private Company TheCompany { get; set; }
-        [global::Microsoft.AspNetCore.Components.InjectAttribute] private AuthenticationStateProvider auth { get; set; }
         [global::Microsoft.AspNetCore.Components.InjectAttribute] private IDAOFetcher _daoFetcher { get; set; }
+        [global::Microsoft.AspNetCore.Components.InjectAttribute] private AuthenticationStateProvider auth { get; set; }
+        [global::Microsoft.AspNetCore.Components.InjectAttribute] private Company TheCompany { get; set; }
     }
 }
 #pragma warning restore 1591
