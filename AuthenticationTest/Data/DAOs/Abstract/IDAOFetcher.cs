@@ -7,5 +7,7 @@ namespace AuthenticationTest.Data
         public ILanguageDAO LanguageDao();
 
         public ITourDAO TourDao();
+
+        public ISightDAO SightDao();
     }
 }

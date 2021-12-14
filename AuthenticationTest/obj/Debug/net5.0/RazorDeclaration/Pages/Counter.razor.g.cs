@@ -337,6 +337,7 @@ using Path = System.IO.Path;
             if (AllFilled())
             {
                 UpdateSightOnSelectedTour();
+                _daoFetcher.SightDao().CreateVariant(selectedSight, Tours[SelectedTourIndex].Id, selectedTourLanguageCode);
                 SetSightUpdatedResultLayout(true);
                 await JsRuntime.InvokeVoidAsync("alert", "Sight succesfully updated!");
                 Console.WriteLine("New marker mode on: " + placeNewSightOnClick);
@@ -360,8 +361,11 @@ using Path = System.IO.Path;
             }
             if (AllFilled())
             {
-                SetSightCreatedResultLayout(true);
                 AddNewSightToSelectedTour();
+                int newId = _daoFetcher.SightDao().CreateNewSightAndVariant(selectedSight, Tours[SelectedTourIndex].Id, selectedTourLanguageCode);
+                Console.WriteLine("New ID of new sight: " + newId);
+                selectedSight.Id = newId;
+                SetSightCreatedResultLayout(true);
                 StateHasChanged();
                 await JsRuntime.InvokeVoidAsync("alert", "New sight successfully added!");
                 await SetTourOnMap(Tours[SelectedTourIndex].Id, true, false);

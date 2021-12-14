@@ -8,12 +8,14 @@ namespace AuthenticationTest.Data
         private ICompanyDAO companyDao;
         private ILanguageDAO languageDao;
         private ITourDAO tourDao;
+        private ISightDAO sightDao;
 
         public DAOFetcher(NpgsqlConnection conn)
         {
             this.companyDao = new CompanyDAO(conn);
             this.languageDao = new LanguageDAO(conn);
             this.tourDao = new TourDAO(conn);
+            this.sightDao = new SightDAO(conn);
         }
 
         public ICompanyDAO CompanyDao()
@@ -29,6 +31,11 @@ namespace AuthenticationTest.Data
         public ITourDAO TourDao()
         {
             return this.tourDao;
+        }
+
+        public ISightDAO SightDao()
+        {
+            return this.sightDao;
         }
     }
 }
