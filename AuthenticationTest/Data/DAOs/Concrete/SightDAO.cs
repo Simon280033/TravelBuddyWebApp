@@ -26,8 +26,25 @@ namespace AuthenticationTest.Data
         {
             int newId = CreateSight(sight, tourId);
             sight.Id = newId;
+            // We for some reason create a useless extra one... LOOK INTO THIS!!! For now we just delete it lol
+            DeleteSight(newId-1);
             CreateVariant(sight, tourId, languageCode);
             return newId;
+        }
+
+        private void DeleteSight(int sightId)
+        {
+            OpenConnIfClosed();
+            using (NpgsqlCommand command = new NpgsqlCommand())
+            {
+                command.CommandText =
+                    "DELETE FROM travelbuddy.Sights WHERE sight_id = @sightId;";
+                command.Connection = conn;
+                command.Parameters.AddWithValue("sightId", sightId);
+                command.Prepare();
+                command.ExecuteNonQuery();
+            }
+            conn.Close();
         }
 
         private int CreateSight(Sight sight, int tourId)
@@ -83,6 +100,7 @@ namespace AuthenticationTest.Data
                     "INSERT INTO travelbuddy.Sight_variants VALUES(@sightId, " +
                     "@languageCode, @sightName, @sightDesc, @audioBase64, @audioFileName)";
                 command.Connection = conn;
+                command.Unprepare();
                 command.Parameters.AddWithValue("sightId", sight.Id);
                 command.Parameters.AddWithValue("languageCode", languageCode);
                 command.Parameters.AddWithValue("sightName", variant.SightName);

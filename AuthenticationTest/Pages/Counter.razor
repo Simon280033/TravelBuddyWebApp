@@ -565,6 +565,8 @@
             mapButtonText = "Cancel placing new sight";
             hideMarkerProperties = true;
             hideSightOverview = false;
+            SightEditSuccessMessage = "";
+            SightEditErrorMessage = "";
         }
         
         private void SetDoNothingOnClickMode()
@@ -574,6 +576,8 @@
             hideMarkerProperties = true;
             placeNewSightOnClick = false;
             hideSightOverview = false;
+            SightEditSuccessMessage = "";
+            SightEditErrorMessage = "";
         }
 
         private void ResetImage()
@@ -680,6 +684,8 @@
                 mapButtonText = "Place new sight";
                 hideMarkerProperties = true;
                 hideSightOverview = false;
+                SightEditSuccessMessage = "";
+                SightEditErrorMessage = "";
                 return;
             }
             selectedSight = new Sight();
