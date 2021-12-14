@@ -17,12 +17,12 @@ namespace AuthenticationTest.Data
 
         public bool userTiedToCompany(string userName)
         {
+            OpenConnIfClosed();
             using (NpgsqlCommand command = new NpgsqlCommand())
             {
-                command.CommandText = "SELECT COUNT(*) AS AMOUNT FROM travelbuddy.aspnet_user_company_relations WHERE AspNetUser_name = @userName;";
-                command.Parameters.AddWithValue("userName", userName);
+                command.CommandText = "SELECT COUNT(*) AS AMOUNT FROM travelbuddy.aspnet_user_company_relations WHERE AspNetUser_name = (SELECT \"Id\" FROM public.\"AspNetUsers\" WHERE \"Email\" = @email);";
+                command.Parameters.AddWithValue("email", userName);
                 command.Connection = conn;
-                conn.Open();
                 
                 using (NpgsqlDataReader sdr = command.ExecuteReader())
                 {
@@ -43,11 +43,11 @@ namespace AuthenticationTest.Data
 
         public List<string> getCustomers()
         {
+            OpenConnIfClosed();
             using (NpgsqlCommand command = new NpgsqlCommand())
             {
                 command.CommandText = "SELECT * FROM travelbuddy.Companies;";
                 command.Connection = conn;
-                conn.Open();
                 List<string> customers = new List<string>();
                 using (NpgsqlDataReader sdr = command.ExecuteReader())
                 {
@@ -63,9 +63,9 @@ namespace AuthenticationTest.Data
 
         public void CreateCompany(Company company)
         {
+            OpenConnIfClosed();
             using (NpgsqlCommand command = new NpgsqlCommand())
             {
-                conn.Open();
                 command.CommandText =
                     "INSERT INTO travelbuddy.Companies VALUES(DEFAULT, @companyName, @address, @email, @phone);";
                 command.Connection = conn;
@@ -79,21 +79,36 @@ namespace AuthenticationTest.Data
             conn.Close();
         }
 
+        public void TieCompanyToUser(Company company)
+        {
+            OpenConnIfClosed();
+            using (NpgsqlCommand command = new NpgsqlCommand())
+            {
+                command.CommandText =
+                    "INSERT INTO travelbuddy.aspnet_user_company_relations VALUES((SELECT \"Id\" FROM public.\"AspNetUsers\" WHERE \"Email\" = @email), (SELECT company_id FROM travelbuddy.Companies WHERE email = @email));";
+                command.Connection = conn;
+                command.Parameters.AddWithValue("email", company.email);
+                command.Prepare();
+                command.ExecuteNonQuery();
+            }
+            conn.Close();        
+        }
+
         public Company getCompanyForUserById(string id)
         {
+            OpenConnIfClosed();
             using (NpgsqlCommand command = new NpgsqlCommand())
             {
                 command.CommandText = "SELECT * FROM " + 
-                "travelbuddy.companies " +
-                    "LEFT JOIN " +
-                "travelbuddy.aspnet_user_company_relations " +
-                    "ON " +
-                "travelbuddy.aspnet_user_company_relations.company_id = travelbuddy.companies.company_id " +
-                "WHERE " +
-                "travelbuddy.aspnet_user_company_relations.AspNetUser_name = (SELECT \"Id\" FROM public.\"AspNetUsers\" WHERE \"Email\" = @email);";
+                                      "travelbuddy.companies " +
+                                      "LEFT JOIN " +
+                                      "travelbuddy.aspnet_user_company_relations " +
+                                      "ON " +
+                                      "travelbuddy.aspnet_user_company_relations.company_id = travelbuddy.companies.company_id " +
+                                      "WHERE " +
+                                      "travelbuddy.aspnet_user_company_relations.AspNetUser_name = (SELECT \"Id\" FROM public.\"AspNetUsers\" WHERE \"Email\" = @email);";
                 command.Parameters.AddWithValue("email", id);
                 command.Connection = conn;
-                conn.Open();
                 using (NpgsqlDataReader sdr = command.ExecuteReader())
                 {
                     while (sdr.Read())
@@ -112,6 +127,14 @@ namespace AuthenticationTest.Data
                 conn.Close();
             }
             return null;
+        }
+
+        private void OpenConnIfClosed()
+        {
+            if (conn.State == ConnectionState.Closed)
+            {
+                conn.Open();
+            }
         }
     }
 }

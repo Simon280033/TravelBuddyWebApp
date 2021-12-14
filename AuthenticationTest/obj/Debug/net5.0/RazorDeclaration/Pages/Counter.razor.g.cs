@@ -189,7 +189,7 @@ using Path = System.IO.Path;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 141 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\Pages\Counter.razor"
+#line 144 "C:\Users\simon\RiderProjects\AuthenticationTest\AuthenticationTest\Pages\Counter.razor"
            
         // Converters
         private IImageConverter imageConverter = new ImageConverter();
@@ -226,7 +226,7 @@ using Path = System.IO.Path;
         
         // Company Tours and content
         private List<Tour> Tours = new List<Tour>();
-        private int SelectedTourIndex;
+        private int SelectedTourIndex = 0;
         private string selectedTourLanguageCode;
         private List<int> selectedVariantIndexForToursByIndex = new List<int>();
         private List<List<string>> tourLanguageCodes = new List<List<string>>();
@@ -242,7 +242,7 @@ using Path = System.IO.Path;
         {
             IfNotAuthorized();
             
-            GetToursForCompany(0);
+            GetToursForCompany();
 
             for (int i = 0; i < Tours.Count; i++)
             {
@@ -271,13 +271,13 @@ using Path = System.IO.Path;
             }
         }
         
-        private void GetToursForCompany(int tourId)
+        private void GetToursForCompany()
         {
         // Fake tours
-        MockSeedTours();
+        //MockSeedTours();
             
         // Get from DB for user
-            // Tours = _daoFetcher.TourDao().getToursForCompany(TheCompany.id);
+            Tours = _daoFetcher.TourDao().getToursForCompany(TheCompany.id);
             
             Console.WriteLine("Tours found: " + Tours.Count);
             

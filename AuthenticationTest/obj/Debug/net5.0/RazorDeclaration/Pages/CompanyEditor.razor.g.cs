@@ -186,6 +186,7 @@ using AuthenticationTest.Data;
             try
             {
                 _daoFetcher.CompanyDao().CreateCompany(company);
+                _daoFetcher.CompanyDao().TieCompanyToUser(company);
             }
             catch (Exception)
             {
@@ -200,7 +201,7 @@ using AuthenticationTest.Data;
             
             // We redirect to main page
             await JsRuntime.InvokeVoidAsync("alert", "Company details successfully updated!");
-            NavManager.NavigateTo("TourManager");
+            NavManager.NavigateTo("/");
         }
         else
         {

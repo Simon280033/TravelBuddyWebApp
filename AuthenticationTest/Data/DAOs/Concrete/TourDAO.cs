@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using AuthenticationTest.Data.Entities;
 using Npgsql;
@@ -17,6 +18,7 @@ namespace AuthenticationTest.Data
         
         public List<Tour> getTours()
         {
+            OpenConnIfClosed();
             using (NpgsqlCommand command = new NpgsqlCommand())
             {
                 command.CommandText = "SELECT * FROM " +
@@ -156,6 +158,7 @@ namespace AuthenticationTest.Data
 
         public void createTour(Tour tour)
         {
+            OpenConnIfClosed();
             Console.WriteLine("Attempting to create tour...");
             using (NpgsqlCommand command = new NpgsqlCommand())
             {
@@ -168,7 +171,6 @@ namespace AuthenticationTest.Data
                 command.ExecuteNonQuery();
                 command.Cancel();
                 command.Dispose();
-                conn.Close();
                 Console.WriteLine("Created tour! Attempting to create " + tour.Variants.Count + " variants...");
             }
             // We then add any variants
@@ -182,9 +184,9 @@ namespace AuthenticationTest.Data
 
         private void CreateVariant(int companyId, TourVariant variant)
         {
-                using (NpgsqlCommand command = new NpgsqlCommand())
+            OpenConnIfClosed();
+            using (NpgsqlCommand command = new NpgsqlCommand())
                 {
-                    conn.Open();
                     // We get the highest ID for the customer, as this will be the newliest created
                     command.CommandText =
                         "INSERT INTO travelbuddy.Tour_variants VALUES((SELECT tour_id FROM travelbuddy.tours WHERE company_id = @companyId ORDER BY tour_id DESC LIMIT 1), @languageCode, @tourName, @tourDescription);";
@@ -197,7 +199,6 @@ namespace AuthenticationTest.Data
                     command.ExecuteNonQuery();
                     command.Cancel();
                     command.Dispose();
-                    conn.Close();
                     Console.WriteLine("Created variant for language '" + variant.Language.LanguageName +
                                       "'!");
                 }
@@ -207,14 +208,14 @@ namespace AuthenticationTest.Data
         public void updateTour(Tour tour)
         {
            Console.WriteLine("Attempting to update tour...");
-            using (NpgsqlCommand command = new NpgsqlCommand())
+           OpenConnIfClosed();
+           using (NpgsqlCommand command = new NpgsqlCommand())
             {
                 // We get the current variants
                 List<string> variantCodes = new List<string>();
                 command.CommandText = "SELECT language_code FROM travelbuddy.tour_variants WHERE tour_id = @tourId;";
                 command.Parameters.AddWithValue("tourId", tour.Id);
                 command.Connection = conn;
-                conn.Open();
                 using (NpgsqlDataReader sdr = command.ExecuteReader())
                 {
                     while (sdr.Read())
@@ -242,7 +243,6 @@ namespace AuthenticationTest.Data
                     {
                         command.CommandText = "INSERT INTO travelbuddy.Tour_variants VALUES(@tourId, @languageCode, @tourName, @tourDescription);";
                         command.Connection = conn;
-                        conn.Open();
                         command.Parameters.AddWithValue("tourId", tour.Id);
                         command.Parameters.AddWithValue("companyId", tour.CompanyId);
                         command.Parameters.AddWithValue("languageCode", tour.Variants[i].Language.LanguageCode);
@@ -294,9 +294,9 @@ namespace AuthenticationTest.Data
 
         public List<Tour> getToursForCompany(int companyId)
         {
+            OpenConnIfClosed();
             using (NpgsqlCommand command = new NpgsqlCommand())
             {
-                conn.Open();
                 command.CommandText = "SELECT * FROM " +
                                       "travelbuddy.Tours " +
                                       "LEFT JOIN " +
@@ -437,6 +437,13 @@ namespace AuthenticationTest.Data
                 }
                 conn.Close();
                 return tours;
+            }
+        }
+        private void OpenConnIfClosed()
+        {
+            if (conn.State == ConnectionState.Closed)
+            {
+                conn.Open();
             }
         }
     }

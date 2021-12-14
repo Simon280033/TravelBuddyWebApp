@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Data;
 using AuthenticationTest.Data.Entities;
 using Npgsql;
 
@@ -15,11 +16,11 @@ namespace AuthenticationTest.Data
         
         public List<Language> GetLanguages()
         {
+            OpenConnIfClosed();
             using (NpgsqlCommand command = new NpgsqlCommand())
             {
                 command.CommandText = "SELECT * FROM travelbuddy.Languages;";
                 command.Connection = conn;
-                conn.Open();
                 List<Language> languages = new List<Language>();
                 using (NpgsqlDataReader sdr = command.ExecuteReader())
                 {
@@ -35,6 +36,14 @@ namespace AuthenticationTest.Data
                 }
                 conn.Close();
                 return languages;
+            }
+        }
+        
+        private void OpenConnIfClosed()
+        {
+            if (conn.State == ConnectionState.Closed)
+            {
+                conn.Open();
             }
         }
     }

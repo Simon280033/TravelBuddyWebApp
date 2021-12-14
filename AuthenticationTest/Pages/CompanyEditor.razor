@@ -117,6 +117,7 @@
             try
             {
                 _daoFetcher.CompanyDao().CreateCompany(company);
+                _daoFetcher.CompanyDao().TieCompanyToUser(company);
             }
             catch (Exception)
             {

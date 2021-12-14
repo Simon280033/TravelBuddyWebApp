@@ -12,5 +12,7 @@ namespace AuthenticationTest.Data
         public List<string> getCustomers();
 
         public void CreateCompany(Company company);
+
+        public void TieCompanyToUser(Company company);
     }
 }

@@ -126,7 +126,9 @@
         </div>
         
         <div class="col-xl-6" hidden="@hideSightOverview">
-                <ul>
+            <ul>
+                @if (hideSightOverview == false)
+                {
                     @foreach (Sight sight in Tours[SelectedTourIndex].Sights)
                     {
                         <li>
@@ -134,7 +136,8 @@
                             <button type="button" @onclick="() => SelectMarkerByName(sight.Variants[selectedSightVariantIndex].SightName)">Choose sight</button>
                         </li>
                     }
-                </ul>
+                }
+            </ul>
         </div>
     </div>
 
@@ -174,7 +177,7 @@
         
         // Company Tours and content
         private List<Tour> Tours = new List<Tour>();
-        private int SelectedTourIndex;
+        private int SelectedTourIndex = 0;
         private string selectedTourLanguageCode;
         private List<int> selectedVariantIndexForToursByIndex = new List<int>();
         private List<List<string>> tourLanguageCodes = new List<List<string>>();
@@ -190,7 +193,7 @@
         {
             IfNotAuthorized();
             
-            GetToursForCompany(0);
+            GetToursForCompany();
 
             for (int i = 0; i < Tours.Count; i++)
             {
@@ -219,13 +222,13 @@
             }
         }
         
-        private void GetToursForCompany(int tourId)
+        private void GetToursForCompany()
         {
         // Fake tours
-        MockSeedTours();
+        //MockSeedTours();
             
         // Get from DB for user
-            // Tours = _daoFetcher.TourDao().getToursForCompany(TheCompany.id);
+            Tours = _daoFetcher.TourDao().getToursForCompany(TheCompany.id);
             
             Console.WriteLine("Tours found: " + Tours.Count);
             
