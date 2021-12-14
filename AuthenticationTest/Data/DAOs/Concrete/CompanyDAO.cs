@@ -60,7 +60,25 @@ namespace AuthenticationTest.Data
                 return customers;
             }
         }
-        
+
+        public void CreateCompany(Company company)
+        {
+            using (NpgsqlCommand command = new NpgsqlCommand())
+            {
+                conn.Open();
+                command.CommandText =
+                    "INSERT INTO travelbuddy.Companies VALUES(DEFAULT, @companyName, @address, @email, @phone);";
+                command.Connection = conn;
+                command.Parameters.AddWithValue("companyName", company.name);
+                command.Parameters.AddWithValue("address", company.address);
+                command.Parameters.AddWithValue("email", company.email);
+                command.Parameters.AddWithValue("phone", company.phone);
+                command.Prepare();
+                command.ExecuteNonQuery();
+            }
+            conn.Close();
+        }
+
         public Company getCompanyForUserById(string id)
         {
             using (NpgsqlCommand command = new NpgsqlCommand())

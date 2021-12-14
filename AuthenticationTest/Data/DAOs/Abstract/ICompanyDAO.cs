@@ -10,5 +10,7 @@ namespace AuthenticationTest.Data
         public bool userTiedToCompany(string userName);
 
         public List<string> getCustomers();
+
+        public void CreateCompany(Company company);
     }
 }

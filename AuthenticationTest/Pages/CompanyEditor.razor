@@ -1,0 +1,130 @@
+@page "/CompanyEditor"
+@using AuthenticationTest.Data.Entities
+@using AuthenticationTest.Data
+
+@inject Company TheCompany
+@inject AuthenticationStateProvider auth
+@inject IDAOFetcher _daoFetcher
+@inject NavigationManager NavManager
+@inject IJSRuntime JsRuntime
+
+<h3>CompanyEditor</h3>
+
+<div class="col-xl-6">
+    <div class="companyNameField">
+        <div>
+            <label>Sight name: </label>
+        </div>
+        <input placeholder="Company name..." @bind-value="companyName">
+    </div>
+
+    <div class="addressField">
+        <div>
+            <label >Address: </label>
+        </div>
+        <input placeholder="Company address..." @bind-value="companyAddress">
+    </div>
+    
+    <div class="emailField">
+        <div>
+            <label >E-mail: </label>
+        </div>
+        <input placeholder="E-mail..." readonly disabled="true" @bind-value="companyEmail">
+    </div>
+    
+    <div class="phoneField">
+        <div>
+            <label >Phone: </label>
+        </div>
+        <input placeholder="Phone number..." type="number" @bind-value="companyPhone">
+    </div>
+    
+    <RadzenButton Click=@(args => SaveCompanyInfo()) Text="Save Company info" />
+</div>
+
+<div style="color:red">@ErrorMessage</div>
+
+@code {
+    private string companyName = "";
+    private string companyAddress = "";
+    private string companyEmail = "";
+    private string companyPhone = "";
+
+    private string ErrorMessage = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        SetEmailFromUser();
+    }
+
+    private void SetEmailFromUser()
+    {
+        companyEmail = auth.GetAuthenticationStateAsync().Result.User.Identity.Name;
+    }
+
+    private bool AllFilled()
+    {
+        bool allFilled = true;
+
+        if (companyName.Length < 3)
+        {
+            return false;
+        }
+
+        if (companyAddress.Length < 5)
+        {
+            return false;
+        }
+
+        if (companyPhone.Length < 4) // Shortest possible phone number
+        {
+            return false;
+        }
+
+        return allFilled;
+    }
+
+    private async void SaveCompanyInfo()
+    {
+        if (AllFilled())
+        {
+            Console.WriteLine("All filled! Attempting to save in DB...");
+            // We attempt to save in DB
+            Company company = new Company
+            {
+                id = 0,
+                address = companyAddress,
+                email = companyEmail,
+                name = companyName,
+                phone = companyPhone
+            };
+
+            try
+            {
+                _daoFetcher.CompanyDao().CreateCompany(company);
+            }
+            catch (Exception)
+            {
+                ErrorMessage = "Failed to create company! Please try another name.";
+            }
+            
+            // We save into singleton
+            TheCompany.name = companyName;
+            TheCompany.email = companyEmail;
+            TheCompany.address = companyAddress;
+            TheCompany.phone = companyPhone;
+            
+            // We redirect to main page
+            await JsRuntime.InvokeVoidAsync("alert", "Company details successfully updated!");
+            NavManager.NavigateTo("TourManager");
+        }
+        else
+        {
+            Console.WriteLine("Lacking info!");
+            ErrorMessage = "Please fill out all of the required information!";
+            StateHasChanged();
+        }
+        ErrorMessage = "";
+    }
+    
+}
