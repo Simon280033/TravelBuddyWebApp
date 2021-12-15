@@ -1,4 +1,4 @@
-    @page "/counter"
+    @page "/sightmanager"
     @using Radzen
     @using Radzen.Blazor.Rendering
     @using AuthenticationTest.Data.Entities
@@ -19,7 +19,12 @@
 @inject Company TheCompany
 @inject AuthenticationStateProvider auth
 
-    
+    <div class="container">
+        <div>
+            <h3>Select tour:</h3>
+        </div>
+    </div>
+    <div class="container">
         @if (Tours.Count == 0 || !Authorized)
         {
             Console.WriteLine("Not authorized or no tours");
@@ -27,10 +32,10 @@
         }
         else
         {
-        <ul>
+            <div class="scrollpane" style="height: 170px;">
             @foreach (Tour tour in Tours)
             {
-                <li>
+                <div>
                     <input readonly @bind="tour.Variants[selectedVariantIndexForToursByIndex[Tours.IndexOf(tour)]].TourName" disabled="@isTheTourOnTheIndexNotSelected[Tours.IndexOf(tour)]"/>
                     <input type="number" readonly value="@tour.Sights.Count" disabled="@isTheTourOnTheIndexNotSelected[Tours.IndexOf(tour)]"/>
                     <select id="languageCodes" @onchange="TourLanguageChanged" name="languageCodes" disabled="@isTheTourOnTheIndexNotSelected[Tours.IndexOf(tour)]">
@@ -39,30 +44,38 @@
                             <option>@language</option>
                         }
                     </select>
-                    <a href="/TourManager/@tour.Id" class="button">Edit Tour</a>
-                    <button type="button" @onclick="() => SetTourOnMap(tour.Id, true, true)">Manage sights</button>
-                </li>
+                    <a href="/TourManager/@tour.Id" class="button-3">Edit Tour</a>
+                    <button type="button" class="button-3" @onclick="() => SetTourOnMap(tour.Id, true, true)">Manage sights</button>
+                </div>
             }
-            </ul>
+            </div>
         }
-
-    <a href="/TourManager/0" class="button">Create new tour</a>
-    
-    <div>Editing Tour '@Tours[SelectedTourIndex].Variants[SelectedTourVariantIndex].TourName'</div>
-
+        </div>
+    <br>
+    <div class="container">
+        <a href="/TourManager/0" class="button-3" style="margin: 10px;">Create new tour</a>
+        <button @onclick="TogglePlaceNewSightOnClick" class="button-3" hidden="@hideAddMarkerButton">@mapButtonText</button>
+    </div>
+    <br>
+    <div class="container">
+        <h3>Editing Tour '@Tours[SelectedTourIndex].Variants[SelectedTourVariantIndex].TourName'</h3>
+    </div>
+    <div class="container">
+        <div>@interactionMessage</div>
+        </div>
+    <div class="container">
     <div class="row">
-        <div class="col-xl-6">
-            <RadzenGoogleMap @ref="MyMap" style="height: 600px;" Zoom="@zoom" ZoomControl="true" Data="@Markers" Center="@(new GoogleMapPosition() { Lat = @lat, Lng = @lng })" MapClick="@onMapClick" MarkerClick="@onMarkerClick"/>
-            <button @onclick="TogglePlaceNewSightOnClick" hidden="@hideAddMarkerButton">@mapButtonText</button>
-            <div>@interactionMessage</div>
+        <div style="display: inline-block;">
+            <RadzenGoogleMap @ref="MyMap" style="height: 600px; width: 800px;" Zoom="@zoom" ZoomControl="true" Data="@Markers" Center="@(new GoogleMapPosition() { Lat = @lat, Lng = @lng })" MapClick="@onMapClick" MarkerClick="@onMarkerClick"/>
         </div>
         
-        <div class="col-xl-6" hidden="@hideMarkerProperties">
+        <div style="display: inline-block;" hidden="@hideMarkerProperties">
+            <div class="scrollpane" style="height: 600px; width: 300px;">
             <div class="languageChoice">
                 <b><label for="languageCodes">Language:</label></b>
                 <label for="languageCodes">@selectedTourLanguageCode</label>
             </div>
-            
+
             <div class="signNameField">
                 <div>
                     <label>Sight name: </label>
@@ -127,12 +140,14 @@
             </div>
             <div style="color:green">@SightEditSuccessMessage</div>
             <div style="color:red">@SightEditErrorMessage</div>
-            <button @onclick="UpdateOrSaveSelectedSight" >@markerButtonText</button>
+            <button @onclick="UpdateOrSaveSelectedSight">@markerButtonText</button>
         </div>
-        
-        <div class="col-xl-6" hidden="@hideSightOverview">
-            <div>Sights in @selectedTourLanguageCode:</div>
-            <ul>
+        </div>
+        <div style="display: inline-block;" hidden="@hideSightOverview">
+            <div class="container">
+                <div><b>Sights in @selectedTourLanguageCode:</b></div>
+                </div>
+            <div class="scrollpane" style="height: 600px;">
                 @if (hideSightOverview == false)
                 {
                     @foreach (Sight sight in Tours[SelectedTourIndex].Sights)
@@ -147,16 +162,16 @@
                                 break;
                             }
                         }
-                        <li>
+                        <div>
                             <input readonly @bind="@theName"/>
-                            <button type="button" @onclick="() => SelectMarkerByPosition(sight.Latitude, sight.Longitude)">Choose sight</button>
-                        </li>
+                            <button class="button-3" @onclick="() => SelectMarkerByPosition(sight.Latitude, sight.Longitude)">Choose sight</button>
+                        </div>
                     }
                 }
-            </ul>
+            </div>
         </div>
     </div>
-
+    </div>
     @code {
         private int oldAmount;
         private bool Authorized = false;

@@ -346,7 +346,7 @@ using AuthenticationTest.Data;
         Console.WriteLine("Company ID: " + TheTour.CompanyId);
         _daoFetcher.TourDao().createTour(TheTour);
         await JsRuntime.InvokeVoidAsync("alert", "Tour '" + TheTour.Variants[0].TourName + "' succesfully created! Navigating to Sight Manager...");
-        NavManager.NavigateTo("Counter");
+        NavManager.NavigateTo("SightManager");
     }
 
     private async void UpdateTour()
@@ -415,7 +415,7 @@ using AuthenticationTest.Data;
         // Then we update
         _daoFetcher.TourDao().updateTour(oldTour);
         await JsRuntime.InvokeVoidAsync("alert", "Tour '" + TheTour.Variants[0].TourName + "' succesfully updated! Navigating to Sight Manager...");
-        NavManager.NavigateTo("Counter");
+        NavManager.NavigateTo("SightManager");
     }
 
     private bool AllFilled()

@@ -97,7 +97,7 @@ using Radzen.Blazor;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 43 "C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\Shared\NavMenu.razor"
+#line 38 "C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\Shared\NavMenu.razor"
        
     private bool collapseNavMenu = true;
 
