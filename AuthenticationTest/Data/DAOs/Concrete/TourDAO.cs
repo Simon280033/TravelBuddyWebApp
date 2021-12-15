@@ -508,6 +508,57 @@ namespace AuthenticationTest.Data
                 return tours;
             }
         }
+
+        public Tour getTourById(int tourId)
+        {
+            Tour tour = new Tour();
+            OpenConnIfClosed();
+            using (NpgsqlCommand command = new NpgsqlCommand())
+            {
+                command.CommandText = "SELECT * FROM " +
+                                      "travelbuddy.Tours " +
+                                      "LEFT JOIN " +
+                                      "travelbuddy.Tour_variants " +
+                                      "ON " +
+                                      "travelbuddy.Tours.tour_id = travelbuddy.Tour_variants.tour_id " +
+                                      "LEFT JOIN " +
+                                      "travelbuddy.Languages " +
+                                      "ON " +
+                                      "travelbuddy.Languages.language_code = travelbuddy.Tour_variants.language_code " +
+                                      "WHERE " +
+                                      "travelbuddy.Tours.tour_id = @tourId;";
+                command.Parameters.AddWithValue("tourId", tourId);
+                command.Connection = conn;
+                using (NpgsqlDataReader sdr = command.ExecuteReader())
+                {
+                    while (sdr.Read())
+                    {
+                        TourVariant variant = new TourVariant
+                        {
+                            Language = new Language
+                            {
+                                LanguageCode = sdr["language_code"].ToString(),
+                                LanguageName = sdr["language_name"].ToString()
+                            },
+                            TourName = "tour_name",
+                            TourDescription = "tour_description"
+                        };
+
+                        if (tour.Id == 0)
+                        {
+                            tour.Id = (int) Int32.Parse(sdr["tour_id"].ToString());
+                            tour.CompanyId = (int)Int32.Parse(sdr["company_id"].ToString());
+                            tour.ImageBase64 = sdr["tour_image"].ToString();
+                        }
+                        
+                        tour.Variants.Add(variant);
+                    }
+                }
+                conn.Close();
+            }
+            return tour;
+        }
+
         private void OpenConnIfClosed()
         {
             if (conn.State == ConnectionState.Closed)

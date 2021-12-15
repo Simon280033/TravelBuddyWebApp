@@ -189,7 +189,7 @@ using Path = System.IO.Path;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 161 "C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\Pages\Counter.razor"
+#line 160 "C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\Pages\Counter.razor"
            
         private int oldAmount;
         private bool Authorized = false;
@@ -886,17 +886,6 @@ using Path = System.IO.Path;
             Console.WriteLine("Updated");
         }
 
-        private void EditTour()
-        {
-            TourToEdit.Id = Tours[SelectedTourIndex].Id;
-            TourToEdit.CompanyId = Tours[SelectedTourIndex].CompanyId;
-            TourToEdit.ImageBase64 = Tours[SelectedTourIndex].ImageBase64;
-            TourToEdit.Variants = Tours[SelectedTourIndex].Variants;
-            TourToEdit.Sights = Tours[SelectedTourIndex].Sights;
-            
-            NavManager.NavigateTo("TourManager");
-        }
-
         private void SelectMarkerByPosition(double lat, double lng)
         {
             foreach (RadzenGoogleMapMarker marker in Markers)
@@ -925,7 +914,6 @@ using Path = System.IO.Path;
         [global::Microsoft.AspNetCore.Components.InjectAttribute] private AuthenticationStateProvider auth { get; set; }
         [global::Microsoft.AspNetCore.Components.InjectAttribute] private Company TheCompany { get; set; }
         [global::Microsoft.AspNetCore.Components.InjectAttribute] private IDAOFetcher _daoFetcher { get; set; }
-        [global::Microsoft.AspNetCore.Components.InjectAttribute] private Tour TourToEdit { get; set; }
         [global::Microsoft.AspNetCore.Components.InjectAttribute] private IJSRuntime JsRuntime { get; set; }
         [global::Microsoft.AspNetCore.Components.InjectAttribute] private NavigationManager NavManager { get; set; }
     }

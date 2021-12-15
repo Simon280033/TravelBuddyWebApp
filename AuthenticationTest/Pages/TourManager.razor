@@ -1,4 +1,4 @@
-@page "/TourManager"
+@page "/TourManager/{PathParam}"
 @using Radzen
 @using AuthenticationTest.Data.Entities
 @using ImageConverter = AuthenticationTest.Data.Converters.Concrete.ImageConverter
@@ -6,7 +6,6 @@
 @inject IDAOFetcher _daoFetcher
 @inject NavigationManager NavManager
 @inject IJSRuntime JsRuntime
-@inject Tour TourToEdit
 @inject AuthenticationStateProvider auth
 
 <h3>@HeaderText</h3>
@@ -35,7 +34,11 @@
         <div class="languageChoice">
             <b><label for="languageCodes">Language:</label></b>
             <select id="languageCodes" @onchange="TourLanguageChanged" name="languageCodes">
-                @foreach (Language language in Languages)
+                @if (true)
+                {
+                    Console.WriteLine("Removed languages: " + AvailableLanguages.Count);
+                }
+                @foreach (Language language in AvailableLanguages)
                 {
                     <option>@language.LanguageName</option>
                 }
@@ -89,15 +92,23 @@
     private Tour TheTour = new Tour();
     
     private List<Language> Languages = new List<Language>();
+    private List<Language> AddedLanguages = new List<Language>();
+    private List<string> AddedCodes = new List<string>();
+    private List<Language> AvailableLanguages = new List<Language>();
+    private List<string> AvailableCodes = new List<string>();
+
+    [Parameter]
+    public string PathParam { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
+        Console.WriteLine("Param: " + this.PathParam);
         IfNotAuthorized();
         
         Languages = _daoFetcher.LanguageDao().GetLanguages();
-        
-        // We set the layout depending on whether we are creating a new Tour or editing one
-        Creating = TourToEdit.Id == 0;
+
+    // We set the layout depending on whether we are creating a new Tour or editing one
+        Creating = Int32.Parse(PathParam) == 0;
 
         if (Creating)
         {
@@ -141,42 +152,35 @@
 
     private void setLayoutForEditing()
     {
-        TheTour = new Tour
-        {
-            Variants = TourToEdit.Variants,
-            Id = TourToEdit.Id,
-            ImageBase64 = TourToEdit.ImageBase64,
-            CompanyId = TourToEdit.CompanyId,
-            Sights = TourToEdit.Sights
-        };
+        TheTour = _daoFetcher.TourDao().getTourById(Int32.Parse(PathParam));
         
-        // We remove the languages already added
-        int removed = 0;
-        List<int> indexesToRemove = new List<int>();
-        foreach (TourVariant variant in TheTour.Variants)
+        // We set the ones added
+        for (int i = 0; i < TheTour.Variants.Count; i++)
         {
-            for (int i = 0; i < Languages.Count; i++)
-            {
-                if (Languages[i].LanguageCode.Equals(variant.Language.LanguageCode))
+            AddedLanguages.Add(TheTour.Variants[i].Language);
+            AddedCodes.Add(TheTour.Variants[i].Language.LanguageCode);
+        }
+        // We set the removed ones
+                for (int i = 0; i < Languages.Count; i++)
                 {
-                    indexesToRemove.Add(i);
+                    if (!AddedCodes.Contains(Languages[i].LanguageCode))
+                    {
+                        AvailableLanguages.Add(Languages[i]);
+                        AvailableCodes.Add(Languages[i].LanguageCode);
+                    }
                 }
-            }
-        }
-
-        for (int i = 0; i < indexesToRemove.Count; i++)
-        {
-            Languages.Remove(Languages[indexesToRemove[i]-removed]);
-            removed++;
-        }
 
         // We set the default language
-        selectedTourLanguageCode = TheTour.Variants[0].Language.LanguageCode;
+        selectedTourLanguageCode = AvailableCodes[0];
         
         CreateOrUpdateButtonText = "Update Tour and language variants";
         HeaderText = "Update tour '" + TheTour.Variants[0].TourName + "'";
 
         DisableCreatingOrUpdatingTour = false;
+        if (AvailableLanguages.Count == 0)
+        {
+            disableAddingNewVariants = true;
+        } 
     }
 
     private Language GetLanguageByCode(string code)
@@ -204,25 +208,23 @@
             Language = GetLanguageByCode(selectedTourLanguageCode),
             TourDescription = ""
         });
+        AddedLanguages.Add(GetLanguageByCode(selectedTourLanguageCode));
+        AddedCodes.Add(GetLanguageByCode(selectedTourLanguageCode).LanguageCode);
+        AvailableLanguages.Remove(GetLanguageByCode(selectedTourLanguageCode));
+        AvailableCodes.Remove(GetLanguageByCode(selectedTourLanguageCode).LanguageCode);
+        
         // We remove the available languages from the list
         // If it is the last language, we disable
-        if (Languages.Count == 1)
+        if (AvailableLanguages.Count == 0)
         {
             disableAddingNewVariants = true;
             VariantAddingMessage = "No more languages available to add variants for!";
         }
         else
         {
-            for (int i = 0; i < Languages.Count; i++)
-            {
-                if (Languages[i].LanguageCode.Equals(selectedTourLanguageCode))
-                {
-                    Languages.Remove(Languages[i]);
-                    break;
-                }
-            }
+            selectedTourLanguageCode = AvailableCodes[0];
         }
-        selectedTourLanguageCode = Languages[0].LanguageCode;
+        
         hideLanguageChoice = true;
         hideVariantOverview = false;
         DisableCreatingOrUpdatingTour = false;
@@ -240,6 +242,7 @@
 
     private void TourLanguageChanged(ChangeEventArgs e)
     {
+        Console.WriteLine("Selected language: " + (string) e.Value);
         string languageName = (string) e.Value;
         foreach (Language language in Languages)
         {
@@ -330,14 +333,11 @@
     private void RemoveVariant(int index)
     {
         Language ToAdd = TheTour.Variants[index].Language;
-        if (!Languages.Contains(ToAdd))
-        {
-            if (disableAddingNewVariants)
-            {
-                Languages.Clear();
-            }
-            Languages.Add(ToAdd);
-        }
+        AddedLanguages.Remove(ToAdd);
+        AddedCodes.Remove(ToAdd.LanguageCode);
+        AvailableLanguages.Add(ToAdd);
+        AvailableCodes.Add(ToAdd.LanguageCode);
+        
         disableAddingNewVariants = false;
         VariantAddingMessage = "";
         TheTour.Variants.Remove(TheTour.Variants[index]);

@@ -15,7 +15,6 @@
     
 @inject NavigationManager NavManager
 @inject IJSRuntime JsRuntime
-@inject Tour TourToEdit
 @inject IDAOFetcher _daoFetcher
 @inject Company TheCompany
 @inject AuthenticationStateProvider auth
@@ -40,7 +39,7 @@
                             <option>@language</option>
                         }
                     </select>
-                    <button type="button" @onclick="() => EditTour()" disabled="@isTheTourOnTheIndexNotSelected[Tours.IndexOf(tour)]">Edit tour</button>
+                    <a href="/TourManager/@tour.Id" class="button">Edit Tour</a>
                     <button type="button" @onclick="() => SetTourOnMap(tour.Id, true, true)">Manage sights</button>
                 </li>
             }
@@ -852,17 +851,6 @@
  
             StateHasChanged();
             Console.WriteLine("Updated");
-        }
-
-        private void EditTour()
-        {
-            TourToEdit.Id = Tours[SelectedTourIndex].Id;
-            TourToEdit.CompanyId = Tours[SelectedTourIndex].CompanyId;
-            TourToEdit.ImageBase64 = Tours[SelectedTourIndex].ImageBase64;
-            TourToEdit.Variants = Tours[SelectedTourIndex].Variants;
-            TourToEdit.Sights = Tours[SelectedTourIndex].Sights;
-            
-            NavManager.NavigateTo("TourManager");
         }
 
         private void SelectMarkerByPosition(double lat, double lng)

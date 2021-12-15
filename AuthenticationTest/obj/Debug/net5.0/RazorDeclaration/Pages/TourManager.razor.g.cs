@@ -117,7 +117,7 @@ using AuthenticationTest.Data;
 #line default
 #line hidden
 #nullable disable
-    [Microsoft.AspNetCore.Components.RouteAttribute("/TourManager")]
+    [Microsoft.AspNetCore.Components.RouteAttribute("/TourManager/{PathParam}")]
     public partial class TourManager : Microsoft.AspNetCore.Components.ComponentBase
     {
         #pragma warning disable 1998
@@ -126,7 +126,7 @@ using AuthenticationTest.Data;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 71 "C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\Pages\TourManager.razor"
+#line 74 "C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\Pages\TourManager.razor"
        
     // Converters
     private IImageConverter imageConverter = new ImageConverter();
@@ -148,15 +148,23 @@ using AuthenticationTest.Data;
     private Tour TheTour = new Tour();
     
     private List<Language> Languages = new List<Language>();
+    private List<Language> AddedLanguages = new List<Language>();
+    private List<string> AddedCodes = new List<string>();
+    private List<Language> RemovedLanguages = new List<Language>();
+    private List<string> RemovedCodes = new List<string>();
+
+    [Parameter]
+    public string PathParam { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
+        Console.WriteLine("Param: " + this.PathParam);
         IfNotAuthorized();
         
         Languages = _daoFetcher.LanguageDao().GetLanguages();
-        
-        // We set the layout depending on whether we are creating a new Tour or editing one
-        Creating = TourToEdit.Id == 0;
+
+    // We set the layout depending on whether we are creating a new Tour or editing one
+        Creating = Int32.Parse(PathParam) == 0;
 
         if (Creating)
         {
@@ -200,42 +208,35 @@ using AuthenticationTest.Data;
 
     private void setLayoutForEditing()
     {
-        TheTour = new Tour
-        {
-            Variants = TourToEdit.Variants,
-            Id = TourToEdit.Id,
-            ImageBase64 = TourToEdit.ImageBase64,
-            CompanyId = TourToEdit.CompanyId,
-            Sights = TourToEdit.Sights
-        };
+        TheTour = _daoFetcher.TourDao().getTourById(Int32.Parse(PathParam));
         
-        // We remove the languages already added
-        int removed = 0;
-        List<int> indexesToRemove = new List<int>();
-        foreach (TourVariant variant in TheTour.Variants)
+        // We set the ones added
+        for (int i = 0; i < TheTour.Variants.Count; i++)
         {
-            for (int i = 0; i < Languages.Count; i++)
-            {
-                if (Languages[i].LanguageCode.Equals(variant.Language.LanguageCode))
+            AddedLanguages.Add(TheTour.Variants[i].Language);
+            AddedCodes.Add(TheTour.Variants[i].Language.LanguageCode);
+        }
+        // We set the removed ones
+                for (int i = 0; i < Languages.Count; i++)
                 {
-                    indexesToRemove.Add(i);
+                    if (!AddedCodes.Contains(Languages[i].LanguageCode))
+                    {
+                        RemovedLanguages.Add(Languages[i]);
+                        RemovedCodes.Add(Languages[i].LanguageCode);
+                    }
                 }
-            }
-        }
-
-        for (int i = 0; i < indexesToRemove.Count; i++)
-        {
-            Languages.Remove(Languages[indexesToRemove[i]-removed]);
-            removed++;
-        }
 
         // We set the default language
-        selectedTourLanguageCode = TheTour.Variants[0].Language.LanguageCode;
+        selectedTourLanguageCode = RemovedCodes[0];
         
         CreateOrUpdateButtonText = "Update Tour and language variants";
         HeaderText = "Update tour '" + TheTour.Variants[0].TourName + "'";
 
         DisableCreatingOrUpdatingTour = false;
+        if (RemovedLanguages.Count == 0)
+        {
+            disableAddingNewVariants = true;
+        } 
     }
 
     private Language GetLanguageByCode(string code)
@@ -263,25 +264,23 @@ using AuthenticationTest.Data;
             Language = GetLanguageByCode(selectedTourLanguageCode),
             TourDescription = ""
         });
+        AddedLanguages.Add(GetLanguageByCode(selectedTourLanguageCode));
+        AddedCodes.Add(GetLanguageByCode(selectedTourLanguageCode).LanguageCode);
+        RemovedLanguages.Remove(GetLanguageByCode(selectedTourLanguageCode));
+        RemovedCodes.Remove(GetLanguageByCode(selectedTourLanguageCode).LanguageCode);
+        
         // We remove the available languages from the list
         // If it is the last language, we disable
-        if (Languages.Count == 1)
+        if (RemovedLanguages.Count == 0)
         {
             disableAddingNewVariants = true;
             VariantAddingMessage = "No more languages available to add variants for!";
         }
         else
         {
-            for (int i = 0; i < Languages.Count; i++)
-            {
-                if (Languages[i].LanguageCode.Equals(selectedTourLanguageCode))
-                {
-                    Languages.Remove(Languages[i]);
-                    break;
-                }
-            }
+            selectedTourLanguageCode = RemovedCodes[0];
         }
-        selectedTourLanguageCode = Languages[0].LanguageCode;
+        
         hideLanguageChoice = true;
         hideVariantOverview = false;
         DisableCreatingOrUpdatingTour = false;
@@ -299,6 +298,7 @@ using AuthenticationTest.Data;
 
     private void TourLanguageChanged(ChangeEventArgs e)
     {
+        Console.WriteLine("Selected language: " + (string) e.Value);
         string languageName = (string) e.Value;
         foreach (Language language in Languages)
         {
@@ -389,14 +389,11 @@ using AuthenticationTest.Data;
     private void RemoveVariant(int index)
     {
         Language ToAdd = TheTour.Variants[index].Language;
-        if (!Languages.Contains(ToAdd))
-        {
-            if (disableAddingNewVariants)
-            {
-                Languages.Clear();
-            }
-            Languages.Add(ToAdd);
-        }
+        AddedLanguages.Remove(ToAdd);
+        AddedCodes.Remove(ToAdd.LanguageCode);
+        RemovedLanguages.Add(ToAdd);
+        RemovedCodes.Add(ToAdd.LanguageCode);
+        
         disableAddingNewVariants = false;
         VariantAddingMessage = "";
         TheTour.Variants.Remove(TheTour.Variants[index]);
@@ -416,7 +413,6 @@ using AuthenticationTest.Data;
 #line hidden
 #nullable disable
         [global::Microsoft.AspNetCore.Components.InjectAttribute] private AuthenticationStateProvider auth { get; set; }
-        [global::Microsoft.AspNetCore.Components.InjectAttribute] private Tour TourToEdit { get; set; }
         [global::Microsoft.AspNetCore.Components.InjectAttribute] private IJSRuntime JsRuntime { get; set; }
         [global::Microsoft.AspNetCore.Components.InjectAttribute] private NavigationManager NavManager { get; set; }
         [global::Microsoft.AspNetCore.Components.InjectAttribute] private IDAOFetcher _daoFetcher { get; set; }
