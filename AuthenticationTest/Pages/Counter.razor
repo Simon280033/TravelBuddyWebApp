@@ -918,7 +918,7 @@
         {
             foreach (RadzenGoogleMapMarker marker in Markers)
             {
-                Console.WriteLine("Name: " + name + ", label: " + marker.Label);
+                Console.WriteLine("Lat: " + marker.Position.Lat);
                 if (marker.Label.Equals(name))
                 {
                     lat = marker.Position.Lat;

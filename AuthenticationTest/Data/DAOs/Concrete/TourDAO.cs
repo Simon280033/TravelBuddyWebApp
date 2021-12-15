@@ -413,8 +413,8 @@ namespace AuthenticationTest.Data
                             {
                                 Id = sightId,
                                 ImageBase64 = sdr["sight_image"].ToString(),
-                                Latitude = (double) Double.Parse(sdr["latitude"].ToString().ToString().Replace(".", ",")),
-                                Longitude = (double) Double.Parse(sdr["longitude"].ToString().ToString().Replace(".", ",")),
+                                Latitude = (double) Double.Parse((string) sdr["latitude"]),
+                                Longitude = (double) Double.Parse((string)sdr["longitude"]),
                                 RadiusInMeters = (int) Int32.Parse(sdr["radius_in_meters"].ToString()),
                                 TourId = tourToWork.Id,
                                 Variants = new List<SightVariant>()
@@ -449,6 +449,46 @@ namespace AuthenticationTest.Data
                     }
                 }
                 conn.Close();
+                // We check if each sight has a variant for each tour variant
+                for (int i = 0; i < tours.Count; i++)
+                {
+                    List<string> tourLanguageCodes = new List<string>();
+                    List<Language> tourLanguages = new List<Language>();
+                    foreach (TourVariant variant in tours[i].Variants)
+                    {
+                        tourLanguageCodes.Add(variant.Language.LanguageCode);
+                        tourLanguages.Add(variant.Language);
+                    }
+                    // We go over each sight
+                    foreach (Sight sight in tours[i].Sights)
+                    {
+                        List<string> sightLanguages = new List<string>();
+                        // We add all variants to the list
+                        foreach (SightVariant variant in sight.Variants)
+                        {
+                            sightLanguages.Add(variant.Language.LanguageCode);
+                        }
+                        // We go through each tour language, and check if one exists for the sight
+                        foreach (string tourLang in tourLanguageCodes)
+                        {
+                            if (!sightLanguages.Contains(tourLang))
+                            {
+                                int indexOfLang = 0;
+                                indexOfLang = tourLanguageCodes.IndexOf(tourLang);
+                                // If it isn't there, we add a dummy
+                                sight.Variants.Add(new SightVariant
+                                {
+                                    Language = new Language
+                                    {
+                                        LanguageCode = tourLanguages[indexOfLang].LanguageCode,
+                                        LanguageName = tourLanguages[indexOfLang].LanguageName
+                                    },
+                                    SightName = "Dummy " + tourLanguages[indexOfLang].LanguageCode
+                                });
+                            }
+                        }
+                    }
+                }
                 return tours;
             }
         }
