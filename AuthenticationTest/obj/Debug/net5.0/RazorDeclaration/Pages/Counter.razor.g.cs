@@ -697,6 +697,17 @@ using Path = System.IO.Path;
                 }
             }
             
+            // We get index for variant
+            int index = 0;
+            for (int i = 0; i < tourContent[0].Variants.Count; i++)
+            {
+                if (tourContent[0].Variants[i].Language.LanguageCode.Equals(selectedTourLanguageCode))
+                {
+                    index = i;
+                    break;
+                }
+            }
+            
             for (int i = 0; i < tourContent.Count; i++)
             {
                 GoogleMapPosition newPos = new GoogleMapPosition
@@ -708,7 +719,7 @@ using Path = System.IO.Path;
                 RadzenGoogleMapMarker newMarker = new RadzenGoogleMapMarker()
                 {
                     Position = newPos,
-                    Label = tourContent[i].Variants[0].SightName
+                    Label = tourContent[i].Variants[index].SightName
                 };
 
                 Markers.Add(newMarker);

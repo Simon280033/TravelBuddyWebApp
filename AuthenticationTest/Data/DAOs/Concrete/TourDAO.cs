@@ -130,12 +130,13 @@ namespace AuthenticationTest.Data
                             {
                                 Id = sightId,
                                 ImageBase64 = sdr["sight_image"].ToString(),
-                                Latitude = (double) Double.Parse(sdr["latitude"].ToString()),
-                                Longitude = (double) Double.Parse(sdr["longitude"].ToString()),
+                                Latitude = (double) Double.Parse(sdr["latitude"].ToString().Replace(".", ",")),
+                                Longitude = (double) Double.Parse(sdr["longitude"].ToString().Replace(".", ",")),
                                 RadiusInMeters = (int) Int32.Parse(sdr["radius_in_meters"].ToString()),
                                 TourId = tourToWork.Id,
                                 Variants = new List<SightVariant>()
                             };
+                            Console.WriteLine("Lat: " + (double) Double.Parse(sdr["latitude"].ToString().Replace(".", ",")));
                             // We add the sight to the tour
                             tourToWork.Sights.Add(sight);
                         } 
@@ -412,8 +413,8 @@ namespace AuthenticationTest.Data
                             {
                                 Id = sightId,
                                 ImageBase64 = sdr["sight_image"].ToString(),
-                                Latitude = (double) Double.Parse(sdr["latitude"].ToString()),
-                                Longitude = (double) Double.Parse(sdr["longitude"].ToString()),
+                                Latitude = (double) Double.Parse(sdr["latitude"].ToString().ToString().Replace(".", ",")),
+                                Longitude = (double) Double.Parse(sdr["longitude"].ToString().ToString().Replace(".", ",")),
                                 RadiusInMeters = (int) Int32.Parse(sdr["radius_in_meters"].ToString()),
                                 TourId = tourToWork.Id,
                                 Variants = new List<SightVariant>()
