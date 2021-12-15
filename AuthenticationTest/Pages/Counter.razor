@@ -224,7 +224,10 @@
                 List<string> languageCodes = new List<string>();
                 for (int j = 0; j < Tours[i].Variants.Count; j++)
                 {
-                    languageCodes.Add(Tours[i].Variants[j].Language.LanguageCode);
+                    if (Tours[i].Variants[j].Language != null)
+                    {
+                        languageCodes.Add(Tours[i].Variants[j].Language.LanguageCode);
+                    }
                 }
                 tourLanguageCodes.Add(languageCodes);
                 selectedLanguageCodeForTour.Add(Tours[i].Variants[0].Language.LanguageCode);

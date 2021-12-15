@@ -489,6 +489,22 @@ namespace AuthenticationTest.Data
                         }
                     }
                 }
+                // Now we make sure that they all have the same amount of tour variants
+                int highestAmount = 0;
+                foreach (Tour tour in tours)
+                {
+                    if (tour.Variants.Count > highestAmount)
+                    {
+                        highestAmount = tour.Variants.Count;
+                    }
+                }
+                foreach (Tour tour in tours)
+                {
+                    while (tour.Variants.Count < highestAmount)
+                    {
+                       tour.Variants.Add(new TourVariant());
+                    }
+                }
                 return tours;
             }
         }
