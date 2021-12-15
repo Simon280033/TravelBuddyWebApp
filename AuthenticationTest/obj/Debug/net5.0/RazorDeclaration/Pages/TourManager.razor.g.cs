@@ -150,8 +150,8 @@ using AuthenticationTest.Data;
     private List<Language> Languages = new List<Language>();
     private List<Language> AddedLanguages = new List<Language>();
     private List<string> AddedCodes = new List<string>();
-    private List<Language> RemovedLanguages = new List<Language>();
-    private List<string> RemovedCodes = new List<string>();
+    private List<Language> AvailableLanguages = new List<Language>();
+    private List<string> AvailableCodes = new List<string>();
 
     [Parameter]
     public string PathParam { get; set; }
@@ -192,6 +192,12 @@ using AuthenticationTest.Data;
     private void SetLayoutForCreating()
     {
         selectedTourLanguageCode = Languages[0].LanguageCode;
+
+        foreach (Language lang in Languages)
+        {
+            AvailableLanguages.Add(lang);
+            AvailableCodes.Add(lang.LanguageCode);
+        }
         
         TheTour = new Tour
         {
@@ -221,19 +227,19 @@ using AuthenticationTest.Data;
                 {
                     if (!AddedCodes.Contains(Languages[i].LanguageCode))
                     {
-                        RemovedLanguages.Add(Languages[i]);
-                        RemovedCodes.Add(Languages[i].LanguageCode);
+                        AvailableLanguages.Add(Languages[i]);
+                        AvailableCodes.Add(Languages[i].LanguageCode);
                     }
                 }
 
         // We set the default language
-        selectedTourLanguageCode = RemovedCodes[0];
+        selectedTourLanguageCode = AvailableCodes[0];
         
         CreateOrUpdateButtonText = "Update Tour and language variants";
         HeaderText = "Update tour '" + TheTour.Variants[0].TourName + "'";
 
         DisableCreatingOrUpdatingTour = false;
-        if (RemovedLanguages.Count == 0)
+        if (AvailableLanguages.Count == 0)
         {
             disableAddingNewVariants = true;
         } 
@@ -266,19 +272,19 @@ using AuthenticationTest.Data;
         });
         AddedLanguages.Add(GetLanguageByCode(selectedTourLanguageCode));
         AddedCodes.Add(GetLanguageByCode(selectedTourLanguageCode).LanguageCode);
-        RemovedLanguages.Remove(GetLanguageByCode(selectedTourLanguageCode));
-        RemovedCodes.Remove(GetLanguageByCode(selectedTourLanguageCode).LanguageCode);
+        AvailableLanguages.Remove(GetLanguageByCode(selectedTourLanguageCode));
+        AvailableCodes.Remove(GetLanguageByCode(selectedTourLanguageCode).LanguageCode);
         
         // We remove the available languages from the list
         // If it is the last language, we disable
-        if (RemovedLanguages.Count == 0)
+        if (AvailableLanguages.Count == 0)
         {
             disableAddingNewVariants = true;
             VariantAddingMessage = "No more languages available to add variants for!";
         }
         else
         {
-            selectedTourLanguageCode = RemovedCodes[0];
+            selectedTourLanguageCode = AvailableCodes[0];
         }
         
         hideLanguageChoice = true;
@@ -391,8 +397,8 @@ using AuthenticationTest.Data;
         Language ToAdd = TheTour.Variants[index].Language;
         AddedLanguages.Remove(ToAdd);
         AddedCodes.Remove(ToAdd.LanguageCode);
-        RemovedLanguages.Add(ToAdd);
-        RemovedCodes.Add(ToAdd.LanguageCode);
+        AvailableLanguages.Add(ToAdd);
+        AvailableCodes.Add(ToAdd.LanguageCode);
         
         disableAddingNewVariants = false;
         VariantAddingMessage = "";

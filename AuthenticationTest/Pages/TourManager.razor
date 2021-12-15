@@ -136,6 +136,12 @@
     private void SetLayoutForCreating()
     {
         selectedTourLanguageCode = Languages[0].LanguageCode;
+
+        foreach (Language lang in Languages)
+        {
+            AvailableLanguages.Add(lang);
+            AvailableCodes.Add(lang.LanguageCode);
+        }
         
         TheTour = new Tour
         {
