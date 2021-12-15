@@ -206,16 +206,14 @@ namespace AuthenticationTest.Data
                 conn.Close();
         }
 
-        public void updateTour(Tour tour)
+        private List<string> getVariantCodes(int tourId)
         {
-           Console.WriteLine("Attempting to update tour...");
-           OpenConnIfClosed();
-           using (NpgsqlCommand command = new NpgsqlCommand())
+            List<string> variantCodes = new List<string>();
+            OpenConnIfClosed();
+            using (NpgsqlCommand command = new NpgsqlCommand())
             {
-                // We get the current variants
-                List<string> variantCodes = new List<string>();
                 command.CommandText = "SELECT language_code FROM travelbuddy.tour_variants WHERE tour_id = @tourId;";
-                command.Parameters.AddWithValue("tourId", tour.Id);
+                command.Parameters.AddWithValue("tourId", tourId);
                 command.Connection = conn;
                 using (NpgsqlDataReader sdr = command.ExecuteReader())
                 {
@@ -224,15 +222,96 @@ namespace AuthenticationTest.Data
                         variantCodes.Add(sdr["language_code"].ToString());
                     }
                 }
-                
-                // We update the tour itself
-                command.CommandText = "UPDATE travelbuddy.Tours SET tour_image = @imageBase64";
+            }
+            conn.Close();
+            return variantCodes;
+        }
+
+        private void UpdateTourWithoutVariants(Tour tour)
+        {
+            OpenConnIfClosed();
+            using (NpgsqlCommand command = new NpgsqlCommand())
+            {
+                command.CommandText = "UPDATE travelbuddy.Tours SET tour_image = @imageBase64 WHERE tour_id = @tourId;";
                 command.Connection = conn;
                 command.Parameters.AddWithValue("imageBase64", tour.ImageBase64);
+                command.Parameters.AddWithValue("tourId", tour.Id);
                 command.Prepare();
                 command.ExecuteNonQuery();
                 command.Cancel();
                 Console.WriteLine("Updated tour! Attempting to update " + tour.Variants.Count + " variants...");
+            }
+            conn.Close();
+        }
+
+        private void CreateVariant(Tour tour, TourVariant variant)
+        {
+            OpenConnIfClosed();
+            using (NpgsqlCommand command = new NpgsqlCommand())
+            {
+                command.CommandText =
+                    "INSERT INTO travelbuddy.Tour_variants VALUES(@tourId, @languageCode, @tourName, @tourDescription) ON CONFLICT DO NOTHING;";
+                command.Connection = conn;
+                command.Parameters.AddWithValue("tourId", tour.Id);
+                command.Parameters.AddWithValue("companyId", tour.CompanyId);
+                command.Parameters.AddWithValue("languageCode", variant.Language.LanguageCode);
+                command.Parameters.AddWithValue("tourName", variant.TourName);
+                command.Parameters.AddWithValue("tourDescription", variant.TourDescription);
+                command.Prepare();
+                command.ExecuteNonQuery();
+                command.Cancel();
+                Console.WriteLine("Created variant for language '" + variant.Language.LanguageName + "'!");
+            }
+            conn.Close();
+        }
+
+        private void UpdateVariant(Tour tour, TourVariant variant)
+        {
+            OpenConnIfClosed();
+            using (NpgsqlCommand command = new NpgsqlCommand())
+            {
+                command.CommandText =
+                    "UPDATE travelbuddy.Tour_variants SET tour_name = @tourName, tour_description = @tourDescription WHERE tour_id = @tourId AND language_code = @languageCode;";
+                command.Connection = conn;
+                command.Parameters.AddWithValue("tourId", tour.Id);
+                command.Parameters.AddWithValue("languageCode", variant.Language.LanguageCode);
+                command.Parameters.AddWithValue("tourName", variant.TourName);
+                command.Parameters.AddWithValue("tourDescription", variant.TourDescription);
+                command.Prepare();
+                command.ExecuteNonQuery();
+                command.Cancel();
+                Console.WriteLine("Updated variant for language '" + variant.Language.LanguageName + "'!");
+            }
+            conn.Close();
+        }
+
+        private void DeleteVariant(Tour tour, string code)
+        {
+            OpenConnIfClosed();
+            using (NpgsqlCommand command = new NpgsqlCommand())
+            {
+                Console.WriteLine("Attempting to delete variant for language '" + code + "'...");
+                command.CommandText =
+                    "DELETE FROM travelbuddy.Tour_variants WHERE tour_id = @tourId AND language_code = @languageCode;";
+                command.Connection = conn;
+                command.Parameters.AddWithValue("tourId", tour.Id);
+                command.Parameters.AddWithValue("languageCode", code);
+                command.Prepare();
+                command.ExecuteNonQuery();
+                command.Cancel();
+                Console.WriteLine("Succesfully deleted variant for language '" + code + "'!");
+            }
+            conn.Close();
+        }
+
+        public void updateTour(Tour tour)
+        {
+           Console.WriteLine("Attempting to update tour...");
+                // We get the current variants
+                List<string> variantCodes = getVariantCodes(tour.Id);
+                
+                // We update the tour itself
+                UpdateTourWithoutVariants(tour);
                 
                 // We make a list of the new variants
                 List<string> newVariants = new List<string>();
@@ -242,31 +321,12 @@ namespace AuthenticationTest.Data
                     // If it is not in the DB already, we create it
                     if (!variantCodes.Contains(tour.Variants[i].Language.LanguageCode))
                     {
-                        command.CommandText = "INSERT INTO travelbuddy.Tour_variants VALUES(@tourId, @languageCode, @tourName, @tourDescription);";
-                        command.Connection = conn;
-                        command.Parameters.AddWithValue("tourId", tour.Id);
-                        command.Parameters.AddWithValue("companyId", tour.CompanyId);
-                        command.Parameters.AddWithValue("languageCode", tour.Variants[i].Language.LanguageCode);
-                        command.Parameters.AddWithValue("tourName", tour.Variants[i].TourName);
-                        command.Parameters.AddWithValue("tourDescription", tour.Variants[i].TourDescription);
-                        command.Prepare();
-                        command.ExecuteNonQuery();
-                        command.Cancel();
-                        Console.WriteLine("Created variant for language '" + tour.Variants[i].Language.LanguageName + "'!");
+                        CreateVariant(tour, tour.Variants[i]);
                     }
                     else
                     {
                         // If it is already in there, we update it
-                        command.CommandText = "UPDATE travelbuddy.Tour_variants SET tour_name = @tourName, tour_description = @tourDescription WHERE tour_id = @tourId AND language_code = @languageCode;";
-                        command.Connection = conn;
-                        command.Parameters.AddWithValue("tourId", tour.Id);
-                        command.Parameters.AddWithValue("languageCode", tour.Variants[i].Language.LanguageCode);
-                        command.Parameters.AddWithValue("tourName", tour.Variants[i].TourName);
-                        command.Parameters.AddWithValue("tourDescription", tour.Variants[i].TourDescription);
-                        command.Prepare();
-                        command.ExecuteNonQuery();
-                        command.Cancel();
-                        Console.WriteLine("Updated variant for language '" + tour.Variants[i].Language.LanguageName + "'!");
+                        UpdateVariant(tour, tour.Variants[i]);
                     }
                     // We add language to the new list
                     newVariants.Add(tour.Variants[i].Language.LanguageCode);
@@ -277,20 +337,10 @@ namespace AuthenticationTest.Data
                 {
                     if (!newVariants.Contains(code))
                     {
-                        Console.WriteLine("Attempting to delete variant for language '" + code + "'...");
-                        command.CommandText = "DELETE travelbuddy.Tour_variants WHERE tour_id = @tourId AND language_code = @languageCode;";
-                        command.Connection = conn;
-                        command.Parameters.AddWithValue("tourId", tour.Id);
-                        command.Parameters.AddWithValue("languageCode", code);
-                        command.Prepare();
-                        command.ExecuteNonQuery();
-                        command.Cancel();
-                        Console.WriteLine("Succesfully deleted variant for language '" + code + "'!");
+                        DeleteVariant(tour, code);
                     }
                 }
-                conn.Close();
-            }
-            Console.WriteLine("Successfully updated tour!");        
+                Console.WriteLine("Successfully updated tour!");        
         }
 
         public List<Tour> getToursForCompany(int companyId)
@@ -540,8 +590,8 @@ namespace AuthenticationTest.Data
                                 LanguageCode = sdr["language_code"].ToString(),
                                 LanguageName = sdr["language_name"].ToString()
                             },
-                            TourName = "tour_name",
-                            TourDescription = "tour_description"
+                            TourName = sdr["tour_name"].ToString(),
+                            TourDescription = sdr["tour_description"].ToString()
                         };
 
                         if (tour.Id == 0)
@@ -556,6 +606,7 @@ namespace AuthenticationTest.Data
                 }
                 conn.Close();
             }
+            Console.WriteLine("Tour name: " + tour.Variants[0].TourName);
             return tour;
         }
 

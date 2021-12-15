@@ -295,6 +295,69 @@
 
     private async void UpdateTour()
     {
+        Tour oldTour = _daoFetcher.TourDao().getTourById(TheTour.Id);
+        // We check if any variants were deleted
+        Console.WriteLine("Old: " + oldTour.Variants.Count + ", new: " + TheTour.Variants.Count);
+        if (oldTour.Variants.Count > TheTour.Variants.Count)
+        {
+            // We make a list of new ids
+            List<string> oldLanguages = new List<string>();
+            foreach (TourVariant variant in oldTour.Variants)
+            {
+                oldLanguages.Add(variant.Language.LanguageCode);
+            }
+            List<string> newLanguages = new List<string>();
+            foreach (TourVariant variant in TheTour.Variants)
+            {
+                newLanguages.Add(variant.Language.LanguageCode);
+            }
+            Console.WriteLine("Old: " + oldLanguages.Count + ", new: " + newLanguages.Count);
+            // We remove the ones
+            for (int i = oldTour.Variants.Count - 1; i >= 0; i--)
+            {
+                Console.WriteLine("The new tour contains " + oldTour.Variants[i].Language.LanguageCode + ": " + newLanguages.Contains(oldTour.Variants[i].Language.LanguageCode));
+                if (!newLanguages.Contains(oldTour.Variants[i].Language.LanguageCode))
+                {
+                    Console.WriteLine("Removing " + oldTour.Variants[i].Language.LanguageCode);
+                    oldTour.Variants.Remove(oldTour.Variants[i]);
+                }
+            }
+        }
+        // We check if any were added
+        else if (oldTour.Variants.Count < TheTour.Variants.Count)
+        {
+    // We make a list of old ids
+            List<string> ids = new List<string>();
+            foreach (TourVariant variant in oldTour.Variants)
+            {
+                ids.Add(variant.Language.LanguageCode);
+            }
+    // We add the ones
+            foreach (TourVariant variant in TheTour.Variants)
+            {
+                if (!ids.Contains(variant.Language.LanguageCode))
+                {
+                    oldTour.Variants.Add(variant);
+                }
+            }
+        }
+        // We check if any of them were changed
+        foreach (TourVariant variant in oldTour.Variants)
+        {
+            // We get the new info
+            foreach (TourVariant variant2 in TheTour.Variants)
+            {
+                if (variant.Language.LanguageCode.Equals(variant2.Language.LanguageCode))
+                {
+                    variant.TourName = variant2.TourName;
+                    variant.TourDescription = variant2.TourDescription;
+                }
+            }
+        }
+        // We set the new image
+        oldTour.ImageBase64 = TheTour.ImageBase64;
+        // Then we update
+        _daoFetcher.TourDao().updateTour(oldTour);
         await JsRuntime.InvokeVoidAsync("alert", "Tour '" + TheTour.Variants[0].TourName + "' succesfully updated! Navigating to Sight Manager...");
         NavManager.NavigateTo("Counter");
     }
