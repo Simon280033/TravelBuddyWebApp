@@ -401,47 +401,6 @@ using Path = System.IO.Path;
             placeNewSightOnClick = false;
             SetDoNothingOnClickMode();
             
-            // We create empty variants for the lacking languages
-            List<bool> languagesAndIfTheyExist = new List<bool>();
-        // We go through the languages, and see if they exist
-                for (int i = 0; i < Tours[SelectedTourIndex].Variants.Count; i++)
-                {
-                    languagesAndIfTheyExist.Add(false);
-                    // We go through the sight variants
-                    for (int j = 0; j < selectedSight.Variants.Count; j++)
-                    {
-                        if (selectedSight.Variants[j].Language.LanguageCode.Equals(Tours[SelectedTourIndex].Variants[i].Language.LanguageCode))
-                        {
-                            Console.WriteLine(selectedSight.Variants[j].Language.LanguageName + " exists");
-                            languagesAndIfTheyExist[i] = true;
-                            break;
-                        }
-                    }
-                }
-        // We create empty ones for the ones that didn't exist
-                for (int i = 0; i < languagesAndIfTheyExist.Count; i++)
-                {
-                    // If it doesn't exist
-                    if (!languagesAndIfTheyExist[i])
-                    {
-                        SightVariant emptyVariant = new SightVariant
-                        {
-                            Language = new Language
-                            {
-                                LanguageCode = Tours[SelectedTourIndex].Variants[i].Language.LanguageCode,
-                                LanguageName = Tours[SelectedTourIndex].Variants[i].Language.LanguageName
-                            },
-                            SightName = "Untitled for '" + Tours[SelectedTourIndex].Variants[i].Language.LanguageName + "'",
-                            SightDescription = "",
-                            AudioBase64 = "",
-                            AudioFileName = ""
-                        };
-                        
-                        selectedSight.Variants.Add(emptyVariant);
-                    }
-                }
-            
-            selectedSight.Id = Int32.MaxValue;
             Tours[SelectedTourIndex].Sights.Add(selectedSight);
         }
 
@@ -886,17 +845,6 @@ using Path = System.IO.Path;
                         // Set info for language variants
                         if (selectedSightVariantIndex < 0)
                         {
-                            // We add an empty variant
-                            /*
-                            selectedSight.Variants.Add(new SightVariant
-                            {
-                                AudioBase64 = "",
-                                AudioFileName = "",
-                                Language = selectedTour.Variants[selectedVariantIndexForToursByIndex[SelectedTourIndex]].Language,
-                                SightDescription = "",
-                                SightName = ""
-                            });
-*/
                             selectedSightVariantIndex = selectedSight.Variants.Count - 1;
                         }
                     }
@@ -946,12 +894,11 @@ using Path = System.IO.Path;
             NavManager.NavigateTo("TourManager");
         }
 
-        private void SelectMarkerByName(string name)
+        private void SelectMarkerByPosition(double lat, double lng)
         {
             foreach (RadzenGoogleMapMarker marker in Markers)
             {
-                Console.WriteLine("Lat: " + marker.Position.Lat);
-                if (marker.Label.Equals(name))
+                if (marker.Position.Lat == lat && marker.Position.Lng == lng)
                 {
                     lat = marker.Position.Lat;
                     lng = marker.Position.Lng;

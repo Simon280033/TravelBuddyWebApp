@@ -483,7 +483,7 @@ namespace AuthenticationTest.Data
                                         LanguageCode = tourLanguages[indexOfLang].LanguageCode,
                                         LanguageName = tourLanguages[indexOfLang].LanguageName
                                     },
-                                    SightName = "Dummy " + tourLanguages[indexOfLang].LanguageCode
+                                    SightName = "Untitled " + tourLanguages[indexOfLang].LanguageName + " version of '" + sight.Variants[0].SightName + "'"
                                 });
                             }
                         }
