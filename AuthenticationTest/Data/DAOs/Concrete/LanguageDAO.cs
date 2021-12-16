@@ -59,7 +59,6 @@ namespace AuthenticationTest.Data
                 
                 foreach (var item in items)
                 {
-                    Console.WriteLine("Code: " + item.code + ", name: " + item.name);
                     SeedLanguage(item);
                 }
             }

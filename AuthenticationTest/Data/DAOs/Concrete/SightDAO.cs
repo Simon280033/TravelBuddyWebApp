@@ -49,7 +49,6 @@ namespace AuthenticationTest.Data
 
         private int CreateSight(Sight sight, int tourId)
         {
-            Console.WriteLine("CreateSight");
             int newId = 0;
             OpenConnIfClosed();
             using (NpgsqlCommand command = new NpgsqlCommand())
@@ -73,7 +72,6 @@ namespace AuthenticationTest.Data
                 }
             }
             conn.Close();
-            Console.WriteLine("ID for newly created sight: " + newId);
             return newId;
         }
         
@@ -91,7 +89,6 @@ namespace AuthenticationTest.Data
 
         private void CreateVariant(Sight sight, int tourId, string languageCode)
         {
-            Console.WriteLine("CreateOrUpdateVariant");
             // We get the variant
             SightVariant variant = new SightVariant();
             foreach (SightVariant sv in sight.Variants)
@@ -127,7 +124,6 @@ namespace AuthenticationTest.Data
 
         private void UpdateVariant(Sight sight, int tourId, string languageCode)
         {
-            Console.WriteLine("CreateOrUpdateVariant");
             // We get the variant
             SightVariant variant = new SightVariant();
             foreach (SightVariant sv in sight.Variants)

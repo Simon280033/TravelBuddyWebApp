@@ -136,7 +136,6 @@ namespace AuthenticationTest.Data
                                 TourId = tourToWork.Id,
                                 Variants = new List<SightVariant>()
                             };
-                            Console.WriteLine("Lat: " + (double) Double.Parse(sdr["latitude"].ToString().Replace(".", ",")));
                             // We add the sight to the tour
                             tourToWork.Sights.Add(sight);
                         } 
@@ -160,7 +159,6 @@ namespace AuthenticationTest.Data
         public void createTour(Tour tour)
         {
             OpenConnIfClosed();
-            Console.WriteLine("Attempting to create tour...");
             using (NpgsqlCommand command = new NpgsqlCommand())
             {
                 // We add the tour itself
@@ -172,7 +170,6 @@ namespace AuthenticationTest.Data
                 command.ExecuteNonQuery();
                 command.Cancel();
                 command.Dispose();
-                Console.WriteLine("Created tour! Attempting to create " + tour.Variants.Count + " variants...");
             }
             // We then add any variants
                 for (int i = 0; i < tour.Variants.Count; i++)
@@ -180,7 +177,6 @@ namespace AuthenticationTest.Data
                     CreateVariant(tour.CompanyId, tour.Variants[i]);
                 }
                 conn.Close();
-                Console.WriteLine("Successfully created tour!");
         }
 
         private void CreateVariant(int companyId, TourVariant variant)
@@ -200,8 +196,6 @@ namespace AuthenticationTest.Data
                     command.ExecuteNonQuery();
                     command.Cancel();
                     command.Dispose();
-                    Console.WriteLine("Created variant for language '" + variant.Language.LanguageName +
-                                      "'!");
                 }
                 conn.Close();
         }
@@ -239,7 +233,6 @@ namespace AuthenticationTest.Data
                 command.Prepare();
                 command.ExecuteNonQuery();
                 command.Cancel();
-                Console.WriteLine("Updated tour! Attempting to update " + tour.Variants.Count + " variants...");
             }
             conn.Close();
         }
@@ -260,7 +253,6 @@ namespace AuthenticationTest.Data
                 command.Prepare();
                 command.ExecuteNonQuery();
                 command.Cancel();
-                Console.WriteLine("Created variant for language '" + variant.Language.LanguageName + "'!");
             }
             conn.Close();
         }
@@ -280,7 +272,6 @@ namespace AuthenticationTest.Data
                 command.Prepare();
                 command.ExecuteNonQuery();
                 command.Cancel();
-                Console.WriteLine("Updated variant for language '" + variant.Language.LanguageName + "'!");
             }
             conn.Close();
         }
@@ -290,7 +281,6 @@ namespace AuthenticationTest.Data
             OpenConnIfClosed();
             using (NpgsqlCommand command = new NpgsqlCommand())
             {
-                Console.WriteLine("Attempting to delete variant for language '" + code + "'...");
                 command.CommandText =
                     "DELETE FROM travelbuddy.Tour_variants WHERE tour_id = @tourId AND language_code = @languageCode;";
                 command.Connection = conn;
@@ -299,14 +289,12 @@ namespace AuthenticationTest.Data
                 command.Prepare();
                 command.ExecuteNonQuery();
                 command.Cancel();
-                Console.WriteLine("Succesfully deleted variant for language '" + code + "'!");
             }
             conn.Close();
         }
 
         public void updateTour(Tour tour)
         {
-           Console.WriteLine("Attempting to update tour...");
                 // We get the current variants
                 List<string> variantCodes = getVariantCodes(tour.Id);
                 
@@ -340,7 +328,6 @@ namespace AuthenticationTest.Data
                         DeleteVariant(tour, code);
                     }
                 }
-                Console.WriteLine("Successfully updated tour!");        
         }
 
         public List<Tour> getToursForCompany(int companyId)
@@ -393,7 +380,6 @@ namespace AuthenticationTest.Data
                             // And add it to the lists
                             tourIdsAdded.Add(tourId);
                             tours.Add(tour);
-                            Console.WriteLine("Tour " + tourId + " added");
                         }
                         
                         // We get the tour for the row
@@ -607,7 +593,6 @@ namespace AuthenticationTest.Data
                 }
                 conn.Close();
             }
-            Console.WriteLine("Tour name: " + tour.Variants[0].TourName);
             return tour;
         }
 
