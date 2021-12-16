@@ -154,8 +154,10 @@ using Microsoft.EntityFrameworkCore;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 67 "C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\Pages\Index.razor"
+#line 136 "C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\Pages\Index.razor"
  
+    private bool HideSignInPrompt = false;
+    
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         await JsRuntime.InvokeVoidAsync("startCarousels");
@@ -173,6 +175,8 @@ using Microsoft.EntityFrameworkCore;
 
         if (isAuthenticated)
         {
+            HideSignInPrompt = true;
+            
             // We check if company details are tied to user
             bool isTied = _daoFetcher.CompanyDao().userTiedToCompany(auth.GetAuthenticationStateAsync().Result.User.Identity.Name);
 
