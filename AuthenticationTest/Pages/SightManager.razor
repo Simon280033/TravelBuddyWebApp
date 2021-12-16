@@ -49,8 +49,8 @@
                             <option>@language</option>
                         }
                     </select>
-                    <a href="/TourManager/@tour.Id" class="button-3"><i style="vertical-align: middle; margin-right: 5px;" class="material-icons">edit</i>Edit Tour</a>
-                    <button type="button" class="button-3" @onclick="() => SetTourOnMap(tour.Id, true, true)"><i style="vertical-align: middle; margin-right: 5px;" class="material-icons">person_pin_circle</i>Manage sights</button>
+                    <a href="/TourManager/@tour.Id" class="button-green"><i style="vertical-align: middle; margin-right: 5px;" class="material-icons">edit</i>Edit Tour</a>
+                    <button type="button" class="button-green" @onclick="() => SetTourOnMap(tour.Id, true, true)"><i style="vertical-align: middle; margin-right: 5px;" class="material-icons">person_pin_circle</i>Manage sights</button>
                 </div>
             }
             </div>
@@ -58,8 +58,8 @@
         </div>
     <br>
     <div class="container">
-        <a href="/TourManager/0" class="button-3" style="margin: 10px;"><i style="vertical-align: middle; margin-right: 5px;" class="material-icons">add_circle</i>Create new tour</a>
-        <button @onclick="TogglePlaceNewSightOnClick" class="button-3" hidden="@hideAddMarkerButton">@mapButtonText</button>
+        <a href="/TourManager/0" class="button-green" style="margin: 10px;"><i style="vertical-align: middle; margin-right: 5px;" class="material-icons">add_circle</i>Create new tour</a>
+        <button @onclick="TogglePlaceNewSightOnClick" class="button-green" hidden="@hideAddMarkerButton">@mapButtonText</button>
     </div>
     <br>
     <div class="container">
@@ -145,7 +145,7 @@
             </div>
             <div style="color:green">@SightEditSuccessMessage</div>
                 <div style="color:red">@SightEditErrorMessage</div>
-                <button @onclick="UpdateOrSaveSelectedSight" class="button-3"><i style="vertical-align: middle; margin-right: 5px;" class="material-icons">cloud_upload</i>@markerButtonText</button>
+                <button @onclick="UpdateOrSaveSelectedSight" class="button-green"><i style="vertical-align: middle; margin-right: 5px;" class="material-icons">cloud_upload</i>@markerButtonText</button>
         </div>
         </div>
         <div style="display: inline-block;" hidden="@hideSightOverview">
@@ -170,7 +170,7 @@
                         }
                         <div>
                             <input readonly @bind="@theName"/>
-                            <button class="button-3" @onclick="() => SelectMarkerByPosition(sight.Latitude, sight.Longitude)"><i style="vertical-align: middle; margin-right: 5px;" class="material-icons">keyboard_arrow_left</i>Choose sight</button>
+                            <button class="button-green" @onclick="() => SelectMarkerByPosition(sight.Latitude, sight.Longitude)"><i style="vertical-align: middle; margin-right: 5px;" class="material-icons">keyboard_arrow_left</i>Choose sight</button>
                         </div>
                     }
                 }

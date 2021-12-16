@@ -36,7 +36,7 @@
 </div>
 
 <div class="container">
-    <button @onclick="ToggleLanguageChoiceVisibility" class="button-3" style="margin: 15px;" disabled="@disableAddingNewVariants"><i style="vertical-align: middle; margin-right: 5px;" class="material-icons">language</i>Add new language variant</button>
+    <button @onclick="ToggleLanguageChoiceVisibility" class="button-green" style="margin: 15px;" disabled="@disableAddingNewVariants"><i style="vertical-align: middle; margin-right: 5px;" class="material-icons">language</i>Add new language variant</button>
 </div>
 
 <div class="container">
@@ -60,7 +60,7 @@
 </div>
 
 <div class="container" hidden="@hideLanguageChoice">
-    <button type="button" style="margin: 10px;" class="button-3" @onclick="() => AddRow()"><i style="vertical-align: middle; margin-right: 5px;" class="material-icons">add_circle</i>Add</button>
+    <button type="button" style="margin: 10px;" class="button-green" @onclick="() => AddRow()"><i style="vertical-align: middle; margin-right: 5px;" class="material-icons">add_circle</i>Add</button>
 </div>
 
 
@@ -76,13 +76,13 @@
             <div style="margin:auto;"><b>Description:</b></div>
             <input style="margin:auto;" id="descInput@index" placeholder="Tour description in @TheTour.Variants[index].Language.LanguageName..." @bind-value="@TheTour.Variants[index].TourDescription"/>
             <div style="margin:auto;">
-                <button type="button" style="margin-top: 10px;" class="button-3" @onclick="() => RemoveVariant(index)">Remove variant</button>
+                <button type="button" style="margin-top: 10px;" class="button-green" @onclick="() => RemoveVariant(index)">Remove variant</button>
             </div>
         </div>
     }
 </div>
 <div class="container">
-<button type="button" class="button-3" disabled="@DisableCreatingOrUpdatingTour" @onclick="() => CreateOrUpdateTour()"><i style="vertical-align: middle; margin-right: 5px;" class="material-icons">cloud_upload</i>@CreateOrUpdateButtonText</button>
+<button type="button" class="button-green" disabled="@DisableCreatingOrUpdatingTour" @onclick="() => CreateOrUpdateTour()"><i style="vertical-align: middle; margin-right: 5px;" class="material-icons">cloud_upload</i>@CreateOrUpdateButtonText</button>
 </div>
 @code {
     // Converters
