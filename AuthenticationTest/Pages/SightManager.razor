@@ -21,8 +21,13 @@
 
     <div class="container">
         <div>
-            <h3>Select tour:</h3>
+            <h2>Select tour:</h2>
         </div>
+    </div>
+    <div class="container">
+        <div style="margin-right: 5%;">Tour name:</div>
+        <div>Sight amount:</div>
+        <div style="width: 25%;"></div>
     </div>
     <div class="container">
         @if (Tours.Count == 0 || !Authorized)
@@ -32,7 +37,7 @@
         }
         else
         {
-            <div class="scrollpane" style="height: 170px;">
+            <div class="scrollpane" style="height: 170px; border-radius: 5px;">
             @foreach (Tour tour in Tours)
             {
                 <div>
@@ -70,84 +75,84 @@
         </div>
         
         <div style="display: inline-block;" hidden="@hideMarkerProperties">
-            <div class="scrollpane" style="height: 600px; width: 300px;">
-            <div class="languageChoice">
+            <div class="scrollpane" style="text-align:center; height: 600px; width: 300px; border-radius: 5px;">
+            <div style="margin:auto;">
                 <b><label for="languageCodes">Language:</label></b>
-                <label for="languageCodes">@selectedTourLanguageCode</label>
+                <label for="languageCodes"><i>@selectedTourLanguageCode</i></label>
             </div>
 
-            <div class="signNameField">
+            <div style="margin:auto;">
                 <div>
-                    <label>Sight name: </label>
+                    <label><b>Sight name: </b></label>
                 </div>
                 <input placeholder="Sight name..." @bind-value="selectedSight.Variants[selectedSightVariantIndex].SightName">
             </div>
 
-            <div class="sightDescriptionField">
+            <div style="margin:auto;">
                 <div>
-                    <label >Sight description: </label>
+                    <label ><b>Sight description: </b></label>
                 </div>
                 <input placeholder="Sight description..." @bind-value="selectedSight.Variants[selectedSightVariantIndex].SightDescription">
             </div>
 
-            <div class="latitudeField">
+            <div style="margin:auto;">
                 <div>
-                    <label >Latitude: </label>
+                    <label ><b>Latitude: </b></label>
                 </div>
                 <input type="number" placeholder="Latitude..." @bind-value="selectedSight.Latitude">
             </div>
 
-            <div class="longitudeField">
+            <div style="margin:auto;">
                 <div>
-                    <label >Longitude: </label>
+                    <label ><b>Longitude: </b></label>
                 </div>
                 <input type="number" placeholder="Longitude..." @bind-value="selectedSight.Longitude">
             </div>
 
-            <div class="radiusField">
+            <div style="margin:auto;">
                 <div>
-                    <label >Active radius (meters): </label>
+                    <label ><b>Active radius (meters): </b></label>
                 </div>
                 <input type="number" placeholder="Radius..." @bind-value="selectedSight.RadiusInMeters">
             </div>
 
-            <div class="imageDisplayField">
+            <div style="margin:auto;">
                 <div>
-                    <label >Sight image: </label>
+                    <label ><b>Sight image: </b></label>
                 </div>
                 <img width="300" height="300" src="@ImageDisplay"/>
             </div>
 
-            <div class="imageUploadField">
+            <div style="margin:auto;">
                 <div>
-                    <label >Upload image: </label>
+                    <label ><b>Upload image: </b></label>
                 </div>
                 <InputFile id="image-picker" OnChange="@UploadImage" accept="image/*"/>
             </div>
 
-            <div class="audioInfoField">
+            <div style="margin:auto;">
                 <div>
-                    <label >Sight audio: </label>
+                    <label ><b>Sight audio: </b></label>
                 </div>
                 <label >@selectedSight.Variants[selectedSightVariantIndex].AudioFileName</label>
             </div>
 
-            <div class="audioUploadField">
+            <div style="margin:auto;">
                 <div>
-                    <label >Upload audio: </label>
+                    <label ><b>Upload audio: </b></label>
                 </div>
                 <InputFile OnChange="@UploadAudio" accept="audio/mpeg"/>
             </div>
             <div style="color:green">@SightEditSuccessMessage</div>
             <div style="color:red">@SightEditErrorMessage</div>
-            <button @onclick="UpdateOrSaveSelectedSight">@markerButtonText</button>
+            <button @onclick="UpdateOrSaveSelectedSight" class="button-3">@markerButtonText</button>
         </div>
         </div>
         <div style="display: inline-block;" hidden="@hideSightOverview">
             <div class="container">
-                <div><b>Sights in @selectedTourLanguageCode:</b></div>
+                <div><b>Sights in language '@selectedTourLanguageCode':</b></div>
                 </div>
-            <div class="scrollpane" style="height: 600px;">
+            <div class="scrollpane" style="height: 600px; border-radius: 5px;">
                 @if (hideSightOverview == false)
                 {
                     @foreach (Sight sight in Tours[SelectedTourIndex].Sights)
@@ -158,6 +163,7 @@
                         {
                             if (variant.Language.LanguageCode.Equals(selectedTourLanguageCode))
                             {
+                                Console.WriteLine(variant.SightName + " is supposedly in " + selectedTourLanguageCode + ", but it is actually in " + variant.Language.LanguageCode);
                                 theName = variant.SightName;
                                 break;
                             }
@@ -306,12 +312,21 @@
 
             if (Tours[SelectedTourIndex].Sights.Count > 0)
             {
-                for (int i = 0; i < Tours[SelectedTourIndex].Sights[0].Variants.Count; i++)
+                bool found = false;
+                for (int i = 0; i < Tours[SelectedTourIndex].Sights.Count; i++)
                 {
-                    Console.WriteLine("Variant name: " + Tours[SelectedTourIndex].Sights[0].Variants[i].SightName);
-                    if (Tours[SelectedTourIndex].Sights[0].Variants[i].Language.LanguageCode.Equals(selectedTourLanguageCode))
+                    for (int j = 0; j < Tours[SelectedTourIndex].Sights[i].Variants.Count; j++)
                     {
-                        selectedSightVariantIndex = i;
+                        Console.WriteLine("Variant name: " + Tours[SelectedTourIndex].Sights[0].Variants[j].SightName);
+                        if (Tours[SelectedTourIndex].Sights[0].Variants[j].Language.LanguageCode.Equals(selectedTourLanguageCode))
+                        {
+                            selectedSightVariantIndex = j;
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (found)
+                    {
                         break;
                     }
                 }
@@ -662,36 +677,35 @@
                     }
                 }
             }
-            
-            // We get index for variant
-            int index = 0;
-            if (tourContent.Count > 0) {
-            for (int i = 0; i < tourContent[0].Variants.Count; i++)
+
+            for (int i = 0; i < Tours[SelectedTourIndex].Sights.Count; i++)
             {
-                if (tourContent[0].Variants[i].Language.LanguageCode.Equals(selectedTourLanguageCode))
+                int index = 0;
+                for (int j = 0; j < Tours[SelectedTourIndex].Sights[i].Variants.Count; j++)
                 {
-                    index = i;
-                    break;
+                    if (Tours[SelectedTourIndex].Sights[i].Variants[j].Language.LanguageCode.Equals(selectedTourLanguageCode))
+                    {
+                        index = j;
+                        break;
+                    }
                 }
-            }
-            
-            for (int i = 0; i < tourContent.Count; i++)
-            {
+                
                 GoogleMapPosition newPos = new GoogleMapPosition
                 {
-                    Lat = tourContent[i].Latitude,
-                    Lng = tourContent[i].Longitude
+                    Lat = Tours[SelectedTourIndex].Sights[i].Latitude,
+                    Lng = Tours[SelectedTourIndex].Sights[i].Longitude
                 };
-                
+
                 RadzenGoogleMapMarker newMarker = new RadzenGoogleMapMarker()
                 {
                     Position = newPos,
-                    Label = tourContent[i].Variants[index].SightName
+                    Label = Tours[SelectedTourIndex].Sights[i].Variants[index].SightName
                 };
-
+                
+                Console.WriteLine("adding: " + Tours[SelectedTourIndex].Sights[SelectedSightIndex].Variants[index].SightName);
                 Markers.Add(newMarker);
             }
-            }
+            
             selectedTourLanguageCode = selectedLanguageCodeForTour[SelectedTourIndex];
         }
 

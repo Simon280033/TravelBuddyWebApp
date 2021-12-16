@@ -367,7 +367,8 @@ namespace AuthenticationTest.Data
                                       "ON " +
                                       "travelbuddy.Languages.language_code = travelbuddy.Tour_variants.language_code " +
                                       "WHERE " +
-                                      "travelbuddy.Tours.company_id = @companyId;";
+                                      "travelbuddy.Tours.company_id = @companyId AND " +
+                "travelbuddy.Tour_variants.language_code = travelbuddy.Sight_variants.language_code ORDER BY travelbuddy.Tours.tour_id DESC;";
                 
                 command.Connection = conn;
                 command.Parameters.AddWithValue("companyId", companyId);
