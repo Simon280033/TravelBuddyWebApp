@@ -126,7 +126,7 @@ using AuthenticationTest.Data;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 74 "C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\Pages\TourManager.razor"
+#line 87 "C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\Pages\TourManager.razor"
        
     // Converters
     private IImageConverter imageConverter = new ImageConverter();

@@ -8,69 +8,82 @@
 @inject IJSRuntime JsRuntime
 @inject AuthenticationStateProvider auth
 
-<h3>@HeaderText</h3>
-
-<div class="imageDisplayField">
+<div class="container">
+<h2>@HeaderText</h2>
+</div>
+<div class="container">
     <div>
-        <label >Sight image: </label>
+        <label >Tour image: </label>
     </div>
+</div>
+<div class="container">
     <img width="300" height="300" src="data:image/*;base64,@TheTour.ImageBase64"/>
 </div>
-
-<div class="imageUploadField">
+<div class="container">
     <div>
         <label >Upload image: </label>
     </div>
+</div>
+<div class="container">
     <InputFile id="image-picker" OnChange="@UploadImage" accept="image/*"/>
 </div>
 
-
-<div style="color:red">@MissingInfoErrorMessage</div>
-<div style="color:red">@VariantAddingMessage</div>
-<button @onclick="ToggleLanguageChoiceVisibility" disabled="@disableAddingNewVariants">Add new language variant</button>
-
-<div class="row" hidden="@hideLanguageChoice">
-    <div class="col-xl-6">
-        <div class="languageChoice">
-            <b><label for="languageCodes">Language:</label></b>
-            <select id="languageCodes" @onchange="TourLanguageChanged" name="languageCodes">
-                @if (true)
-                {
-                    Console.WriteLine("Removed languages: " + AvailableLanguages.Count);
-                }
-                @foreach (Language language in AvailableLanguages)
-                {
-                    <option>@language.LanguageName</option>
-                }
-            </select>
-        </div>
-    </div>
-    <div>
-        <button type="button" @onclick="() => AddRow()">Add</button>
-    </div>
+<div class="container">
+    <div style="color:red">@MissingInfoErrorMessage</div>
 </div>
+<div class="container">
+    <div style="color:red">@VariantAddingMessage</div>
+</div>
+
+<div class="container">
+    <button @onclick="ToggleLanguageChoiceVisibility" class="button-3" style="margin: 15px;" disabled="@disableAddingNewVariants">Add new language variant</button>
+</div>
+
+<div class="container">
+</div>
+
+<div class="container" hidden="@hideLanguageChoice">
+    <b><label for="languageCodes">Language:</label></b>
+</div>
+
+<div class="container" hidden="@hideLanguageChoice">
+    <select id="languageCodes" @onchange="TourLanguageChanged" name="languageCodes">
+        @if (true)
+        {
+            Console.WriteLine("Removed languages: " + AvailableLanguages.Count);
+        }
+        @foreach (Language language in AvailableLanguages)
+        {
+            <option>@language.LanguageName</option>
+        }
+    </select>
+</div>
+
+<div class="container" hidden="@hideLanguageChoice">
+    <button type="button" style="margin: 10px;" class="button-3" @onclick="() => AddRow()">Add</button>
+</div>
+
 
 <div hidden="@hideVariantOverview">
     @for (int i = 0; i < TheTour.Variants.Count; i++)
     {
         int index = i;
-        <div style="border: thin solid black">
-            <div>Language:</div>
-            <div>@TheTour.Variants[index].Language.LanguageName</div>
-            <div>Name:</div>
-            <input id="nameInput@index" placeholder="Tour name in @TheTour.Variants[index].Language.LanguageName..." @bind-value="@TheTour.Variants[index].TourName"/>
-            <div>Description:</div>
-            <input id="descInput@index" placeholder="Tour description in @TheTour.Variants[index].Language.LanguageName..." @bind-value="@TheTour.Variants[index].TourDescription"/>
+        <div style="text-align:center; background-color: #e8e8e8; padding: 15px; border-radius: 10px; margin: 10px;">
+            <div style="margin:auto;"><b>Language:</b></div>
+            <div style="margin:auto;"><i>@TheTour.Variants[index].Language.LanguageName</i></div>
+            <div style="margin:auto;"><b>Name:</b></div>
+            <input style="margin:auto;" id="nameInput@index" placeholder="Tour name in @TheTour.Variants[index].Language.LanguageName..." @bind-value="@TheTour.Variants[index].TourName"/>
+            <div style="margin:auto;"><b>Description:</b></div>
+            <input style="margin:auto;" id="descInput@index" placeholder="Tour description in @TheTour.Variants[index].Language.LanguageName..." @bind-value="@TheTour.Variants[index].TourDescription"/>
+            <div style="margin:auto;">
+                <button type="button" style="margin-top: 10px;" class="button-3" @onclick="() => RemoveVariant(index)">Remove variant</button>
+            </div>
         </div>
-        
-    <div>
-        <button type="button" @onclick="() => RemoveVariant(index)">Remove variant</button>
-    </div>
     }
 </div>
-
-<button type="button" disabled="@DisableCreatingOrUpdatingTour" @onclick="() => CreateOrUpdateTour()">@CreateOrUpdateButtonText</button>
-
+<div class="container">
+<button type="button" class="button-3" disabled="@DisableCreatingOrUpdatingTour" @onclick="() => CreateOrUpdateTour()">@CreateOrUpdateButtonText</button>
+</div>
 @code {
     // Converters
     private IImageConverter imageConverter = new ImageConverter();
