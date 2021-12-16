@@ -104,7 +104,7 @@ using AuthenticationTest.Pages;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 44 "C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\Shared\NavMenu.razor"
+#line 45 "C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\Shared\NavMenu.razor"
        
     private bool collapseNavMenu = true;
 
