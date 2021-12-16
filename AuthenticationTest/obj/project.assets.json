@@ -61,6 +61,15 @@
           "lib/netstandard2.0/Humanizer.dll": {}
         }
       },
+      "Json.Net/1.0.33": {
+        "type": "package",
+        "compile": {
+          "lib/netstandard2.0/Json.Net.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.0/Json.Net.dll": {}
+        }
+      },
       "Microsoft.AspNetCore.Authorization/5.0.8": {
         "type": "package",
         "dependencies": {
@@ -2058,6 +2067,18 @@
         "lib/netstandard2.0/Humanizer.dll",
         "lib/netstandard2.0/Humanizer.xml",
         "logo.png"
+      ]
+    },
+    "Json.Net/1.0.33": {
+      "sha512": "5tE+db6BqhRAvITIVBeRsQorLGshPExfm4FmMRvWWAfs4RxeTbFFj2PIEybwmMW0qR30HKkXDYhq0YkDK2Jtxw==",
+      "type": "package",
+      "path": "json.net/1.0.33",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "json.net.1.0.33.nupkg.sha512",
+        "json.net.nuspec",
+        "lib/netstandard2.0/Json.Net.dll"
       ]
     },
     "Microsoft.AspNetCore.Authorization/5.0.8": {
@@ -6585,6 +6606,7 @@
     "net5.0": [
       "BlazorInputFile >= 0.2.0",
       "BlazorStrap >= 1.5.101-Preview-6",
+      "Json.Net >= 1.0.33",
       "Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore >= 5.0.11",
       "Microsoft.AspNetCore.Identity.EntityFrameworkCore >= 5.0.11",
       "Microsoft.AspNetCore.Identity.UI >= 5.0.11",
@@ -6646,6 +6668,10 @@
           "BlazorStrap": {
             "target": "Package",
             "version": "[1.5.101-Preview-6, )"
+          },
+          "Json.Net": {
+            "target": "Package",
+            "version": "[1.0.33, )"
           },
           "Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore": {
             "target": "Package",

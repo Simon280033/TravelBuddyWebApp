@@ -51,6 +51,10 @@
               "target": "Package",
               "version": "[1.5.101-Preview-6, )"
             },
+            "Json.Net": {
+              "target": "Package",
+              "version": "[1.0.33, )"
+            },
             "Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore": {
               "target": "Package",
               "version": "[5.0.11, )"

@@ -8,6 +8,7 @@
     <ItemGroup>
         <PackageReference Include="BlazorInputFile" Version="0.2.0" />
         <PackageReference Include="BlazorStrap" Version="1.5.101-Preview-6" />
+        <PackageReference Include="Json.Net" Version="1.0.33" />
         <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="5.0.11" />
         <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="5.0.11" />
         <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="5.0.11" />

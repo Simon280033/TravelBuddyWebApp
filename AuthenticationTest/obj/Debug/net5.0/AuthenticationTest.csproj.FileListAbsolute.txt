@@ -239,3 +239,5 @@ C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\bin\Debug\net5
 C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\bin\Debug\net5.0\Microsoft.AspNetCore.Metadata.dll
 C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\bin\Debug\net5.0\Microsoft.JSInterop.dll
 C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\bin\Debug\net5.0\System.IO.Pipelines.dll
+C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\bin\Debug\net5.0\langs.json
+C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\bin\Debug\net5.0\Json.Net.dll

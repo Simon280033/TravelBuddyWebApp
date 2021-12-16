@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "/UQu+3hxSOYAwye4tSwd6mrIyGQ9Z7qK0b0bphBRAKvWjQS64kdbOBMzbmhqkRTxcRzYK28SfOBFqO4yMJ5meA==",
+  "dgSpecHash": "n6RxOBn0R13tKVqHGKA3nXCgfHwMNuWnIFakJgqnl6FtJn/e2uYl/+slPiLeHLPfj1LPZkUrCDjGyH1gZ0QZnw==",
   "success": true,
   "projectFilePath": "C:\\Users\\simon\\RiderProjects\\TravelBuddyWebApp\\AuthenticationTest\\AuthenticationTest.csproj",
   "expectedPackageFiles": [
@@ -8,6 +8,7 @@
     "C:\\Users\\simon\\.nuget\\packages\\blazorinputfile\\0.2.0\\blazorinputfile.0.2.0.nupkg.sha512",
     "C:\\Users\\simon\\.nuget\\packages\\blazorstrap\\1.5.101-preview-6\\blazorstrap.1.5.101-preview-6.nupkg.sha512",
     "C:\\Users\\simon\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",
+    "C:\\Users\\simon\\.nuget\\packages\\json.net\\1.0.33\\json.net.1.0.33.nupkg.sha512",
     "C:\\Users\\simon\\.nuget\\packages\\microsoft.aspnetcore.authorization\\5.0.8\\microsoft.aspnetcore.authorization.5.0.8.nupkg.sha512",
     "C:\\Users\\simon\\.nuget\\packages\\microsoft.aspnetcore.components\\5.0.8\\microsoft.aspnetcore.components.5.0.8.nupkg.sha512",
     "C:\\Users\\simon\\.nuget\\packages\\microsoft.aspnetcore.components.analyzers\\5.0.8\\microsoft.aspnetcore.components.analyzers.5.0.8.nupkg.sha512",
