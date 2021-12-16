@@ -683,7 +683,7 @@
                 int index = 0;
                 for (int j = 0; j < Tours[SelectedTourIndex].Sights[i].Variants.Count; j++)
                 {
-                    if (Tours[SelectedTourIndex].Sights[i].Variants[j].Language.LanguageCode.Equals(selectedTourLanguageCode))
+                    if (Tours[SelectedTourIndex].Sights[i].Variants[j].Language.LanguageCode.Equals(selectedLanguageCodeForTour[SelectedTourIndex]))
                     {
                         index = j;
                         break;
