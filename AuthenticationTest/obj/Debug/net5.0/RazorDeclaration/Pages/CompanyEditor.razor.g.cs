@@ -114,6 +114,7 @@ using AuthenticationTest.Data;
 #nullable restore
 #line 47 "C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\Pages\CompanyEditor.razor"
        
+    private bool CompanyTiedToUser = false;
     private string companyName = "";
     private string companyAddress = "";
     private string companyEmail = "";
@@ -126,6 +127,17 @@ using AuthenticationTest.Data;
         IfNotAuthorized();
         
         SetEmailFromUser();
+        
+        // We check if company details are tied to user
+        CompanyTiedToUser = _daoFetcher.CompanyDao().userTiedToCompany(auth.GetAuthenticationStateAsync().Result.User.Identity.Name);
+        
+        if (CompanyTiedToUser)
+        {
+            Company tempCompany = _daoFetcher.CompanyDao().getCompanyForUserById(auth.GetAuthenticationStateAsync().Result.User.Identity.Name);
+            companyName = tempCompany.name;
+            companyAddress = tempCompany.address;
+            companyPhone = tempCompany.phone;
+        }
     }
     
     private async void IfNotAuthorized()
@@ -168,40 +180,82 @@ using AuthenticationTest.Data;
         return allFilled;
     }
 
+    private async void CreateAndTieToUser()
+    {
+        Console.WriteLine("All filled! Attempting to save in DB...");
+    // We attempt to save in DB
+        Company company = new Company
+        {
+            id = 0,
+            address = companyAddress,
+            email = companyEmail,
+            name = companyName,
+            phone = companyPhone
+        };
+
+        try
+        {
+            _daoFetcher.CompanyDao().CreateCompany(company);
+            _daoFetcher.CompanyDao().TieCompanyToUser(company);
+        }
+        catch (Exception)
+        {
+            ErrorMessage = "Failed to create company! Please try another name.";
+        }
+            
+    // We save into singleton
+        TheCompany.name = companyName;
+        TheCompany.email = companyEmail;
+        TheCompany.address = companyAddress;
+        TheCompany.phone = companyPhone;
+            
+    // We redirect to main page
+        await JsRuntime.InvokeVoidAsync("alert", "Company details successfully updated!");
+        NavManager.NavigateTo("/");
+    }
+
+    private async void UpdateCompany()
+    {
+        Company company = new Company
+        {
+            id = TheCompany.id,
+            address = companyAddress,
+            email = companyEmail,
+            name = companyName,
+            phone = companyPhone
+        };
+
+        try
+        {
+            _daoFetcher.CompanyDao().UpdateCompany(company);
+        }
+        catch (Exception)
+        {
+            ErrorMessage = "Failed to update company!";
+        }
+            
+    // We save into singleton
+        TheCompany.name = companyName;
+        TheCompany.address = companyAddress;
+        TheCompany.phone = companyPhone;
+            
+    // We redirect to main page
+        await JsRuntime.InvokeVoidAsync("alert", "Company details successfully updated!");
+        NavManager.NavigateTo("/");
+    }
+
     private async void SaveCompanyInfo()
     {
         if (AllFilled())
         {
-            Console.WriteLine("All filled! Attempting to save in DB...");
-            // We attempt to save in DB
-            Company company = new Company
+            if (CompanyTiedToUser)
             {
-                id = 0,
-                address = companyAddress,
-                email = companyEmail,
-                name = companyName,
-                phone = companyPhone
-            };
-
-            try
-            {
-                _daoFetcher.CompanyDao().CreateCompany(company);
-                _daoFetcher.CompanyDao().TieCompanyToUser(company);
+                UpdateCompany();
             }
-            catch (Exception)
+            else
             {
-                ErrorMessage = "Failed to create company! Please try another name.";
+                CreateAndTieToUser();
             }
-            
-            // We save into singleton
-            TheCompany.name = companyName;
-            TheCompany.email = companyEmail;
-            TheCompany.address = companyAddress;
-            TheCompany.phone = companyPhone;
-            
-            // We redirect to main page
-            await JsRuntime.InvokeVoidAsync("alert", "Company details successfully updated!");
-            NavManager.NavigateTo("/");
         }
         else
         {

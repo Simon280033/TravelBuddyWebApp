@@ -94,6 +94,24 @@ namespace AuthenticationTest.Data
             conn.Close();        
         }
 
+        public void UpdateCompany(Company company)
+        {
+            OpenConnIfClosed();
+            using (NpgsqlCommand command = new NpgsqlCommand())
+            {
+                command.CommandText =
+                    "UPDATE travelbuddy.Companies SET company_name = @name, address = @address, phone = @phone WHERE email = @email;";
+                command.Connection = conn;
+                command.Parameters.AddWithValue("name", company.name);
+                command.Parameters.AddWithValue("address", company.address);
+                command.Parameters.AddWithValue("phone", company.phone);
+                command.Parameters.AddWithValue("email", company.email);
+                command.Prepare();
+                command.ExecuteNonQuery();
+            }
+            conn.Close();         
+        }
+
         public Company getCompanyForUserById(string id)
         {
             OpenConnIfClosed();

@@ -14,5 +14,7 @@ namespace AuthenticationTest.Data
         public void CreateCompany(Company company);
 
         public void TieCompanyToUser(Company company);
+
+        public void UpdateCompany(Company company);
     }
 }
