@@ -36,7 +36,7 @@
 </div>
 
 <div class="container">
-    <button @onclick="ToggleLanguageChoiceVisibility" class="button-3" style="margin: 15px;" disabled="@disableAddingNewVariants">Add new language variant</button>
+    <button @onclick="ToggleLanguageChoiceVisibility" class="button-3" style="margin: 15px;" disabled="@disableAddingNewVariants"><i style="vertical-align: middle; margin-right: 5px;" class="material-icons">language</i>Add new language variant</button>
 </div>
 
 <div class="container">
@@ -60,7 +60,7 @@
 </div>
 
 <div class="container" hidden="@hideLanguageChoice">
-    <button type="button" style="margin: 10px;" class="button-3" @onclick="() => AddRow()">Add</button>
+    <button type="button" style="margin: 10px;" class="button-3" @onclick="() => AddRow()"><i style="vertical-align: middle; margin-right: 5px;" class="material-icons">add_circle</i>Add</button>
 </div>
 
 
@@ -82,7 +82,7 @@
     }
 </div>
 <div class="container">
-<button type="button" class="button-3" disabled="@DisableCreatingOrUpdatingTour" @onclick="() => CreateOrUpdateTour()">@CreateOrUpdateButtonText</button>
+<button type="button" class="button-3" disabled="@DisableCreatingOrUpdatingTour" @onclick="() => CreateOrUpdateTour()"><i style="vertical-align: middle; margin-right: 5px;" class="material-icons">cloud_upload</i>@CreateOrUpdateButtonText</button>
 </div>
 @code {
     // Converters
