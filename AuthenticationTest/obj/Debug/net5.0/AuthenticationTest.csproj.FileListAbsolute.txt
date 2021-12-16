@@ -228,3 +228,14 @@ C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\obj\Debug\net5
 C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\obj\Debug\net5.0\Razor\Pages\CompanyEditor.razor.g.cs
 C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\obj\Debug\net5.0\RazorDeclaration\Pages\SightManager.razor.g.cs
 C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\obj\Debug\net5.0\Razor\Pages\SightManager.razor.g.cs
+C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\obj\Debug\net5.0\RazorDeclaration\Pages\MeetTheTeam.razor.g.cs
+C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\obj\Debug\net5.0\Razor\Pages\MeetTheTeam.razor.g.cs
+C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\bin\Debug\net5.0\BlazorComponentUtilities.dll
+C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\bin\Debug\net5.0\BlazorStrap.dll
+C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\bin\Debug\net5.0\Microsoft.AspNetCore.Authorization.dll
+C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\bin\Debug\net5.0\Microsoft.AspNetCore.Components.dll
+C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\bin\Debug\net5.0\Microsoft.AspNetCore.Components.Forms.dll
+C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\bin\Debug\net5.0\Microsoft.AspNetCore.Components.Web.dll
+C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\bin\Debug\net5.0\Microsoft.AspNetCore.Metadata.dll
+C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\bin\Debug\net5.0\Microsoft.JSInterop.dll
+C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\bin\Debug\net5.0\System.IO.Pipelines.dll

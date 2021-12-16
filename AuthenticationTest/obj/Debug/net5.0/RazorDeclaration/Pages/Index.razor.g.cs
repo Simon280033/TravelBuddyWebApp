@@ -154,8 +154,13 @@ using Microsoft.EntityFrameworkCore;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 23 "C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\Pages\Index.razor"
+#line 67 "C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\Pages\Index.razor"
  
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await JsRuntime.InvokeVoidAsync("startCarousels");
+    }
+
     protected override async Task OnInitializedAsync()
     {
         ifAuthenticated();
@@ -182,7 +187,6 @@ using Microsoft.EntityFrameworkCore;
             }
         }
     }
-
 
 #line default
 #line hidden

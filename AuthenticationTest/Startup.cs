@@ -46,7 +46,6 @@ namespace AuthenticationTest
                 .AddScoped<AuthenticationStateProvider,
                     RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
             services.AddDatabaseDeveloperPageExceptionFilter();
-            services.AddSingleton<WeatherForecastService>();
             // We create a universal Connection
             NpgsqlConnection conn = new NpgsqlConnection(Configuration.GetConnectionString("DefaultConnection"));
             services.AddSingleton<IDAOFetcher>(new DAOFetcher(conn));
