@@ -8,41 +8,45 @@
 @inject NavigationManager NavManager
 @inject IJSRuntime JsRuntime
 
-<h3>CompanyEditor</h3>
+<div class="container">
+    <h2>Company details</h2>
+</div>
 
-<div class="col-xl-6">
-    <div class="companyNameField">
+<div style="text-align:center; background-color: #e8e8e8; padding: 15px; border-radius: 10px; margin: 10px;">
+    <div style="margin:auto;">
         <div>
-            <label>Sight name: </label>
+            <label><b>Sight name: </b></label>
         </div>
         <input placeholder="Company name..." @bind-value="companyName">
     </div>
 
-    <div class="addressField">
+    <div style="margin:auto;">
         <div>
-            <label >Address: </label>
+            <label><b>Address: </b></label>
         </div>
         <input placeholder="Company address..." @bind-value="companyAddress">
     </div>
     
-    <div class="emailField">
+    <div style="margin:auto;">
         <div>
-            <label >E-mail: </label>
+            <label><b>E-mail: </b></label>
         </div>
         <input placeholder="E-mail..." readonly disabled="true" @bind-value="companyEmail">
     </div>
     
-    <div class="phoneField">
+    <div style="margin:auto;">
         <div>
-            <label >Phone: </label>
+            <label><b>Phone: </b></label>
         </div>
         <input placeholder="Phone number..." type="number" @bind-value="companyPhone">
     </div>
-    
-    <RadzenButton Click=@(args => SaveCompanyInfo()) Text="Save Company info" />
-</div>
 
-<div style="color:red">@ErrorMessage</div>
+    <div style="margin:auto;">
+        <div style="color:red">@ErrorMessage</div>
+    </div>
+    
+    <RadzenButton style="margin-top: 10px;" Click=@(args => SaveCompanyInfo()) Text="Save Company info" />
+</div>
 
 @code {
     private bool CompanyTiedToUser = false;
@@ -194,7 +198,6 @@
             ErrorMessage = "Please fill out all of the required information!";
             StateHasChanged();
         }
-        ErrorMessage = "";
     }
     
 }

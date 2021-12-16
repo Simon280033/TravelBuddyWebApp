@@ -112,7 +112,7 @@ using AuthenticationTest.Data;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 47 "C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\Pages\CompanyEditor.razor"
+#line 51 "C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\Pages\CompanyEditor.razor"
        
     private bool CompanyTiedToUser = false;
     private string companyName = "";
@@ -263,7 +263,6 @@ using AuthenticationTest.Data;
             ErrorMessage = "Please fill out all of the required information!";
             StateHasChanged();
         }
-        ErrorMessage = "";
     }
     
 
