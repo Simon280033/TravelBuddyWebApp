@@ -28,7 +28,7 @@ namespace AuthenticationTest.Data
             sight.Id = newId;
             // We for some reason create a useless extra one... LOOK INTO THIS!!! For now we just delete it lol
             DeleteSight(newId-1);
-            CreateVariant(sight, tourId, languageCode);
+            CreateOrUpdateVariant(sight, tourId, languageCode);
             return newId;
         }
 
@@ -77,9 +77,21 @@ namespace AuthenticationTest.Data
             return newId;
         }
         
-        public void CreateVariant(Sight sight, int tourId, string languageCode)
+        public void CreateOrUpdateVariant(Sight sight, int tourId, string languageCode)
         {
-            Console.WriteLine("CreateVariant");
+            if (VariantExists(tourId, languageCode))
+            {
+                UpdateVariant(sight, tourId, languageCode);
+            }
+            else
+            {
+                CreateVariant(sight, tourId, languageCode);
+            }
+        }
+
+        private void CreateVariant(Sight sight, int tourId, string languageCode)
+        {
+            Console.WriteLine("CreateOrUpdateVariant");
             // We get the variant
             SightVariant variant = new SightVariant();
             foreach (SightVariant sv in sight.Variants)
@@ -110,7 +122,66 @@ namespace AuthenticationTest.Data
                 command.Prepare();
                 command.ExecuteNonQuery();
             }
-            conn.Close();    
+            conn.Close();
+        }
+
+        private void UpdateVariant(Sight sight, int tourId, string languageCode)
+        {
+            Console.WriteLine("CreateOrUpdateVariant");
+            // We get the variant
+            SightVariant variant = new SightVariant();
+            foreach (SightVariant sv in sight.Variants)
+            {
+                if (sv.Language.LanguageCode.Equals(languageCode))
+                {
+                    variant.SightName = sv.SightName;
+                    variant.SightDescription = sv.SightDescription;
+                    variant.AudioBase64 = sv.AudioBase64;
+                    variant.AudioFileName = sv.AudioFileName;
+                    break;
+                }
+            }
+            OpenConnIfClosed();
+            using (NpgsqlCommand command = new NpgsqlCommand())
+            {
+                command.CommandText =
+                    "UPDATE travelbuddy.Sight_variants SET " +
+                    "sight_name = @sightName, sight_description = @sightDesc, sight_audio = @audioBase64, audio_file_name = @audioFileName WHERE sight_id = @sightId AND language_code = @languageCode";
+                command.Connection = conn;
+                command.Unprepare();
+                command.Parameters.AddWithValue("sightId", sight.Id);
+                command.Parameters.AddWithValue("languageCode", languageCode);
+                command.Parameters.AddWithValue("sightName", variant.SightName);
+                command.Parameters.AddWithValue("sightDesc", variant.SightDescription);
+                command.Parameters.AddWithValue("audioBase64", variant.AudioBase64);
+                command.Parameters.AddWithValue("audioFileName", variant.AudioFileName);
+                command.Prepare();
+                command.ExecuteNonQuery();
+            }
+            conn.Close();
+        }
+
+        private bool VariantExists(int sightId, string languageCode)
+        {
+            bool exists = false;
+            OpenConnIfClosed();
+            using (NpgsqlCommand command = new NpgsqlCommand())
+            {
+                command.CommandText = "SELECT COUNT(*) FROM travelbuddy.Sight_variants WHERE language_code = @languageCode AND sight_id = @sightId;";
+                command.Parameters.AddWithValue("languageCode", languageCode);
+                command.Parameters.AddWithValue("sightId", sightId);
+                command.Connection = conn;
+                using (NpgsqlDataReader sdr = command.ExecuteReader())
+                {
+                    while (sdr.Read())
+                    {
+                        int amount = (int)Int32.Parse(sdr["count"].ToString());
+                        exists = amount > 0;
+                    }
+                }
+                conn.Close();
+            }
+            return exists;
         }
     }
 }

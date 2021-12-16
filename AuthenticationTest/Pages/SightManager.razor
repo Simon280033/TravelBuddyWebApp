@@ -359,7 +359,7 @@
             if (AllFilled())
             {
                 UpdateSightOnSelectedTour();
-                _daoFetcher.SightDao().CreateVariant(selectedSight, Tours[SelectedTourIndex].Id, selectedTourLanguageCode);
+                _daoFetcher.SightDao().CreateOrUpdateVariant(selectedSight, Tours[SelectedTourIndex].Id, selectedTourLanguageCode);
                 SetSightUpdatedResultLayout(true);
                 await JsRuntime.InvokeVoidAsync("alert", "Sight succesfully updated!");
                 Console.WriteLine("New marker mode on: " + placeNewSightOnClick);

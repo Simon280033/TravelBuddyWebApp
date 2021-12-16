@@ -6,6 +6,6 @@ namespace AuthenticationTest.Data
     {
         public int CreateNewSightAndVariant(Sight sight, int tourId, string languageCode);
 
-        public void CreateVariant(Sight sight, int tourId, string languageCode);
+        public void CreateOrUpdateVariant(Sight sight, int tourId, string languageCode);
     }
 }
