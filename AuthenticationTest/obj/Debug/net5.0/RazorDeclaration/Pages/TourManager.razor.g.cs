@@ -126,7 +126,7 @@ using AuthenticationTest.Data;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 87 "C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\Pages\TourManager.razor"
+#line 83 "C:\Users\simon\RiderProjects\TravelBuddyWebApp\AuthenticationTest\Pages\TourManager.razor"
        
     // Converters
     private IImageConverter imageConverter = new ImageConverter();
@@ -158,7 +158,6 @@ using AuthenticationTest.Data;
 
     protected override async Task OnInitializedAsync()
     {
-        Console.WriteLine("Param: " + this.PathParam);
         IfNotAuthorized();
         
         Languages = _daoFetcher.LanguageDao().GetLanguages();
@@ -304,7 +303,7 @@ using AuthenticationTest.Data;
 
     private void TourLanguageChanged(ChangeEventArgs e)
     {
-        Console.WriteLine("Selected language: " + (string) e.Value);
+
         string languageName = (string) e.Value;
         foreach (Language language in Languages)
         {
@@ -343,7 +342,6 @@ using AuthenticationTest.Data;
     {
         // We set the company id for the tour
         TheTour.CompanyId = _daoFetcher.CompanyDao().getCompanyForUserById(auth.GetAuthenticationStateAsync().Result.User.Identity.Name).id;
-        Console.WriteLine("Company ID: " + TheTour.CompanyId);
         _daoFetcher.TourDao().createTour(TheTour);
         await JsRuntime.InvokeVoidAsync("alert", "Tour '" + TheTour.Variants[0].TourName + "' succesfully created! Navigating to Sight Manager...");
         NavManager.NavigateTo("SightManager");
@@ -353,7 +351,6 @@ using AuthenticationTest.Data;
     {
         Tour oldTour = _daoFetcher.TourDao().getTourById(TheTour.Id);
         // We check if any variants were deleted
-        Console.WriteLine("Old: " + oldTour.Variants.Count + ", new: " + TheTour.Variants.Count);
         if (oldTour.Variants.Count > TheTour.Variants.Count)
         {
             // We make a list of new ids
@@ -367,14 +364,11 @@ using AuthenticationTest.Data;
             {
                 newLanguages.Add(variant.Language.LanguageCode);
             }
-            Console.WriteLine("Old: " + oldLanguages.Count + ", new: " + newLanguages.Count);
             // We remove the ones
             for (int i = oldTour.Variants.Count - 1; i >= 0; i--)
             {
-                Console.WriteLine("The new tour contains " + oldTour.Variants[i].Language.LanguageCode + ": " + newLanguages.Contains(oldTour.Variants[i].Language.LanguageCode));
                 if (!newLanguages.Contains(oldTour.Variants[i].Language.LanguageCode))
                 {
-                    Console.WriteLine("Removing " + oldTour.Variants[i].Language.LanguageCode);
                     oldTour.Variants.Remove(oldTour.Variants[i]);
                 }
             }

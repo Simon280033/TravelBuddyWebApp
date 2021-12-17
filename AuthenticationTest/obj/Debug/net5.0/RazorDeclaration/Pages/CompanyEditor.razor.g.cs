@@ -182,7 +182,6 @@ using AuthenticationTest.Data;
 
     private async void CreateAndTieToUser()
     {
-        Console.WriteLine("All filled! Attempting to save in DB...");
     // We attempt to save in DB
         Company company = new Company
         {
@@ -259,7 +258,6 @@ using AuthenticationTest.Data;
         }
         else
         {
-            Console.WriteLine("Lacking info!");
             ErrorMessage = "Please fill out all of the required information!";
             StateHasChanged();
         }
